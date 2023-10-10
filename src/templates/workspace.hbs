@@ -1,0 +1,32 @@
+workspace "{{workspaceName}}" {
+    description "{{workspaceDescription}}"
+
+    !adrs decisions
+    !adrs docs
+
+    model {
+        !include system
+
+        {{properCase (removeSpaces systemName)}} = softwareSystem "{{systemName}}" {
+            description "{{systemDescription}}"
+
+            # Constants
+
+            !include containers
+            !include relationships
+
+            tags "System"
+        }
+
+        !include environments
+    }
+
+    views {
+        {{#if shouldIncludeTheme}}
+        themes "https://structurizr.test.zemoga-client.com/share/1/theme"
+        {{/if}}
+        !constant AUTHOR "Author: {{authorName}} <{{authorEmail}}>"
+
+        !include views
+    }
+}

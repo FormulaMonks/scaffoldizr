@@ -1,0 +1,8 @@
+deployment {{properCase (removeSpaces systemName)}} "{{viewName}}" "{{properCase (removeSpaces systemName)}}{{properCase viewName}}Deployment" {
+    description "{{viewDescription}}. ${AUTHOR}"
+    include *
+    exclude relationship.tag==component
+    exclude relationship.tag==system
+    include relationship.tag=={{pascalCase viewName}}
+    autoLayout lr
+}
