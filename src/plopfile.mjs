@@ -1,58 +1,27 @@
 import { execSync } from "node:child_process";
-import { resolve, dirname, join } from "node:path";
-import { existsSync } from "node:fs";
-import { kebabCase } from "change-case";
+import { dirname, join } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { kebabCase, pascalCase } from "change-case";
 import chalk from "chalk";
+import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace.mjs";
+import { withSystemsQuestion } from "./utils/questions.mjs";
+import { removeSpaces } from "./utils/helpers.mjs";
+import workspaceGenerator from "./generators/workspace.mjs";
 
 /**
- *
  * @param {import('plop').NodePlopAPI} plop
  * @returns
  */
 export default function (plop) {
-    plop.setHelper("removeSpaces", (txt) => txt.replace(/\s/g, ""));
+    plop.setHelper("removeSpaces", removeSpaces);
+    plop.setHelper("eq", (arg1, arg2) => arg1 === arg2);
     plop.setWelcomeMessage(
         `
 Welcome to Blueprint DSL.
 Create a Structurizr DSL scaffolding in seconds!`,
     );
 
-    const getWorkspacePath = (input) => {
-        let workspaceFullPath = resolve(`${input}/workspace.dsl`);
-        let isWorkspace = existsSync(workspaceFullPath);
-
-        if (isWorkspace) return workspaceFullPath;
-
-        // Try again with the "architecture" inner path
-        workspaceFullPath = resolve(`${input}/architecture/workspace.dsl`);
-        isWorkspace = existsSync(workspaceFullPath);
-
-        if (isWorkspace) return workspaceFullPath;
-
-        return null;
-    };
-
     const workspacePath = getWorkspacePath(plop.getDestBasePath());
-    const workspaceFolder = dirname(workspacePath);
-
-    const validateSystem = {
-        type: "input",
-        name: "systemName",
-        message: "Base system name:",
-        validate: (input, context) => {
-            // TODO: Check if this can become a list of systems from workspace.json
-            context.systemName = input;
-            let systemPath = resolve(
-                `${workspaceFolder}/views/${kebabCase(input)}.dsl`,
-            );
-            let isSystem = existsSync(systemPath);
-            if (isSystem) return true;
-
-            throw new Error(
-                `System "${systemPath}" does not exist in the workspace`,
-            );
-        },
-    };
 
     if (!workspacePath) {
         console.log(`${chalk.bold(plop.getWelcomeMessage())}
@@ -64,113 +33,51 @@ Base folder: ${chalk.blue(plop.getDestBasePath())}
 Let's create a new one by answering the questions below:
 `);
 
-        plop.setGenerator("workspace", {
-            description: "Create a new workspace",
-            prompts: [
+        plop.setGenerator("workspace", workspaceGenerator);
+        return;
+    }
+
+    const workspaceFolder = dirname(workspacePath);
+
+    // TODO: MOVE THESE TO OWN FILES
+    plop.setGenerator("external system", {
+        description: "Create a new external system",
+        prompts: withSystemsQuestion(
+            [
                 {
                     type: "input",
-                    name: "workspaceName",
-                    message: "Workspace name:",
-                    validate: (input) => input.length > 0,
+                    name: "extSystemName",
+                    message: "External system name:",
+                    validate: (input, answers) => {
+                        if (input === answers.systemName) {
+                            throw new Error(`Name "${input}" already exists`);
+                        }
+
+                        return true;
+                    },
                 },
                 {
                     type: "input",
-                    name: "workspaceDescription",
-                    message: "Workspace description:",
-                    default: "Untitled Workspace",
-                },
-                {
-                    type: "input",
-                    name: "systemName",
-                    message: "System name:",
-                    validate: (input) => input.length > 0,
-                },
-                {
-                    type: "input",
-                    name: "systemDescription",
+                    name: "extSystemDescription",
                     message: "System description:",
                     default: "Untitled System",
                 },
                 {
                     type: "input",
-                    name: "authorName",
-                    message: "Author Name:",
-                    default: execSync("git config --global user.name")
-                        .toString()
-                        .trim(),
+                    name: "relationship",
+                    message: "Relationship:",
+                    default: "Interacts with",
                 },
                 {
-                    type: "input",
-                    name: "authorEmail",
-                    message: "Author email:",
-                    default: execSync("git config --global user.email")
-                        .toString()
-                        .trim(),
-                },
-                {
-                    type: "confirm",
-                    name: "shouldIncludeTheme",
-                    message: "Include default theme?",
-                    default: true,
+                    type: "list",
+                    name: "relationshipType",
+                    message: "Relationship type:",
+                    choices: ["outgoing", "incoming"],
+                    default: "outgoing",
                 },
             ],
-            actions: [
-                {
-                    type: "add",
-                    path: "architecture/workspace.dsl",
-                    templateFile: "templates/workspace.hbs",
-                },
-                {
-                    type: "addMany",
-                    destination: "architecture",
-                    templateFiles: "templates/scripts/**/*.sh",
-                    skipIfExists: true,
-                },
-                {
-                    type: "addMany",
-                    destination: "architecture",
-                    templateFiles: "templates/**/.gitkeep",
-                },
-                {
-                    type: "add",
-                    path: "architecture/views/{{kebabCase systemName}}.dsl",
-                    templateFile: "templates/views/system.hbs",
-                },
-            ],
-        });
-
-        return;
-    }
-
-    plop.setGenerator("external system", {
-        description: "Create a new external system",
-        prompts: [
-            validateSystem,
-            {
-                type: "input",
-                name: "extSystemName",
-                message: "External system name:",
-            },
-            {
-                type: "input",
-                name: "extSystemDescription",
-                message: "System description:",
-                default: "Untitled System",
-            },
-            {
-                type: "input",
-                name: "relationship",
-                message: "Relationship:",
-                default: "Interacts with",
-            },
-            {
-                type: "list",
-                name: "relationshipType",
-                message: "Relationship type:",
-                choices: ["outgoing", "incoming"],
-                default: "outgoing",
-            },
-        ],
+            { workspaceFolder },
+        ),
         actions: [
             {
                 skip: () =>
@@ -211,33 +118,42 @@ Let's create a new one by answering the questions below:
 
     plop.setGenerator("person", {
         description: "Create a new person (customer, user, etc)",
-        prompts: [
-            validateSystem,
-            {
-                type: "input",
-                name: "extSystemName",
-                message: "Person name:",
-            },
-            {
-                type: "input",
-                name: "extSystemDescription",
-                message: "Person description:",
-                default: "Default user",
-            },
-            {
-                type: "input",
-                name: "relationship",
-                message: "Relationship:",
-                default: "Consumes",
-            },
-            {
-                type: "list",
-                name: "relationshipType",
-                message: "Relationship type:",
-                choices: ["outgoing", "incoming"],
-                default: "incoming",
-            },
-        ],
+        prompts: withSystemsQuestion(
+            [
+                {
+                    type: "input",
+                    name: "extSystemName",
+                    message: "Person name:",
+                    validate: (input, answers) => {
+                        if (input === answers.systemName) {
+                            throw new Error(`Name "${input}" already exists`);
+                        }
+
+                        return true;
+                    },
+                },
+                {
+                    type: "input",
+                    name: "extSystemDescription",
+                    message: "Person description:",
+                    default: "Default user",
+                },
+                {
+                    type: "input",
+                    name: "relationship",
+                    message: "Relationship:",
+                    default: "Consumes",
+                },
+                {
+                    type: "list",
+                    name: "relationshipType",
+                    message: "Relationship type:",
+                    choices: ["outgoing", "incoming"],
+                    default: "incoming",
+                },
+            ],
+            { workspaceFolder },
+        ),
         actions: [
             {
                 skip: () =>
@@ -299,56 +215,214 @@ Let's create a new one by answering the questions below:
         ],
     });
 
+    plop.setGenerator("container", {
+        description: "Create a new container",
+        prompts: async (inquirer) => {
+            const { systemName } = await withSystemsQuestion([], {
+                workspaceFolder,
+            })(inquirer);
+
+            const workspaceInfo = await getWorkspaceJson(workspaceFolder);
+            const system = workspaceInfo.model.softwareSystems.find(
+                (system) => systemName === system.name,
+            );
+            const containerNames = system.containers.map(
+                (container) => container.name,
+            );
+
+            const relationships = containerNames.flatMap((containerName) => {
+                const containerNamePascalCase = pascalCase(
+                    removeSpaces(containerName),
+                );
+                return [
+                    {
+                        type: "confirm",
+                        name: `${containerNamePascalCase}_relates`,
+                        message: `Relates to "${containerName}":`,
+                        default: false,
+                    },
+                    {
+                        type: "input",
+                        name: `${containerNamePascalCase}_relationship`,
+                        when: (answers) =>
+                            answers[`${containerNamePascalCase}_relates`],
+                        message: "Relationship:",
+                        default: "Consumes",
+                    },
+                    {
+                        type: "list",
+                        name: `${containerNamePascalCase}_relationshipType`,
+                        when: (answers) =>
+                            answers[`${containerNamePascalCase}_relates`],
+                        message: "Relationship type:",
+                        choices: ["outgoing", "incoming"],
+                        default: "incoming",
+                    },
+                ];
+            });
+
+            const answers = await inquirer.prompt([
+                {
+                    type: "input",
+                    name: "containerName",
+                    message: "Container name:",
+                    validate: (input, answers) => {
+                        if (
+                            input === systemName ||
+                            containerNames.includes(input)
+                        ) {
+                            throw new Error(`Name "${input}" already exists`);
+                        }
+
+                        return true;
+                    },
+                },
+                {
+                    type: "input",
+                    name: "containerDescription",
+                    message: "Container description:",
+                    default: "Untitled container",
+                },
+                {
+                    type: "list",
+                    name: "containerType",
+                    message: "Container type:",
+                    choices: [
+                        "EventBus",
+                        "MessageBroker",
+                        "Function",
+                        "Database",
+                        "WebApp",
+                        "MobileApp",
+                        "None of the above",
+                    ],
+                },
+                {
+                    type: "input",
+                    name: "containerTechnology",
+                    message: "Container technology:",
+                },
+            ]);
+
+            const relationshipAnswers = await inquirer.prompt(relationships);
+            const parsedRelationships = Object.entries(relationshipAnswers)
+                .filter(([name, value]) => value)
+                .reduce((result, next) => {
+                    const [containerName, value] = next[0].split("_");
+                    result[containerName] = result[containerName] ?? {};
+                    result[containerName][value] = next[1];
+
+                    return result;
+                }, {});
+
+            return {
+                systemName,
+                ...answers,
+                relationships: parsedRelationships,
+            };
+        },
+        actions: [
+            {
+                type: "add",
+                path: "architecture/containers/{{kebabCase containerName}}.dsl",
+                skipIfExists: true,
+                templateFile: "templates/containers/container.hbs",
+            },
+            {
+                type: "append",
+                path: "architecture/views/{{kebabCase systemName}}.dsl",
+                skip: (answers) => {
+                    const systemView = readFileSync(
+                        join(
+                            workspaceFolder,
+                            `views/${kebabCase(answers.systemName)}.dsl`,
+                        ),
+                    );
+
+                    const match = new RegExp(
+                        `container ${pascalCase(answers.systemName)}`,
+                        "g",
+                    ).test(systemView.toString());
+
+                    return match && "Skipped: Container view already exists.";
+                },
+                templateFile: "templates/views/container.hbs",
+            },
+            {
+                type: "add",
+                skipIfExists: true,
+                path: "architecture/relationships/{{kebabCase containerName}}.dsl",
+                templateFile: "templates/relationships/multiple.hbs",
+            },
+        ],
+    });
+
     // TODO: Other types of views
     // - Container
     // - Component
     // - Dynamic
+    // - System
+    // // - System landscape
     // // - Deployment
+
+    const skipUnlessViewType = (type) => (answer) =>
+        answer.viewType !== type && `[SKIPPED] View type "${type}" selected.`;
     plop.setGenerator("view", {
         description: "Create a new view",
-        prompts: [
-            validateSystem,
+        prompts: withSystemsQuestion(
+            [
+                {
+                    type: "list",
+                    name: "viewType",
+                    message: "View type:",
+                    choices: [
+                        // "container",
+                        // "component",
+                        // "dynamic",
+                        "deployment",
+                        // "system",
+                        "landscape",
+                    ],
+                },
+                {
+                    type: "input",
+                    name: "viewName",
+                    message: "View name:",
+                },
+                {
+                    type: "input",
+                    name: "viewDescription",
+                    message: "View description:",
+                    default: "Untitled view",
+                },
+            ],
             {
-                type: "list",
-                name: "viewType",
-                message: "View type:",
-                choices: ["container", "component", "dynamic", "deployment"],
+                workspaceFolder,
+                questionMessage: "System (to create view for):",
+                when: (answers) => answers.viewType !== "landscape",
+                position: 1,
             },
-            {
-                type: "input",
-                name: "viewName",
-                message: "View name:",
-            },
-            {
-                type: "input",
-                name: "viewDescription",
-                message: "View description:",
-                default: "Untitled view",
-            },
-        ],
+        ),
         actions: [
             {
-                when: (answers) => answers.viewType === "deployment",
+                skip: skipUnlessViewType("deployment"),
                 type: "add",
                 path: "architecture/views/{{kebabCase viewName}}.dsl",
                 templateFile: "templates/views/deployment.hbs",
             },
             {
-                when: (answers) => answers.viewType === "deployment",
+                skip: skipUnlessViewType("deployment"),
                 type: "add",
                 path: "architecture/environments/{{kebabCase viewName}}.dsl",
                 templateFile: "templates/environments/deployment.hbs",
             },
+            {
+                when: skipUnlessViewType("landscape"),
+                type: "add",
+                skipIfExists: true,
+                path: "architecture/views/landscape.dsl",
+                templateFile: "templates/views/landscape.hbs",
+            },
         ],
-    });
-
-    // TODO: Container generator
-    // 1. Check if workspace.json exists
-    // 2. Create a list of systems and containers from workspace.json
-    // 3. Create a relationship lookup list and create all relationships
-    plop.setGenerator("container", {
-        description: "Create a new container",
-        prompts: async (inquirer) => {},
-        actions: async (answers) => {},
     });
 }
