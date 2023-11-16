@@ -72,5 +72,6 @@ export default {
             path: "architecture/views/{{kebabCase systemName}}.dsl",
             templateFile: "templates/views/system.hbs",
         },
+        // TODO: Add ".structurizr" path to gitignore file
     ],
 };

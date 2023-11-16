@@ -8,6 +8,8 @@ import { withSystemsQuestion } from "./utils/questions.mjs";
 import { removeSpaces } from "./utils/helpers.mjs";
 import workspaceGenerator from "./generators/workspace.mjs";
 
+// FIXME: Respect uppercase names when transforming to pascalCase
+
 /**
  * @param {import('plop').NodePlopAPI} plop
  * @returns
@@ -226,10 +228,11 @@ Let's create a new one by answering the questions below:
             const system = workspaceInfo.model.softwareSystems.find(
                 (system) => systemName === system.name,
             );
-            const containerNames = system.containers.map(
+            const containerNames = (system.containers ?? []).map(
                 (container) => container.name,
             );
 
+            // TODO: Reuse this logic to create relationships with systems and containers
             const relationships = containerNames.flatMap((containerName) => {
                 const containerNamePascalCase = pascalCase(
                     removeSpaces(containerName),
@@ -356,6 +359,8 @@ Let's create a new one by answering the questions below:
             },
         ],
     });
+
+    // TODO: Create generator for Structurizr .env-arch
 
     // TODO: Other types of views
     // - Container

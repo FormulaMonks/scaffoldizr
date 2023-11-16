@@ -4,7 +4,7 @@ docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
 echo "Updating workspace: ${docs_location}"
 
 if [ ! -e "${docs_location}/.env-arch" ]; then
-    echo "ERROR: .env.arch file not found in \"${docs_location}\" folder.";
+    echo "ERROR: .env-arch file not found in \"${docs_location}\" folder.";
     exit 1;
 fi
 
