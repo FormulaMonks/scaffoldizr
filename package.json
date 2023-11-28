@@ -1,11 +1,14 @@
 {
   "name": "blueprint-dsl",
   "module": "src/main.mjs",
-  "bin": "src/main.mjs",
+  "bin": {
+    "bpdsl": "src/main.mjs"
+  },
   "type": "module",
   "dependencies": {
     "chalk": "^5.3.0",
     "change-case": "^5.0.2",
+    "minimist": "^1.2.8",
     "plop": "^4.0.0"
   },
   "devDependencies": {
