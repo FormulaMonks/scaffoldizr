@@ -1,1 +1,4 @@
 **/*.hbs
+.husky/**
+.prettierignore
+bun.lockb
