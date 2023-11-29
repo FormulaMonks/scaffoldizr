@@ -1,5 +1,6 @@
 {
   "name": "blueprint-dsl",
+  "description": "Opinionated Scaffolding Tool for Structurizr",
   "module": "src/main.mjs",
   "bin": {
     "bpdsl": "src/main.mjs"
@@ -13,6 +14,14 @@
   },
   "devDependencies": {
     "bun-types": "latest",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.3",
     "prettier": "^3.0.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

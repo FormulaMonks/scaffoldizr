@@ -1,0 +1,67 @@
+{
+  "id" : 1,
+  "name" : "Blueprint DSL",
+  "description" : "Opinionated Scaffolding Tool for Structurizr",
+  "lastModifiedDate" : "2023-11-29T16:22:24Z",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJCbHVlcHJpbnQgRFNMIiB7CiAgICBkZXNjcmlwdGlvbiAiT3BpbmlvbmF0ZWQgU2NhZmZvbGRpbmcgVG9vbCBmb3IgU3RydWN0dXJpenIiCgogICAgIWFkcnMgZGVjaXNpb25zCiAgICAhZG9jcyBkb2NzCgogICAgbW9kZWwgewoKICAgICAgICBCbHVlcHJpbnREc2wgPSBzb2Z0d2FyZVN5c3RlbSAiQmx1ZXByaW50IERTTCIgewogICAgICAgICAgICBkZXNjcmlwdGlvbiAiU2NhZmZvbGRpbmcgdG9vbCIKCiAgICAgICAgICAgICMgQ29uc3RhbnRzCgoKICAgICAgICAgICAgdGFncyAiU3lzdGVtIgogICAgICAgIH0KCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHRoZW1lcyAiaHR0cHM6Ly9zdHJ1Y3R1cml6ci50ZXN0LnplbW9nYS1jbGllbnQuY29tL3NoYXJlLzEvdGhlbWUiCiAgICAgICAgIWNvbnN0YW50IEFVVEhPUiAiQXV0aG9yOiBGb3JtdWxhLm1vbmtzIDxhbmRyZXMuem9ycm9AbWVkaWFtb25rcy5jb20+IgoKICAgICAgICBzeXN0ZW1Db250ZXh0IEJsdWVwcmludERzbCAiQmx1ZXByaW50RHNsIiB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJTY2FmZm9sZGluZyB0b29sLiAke0FVVEhPUn0iIAogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dCBscgogICAgICAgIH0KICAgIH0KfQo="
+  },
+  "configuration" : { },
+  "model" : {
+    "softwareSystems" : [ {
+      "id" : "1",
+      "tags" : "Element,Software System,System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "blueprintdsl"
+      },
+      "name" : "Blueprint DSL",
+      "description" : "Scaffolding tool",
+      "location" : "Unspecified",
+      "documentation" : { }
+    } ]
+  },
+  "documentation" : {
+    "sections" : [ {
+      "content" : "# Blueprint DSL\n\n## Commands\n\n|     Elements      | Description                                                   |\n| :---------------: | :------------------------------------------------------------ |\n|    `workspace`    | Creates a new workspace, with the proper scaffolding.         |\n| `external system` | Creates an external system (displayed in corresponding view). |\n|     `person`      | Actor or user interacting with the system.                    |\n|    `variable`     | To reuse within other diagrams. Useful for relationships.     |\n|    `container`    | System container.                                             |\n|      `view`       | Creates a view. [See below](#supported-view-types).           |\n\n### Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
+      "format" : "Markdown",
+      "filename" : "01-usage.md",
+      "order" : 1,
+      "title" : ""
+    }, {
+      "content" : "# Blueprint DSL\n\n## Workspace preview\n\n> TODO\n\n## Workspace sync\n\n> TODO\n",
+      "format" : "Markdown",
+      "filename" : "02-workspace.md",
+      "order" : 2,
+      "title" : ""
+    } ]
+  },
+  "views" : {
+    "systemContextViews" : [ {
+      "key" : "BlueprintDsl",
+      "order" : 1,
+      "description" : "Scaffolding tool. Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "softwareSystemId" : "1",
+      "automaticLayout" : {
+        "implementation" : "Graphviz",
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "nodeSeparation" : 300,
+        "edgeSeparation" : 0,
+        "vertices" : false
+      },
+      "enterpriseBoundaryVisible" : true,
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      } ]
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "styles" : { },
+      "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ],
+      "terminology" : { },
+      "lastSavedView" : "BlueprintDsl"
+    }
+  }
+}
