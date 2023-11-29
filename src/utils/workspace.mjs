@@ -1,6 +1,6 @@
-import { resolve, join } from "node:path";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
 
 export const getWorkspacePath = (input) => {
     let workspaceFullPath = resolve(`${input}/workspace.dsl`);

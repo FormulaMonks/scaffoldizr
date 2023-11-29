@@ -1,27 +1,33 @@
 {
-  "name": "blueprint-dsl",
-  "description": "Opinionated Scaffolding Tool for Structurizr",
-  "module": "src/main.mjs",
-  "bin": {
-    "bpdsl": "src/main.mjs"
-  },
-  "type": "module",
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "change-case": "^5.0.2",
-    "minimist": "^1.2.8",
-    "plop": "^4.0.0"
-  },
-  "devDependencies": {
-    "bun-types": "latest",
-    "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0",
-    "husky": "^8.0.3",
-    "prettier": "^3.0.3"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+    "name": "blueprint-dsl",
+    "description": "Opinionated Scaffolding Tool for Structurizr",
+    "module": "src/main.mjs",
+    "bin": {
+        "bpdsl": "src/main.mjs"
+    },
+    "type": "module",
+    "dependencies": {
+        "chalk": "^5.3.0",
+        "change-case": "^5.2.0",
+        "minimist": "^1.2.8",
+        "plop": "^4.0.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.4.0",
+        "commitizen": "^4.3.0",
+        "cz-conventional-changelog": "^3.3.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^14.0.0"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
+    "resolutions": {
+        "signal-exit": "3.x"
+    },
+    "lint-staged": {
+        "*": "bun biome ci"
     }
-  }
 }

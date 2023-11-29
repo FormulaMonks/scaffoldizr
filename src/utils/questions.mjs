@@ -1,5 +1,7 @@
-import { resolve } from "node:path";
 import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { kebabCase } from "change-case";
+
 import { getWorkspaceJson } from "./workspace.mjs";
 
 export const withSystemsQuestion =
@@ -20,10 +22,10 @@ export const withSystemsQuestion =
             when,
             validate: (input, answers) => {
                 answers.systemName = input;
-                let systemPath = resolve(
+                const systemPath = resolve(
                     `${workspaceFolder}/views/${kebabCase(input)}.dsl`,
                 );
-                let isSystem = existsSync(systemPath);
+                const isSystem = existsSync(systemPath);
                 if (isSystem) return true;
 
                 throw new Error(

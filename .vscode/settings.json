@@ -1,8 +1,16 @@
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "biomejs.biome",
     "editor.formatOnSave": true,
-    "prettier.enable": true,
     "files.associations": {
         "*.hbs": "structurizr"
+    },
+    "editor.codeActionsOnSave": {
+        "source.organizeImports.biome": true
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "biomejs.biome"
     }
 }

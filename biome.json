@@ -1,0 +1,22 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.4.0/schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "formatter": {
+        "indentWidth": 4,
+        "indentStyle": "space",
+        "ignore": ["docs/**/*.json"]
+    },
+    "linter": {
+        "enabled": true,
+        "ignore": ["docs/**/*.json"],
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedVariables": "error",
+                "noUndeclaredVariables": "error"
+            }
+        }
+    }
+}
