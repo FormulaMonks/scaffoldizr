@@ -5,7 +5,7 @@
         "*.hbs": "structurizr"
     },
     "editor.codeActionsOnSave": {
-        "source.organizeImports.biome": true
+        "source.organizeImports.biome": "explicit"
     },
     "[javascript]": {
         "editor.defaultFormatter": "biomejs.biome"

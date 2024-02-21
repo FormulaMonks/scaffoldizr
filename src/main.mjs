@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 import path from "node:path";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import minimist from "minimist";
 import { Plop, run } from "plop";
 
@@ -11,10 +9,7 @@ const argv = minimist(args);
 Plop.prepare(
     {
         cwd: argv.cwd ?? process.cwd(),
-        configPath: path.join(
-            dirname(fileURLToPath(import.meta.url)),
-            "plopfile.mjs",
-        ),
+        configPath: path.resolve(import.meta.dirname, "plopfile.mjs"),
         preload: argv.preload || [],
         completion: argv.completion,
     },

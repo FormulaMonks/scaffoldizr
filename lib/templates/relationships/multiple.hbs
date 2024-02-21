@@ -1,0 +1,2 @@
+{{#each relationships}}{{#if (eq relationshipType "incoming")}}{{pascalCase (removeSpaces @key)}} -> {{pascalCase (removeSpaces ../containerName)}}{{else}}{{pascalCase (removeSpaces ../containerName)}} -> {{pascalCase (removeSpaces @key)}}{{/if}} "{{relationship}}"
+{{/each}}
