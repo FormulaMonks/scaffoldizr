@@ -5,7 +5,9 @@ import Handlebars from "handlebars";
 
 Handlebars.registerHelper("kebabCase", (target) => kebabCase(target));
 Handlebars.registerHelper("properCase", (target) => pascalCase(target));
-Handlebars.registerHelper("removeSpaces", (txt) => txt.replace(/\s/g, ""));
+Handlebars.registerHelper("pascalCase", (target) => pascalCase(target));
+Handlebars.registerHelper("eq", (arg1, arg2) => arg1 === arg2);
+Handlebars.registerHelper("removeSpaces", (txt = "") => txt.replace(/\s/g, ""));
 
 export function compileSource<T extends Record<string, unknown>>(
     sourceObject: Record<string, unknown>,

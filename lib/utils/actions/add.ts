@@ -1,4 +1,4 @@
-import { relative, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
@@ -16,16 +16,24 @@ export async function add<A extends Answers>(
     options: AddAction,
     answers: A,
 ): Promise<boolean> {
-    const { templates, rootPath, ...opts } = options;
+    const {
+        templates,
+        rootPath,
+        when = () => true,
+        skip = () => false,
+        ...opts
+    } = options;
     const compiledOpts = compileSource<AddAction>(opts, answers);
     const targetFile = file(resolve(rootPath, compiledOpts.path));
 
-    if (targetFile.size > 0 && compiledOpts.skipIfExists) {
+    const shouldSkip = !when(answers, rootPath) || skip(answers, rootPath);
+    const relativePath = relative(rootPath, compiledOpts.path);
+
+    if (shouldSkip || (targetFile.size > 0 && compiledOpts.skipIfExists)) {
         console.log(
-            `${chalk.gray("[SKIPPED]:")} ./${relative(
-                rootPath,
-                compiledOpts.path,
-            )}`,
+            `${chalk.gray("[SKIPPED]:")} ${
+                typeof shouldSkip === "string" ? shouldSkip : relativePath
+            }`,
         );
         return false;
     }
@@ -42,11 +50,9 @@ export async function add<A extends Answers>(
         rootPath,
     );
 
-    await write(resolve(rootPath, compiledOpts.path), template);
+    await write(join(rootPath, compiledOpts.path), template);
 
-    console.log(
-        `${chalk.gray("[ADDED]:")} ./${relative(rootPath, compiledOpts.path)}`,
-    );
+    console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 
     return true;
 }

@@ -88,4 +88,35 @@ describe("actions > addMany", () => {
         );
         expect(generatedFile3.size).toBeGreaterThan(0);
     });
+
+    test("should skip if when() is declared", async () => {
+        const result = await addMany(
+            {
+                type: ActionTypes.AddMany,
+                when: () => false,
+                templates,
+                templateFiles: "templates/containers/**/*.hbs",
+                rootPath: import.meta.dirname,
+                destination: ".test-generated",
+            },
+            {},
+        );
+
+        expect(result).toBeFalse();
+    });
+    test("should skip if skip() is declared", async () => {
+        const result = await addMany(
+            {
+                type: ActionTypes.AddMany,
+                skip: () => "This should be skipped.",
+                templates,
+                templateFiles: "templates/containers/**/*.hbs",
+                rootPath: import.meta.dirname,
+                destination: ".test-generated",
+            },
+            {},
+        );
+
+        expect(result).toBeFalse();
+    });
 });
