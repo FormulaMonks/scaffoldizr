@@ -21,6 +21,7 @@ const templatesMap = new Map([
     ["templates/test-template.hbs", testTemplate],
     ["templates/constant.hbs", constant],
     ["templates/containers/container.hbs", containersContainer],
+    ["templates/.gitkeep", gitkeep],
     ["templates/decisions/.gitkeep", gitkeep],
     ["templates/docs/.gitkeep", gitkeep],
     ["templates/environments/deployment.hbs", environmentsDeployment],

@@ -1,6 +1,6 @@
-import { afterAll, describe, expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { $, file } from "bun";
+import { file } from "bun";
 import { ActionTypes } from ".";
 import templates from "../../templates/bundle";
 import { add } from "./add";
@@ -44,8 +44,5 @@ describe("actions > add", () => {
             resolve(import.meta.dirname, ".test-generated/test-file.txt"),
         );
         expect(generatedFile.size).toBeGreaterThan(0);
-    });
-    afterAll(async () => {
-        await $`rm -rf ${resolve(import.meta.dirname, ".test-generated")}`;
     });
 });

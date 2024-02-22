@@ -5,6 +5,11 @@
     "bin": {
         "bpdsl": "lib/main.ts"
     },
+    "scripts": {
+        "test:dev": "bun test --watch --preload ./test-setup.ts",
+        "test": "bun test --preload ./test-setup.ts",
+        "test:ci": "bun test --preload ./test-setup.ts --coverage"
+    },
     "type": "module",
     "dependencies": {
         "chalk": "^5.3.0",
@@ -31,6 +36,7 @@
         "signal-exit": "3.x"
     },
     "lint-staged": {
-        "*": "bun biome ci"
+        "*": "bun biome ci",
+        "**/*.ts": "bun run test:ci"
     }
 }

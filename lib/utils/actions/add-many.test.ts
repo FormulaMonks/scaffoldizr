@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
 import { $, file } from "bun";
 import { ActionTypes } from ".";
@@ -56,7 +56,36 @@ describe("actions > addMany", () => {
         );
         expect(generatedFile2.size).toBeGreaterThan(0);
     });
-    afterAll(async () => {
-        await $`rm -rf ${resolve(import.meta.dirname, ".test-generated")}`;
+    test("shared templates", async () => {
+        await $`rm -rf ${resolve(
+            import.meta.dirname,
+            ".test-generated/scripts/update.sh",
+        )}`;
+
+        const result = await addMany(
+            {},
+            {
+                type: ActionTypes.AddMany,
+                templates,
+                templateFiles: "templates/**/.gitkeep",
+                rootPath: import.meta.dirname,
+                skipIfExists: true,
+                destination: ".test-generated",
+            },
+        );
+
+        expect(result).toBeTrue();
+        const generatedFile1 = file(
+            resolve(import.meta.dirname, ".test-generated/.gitkeep"),
+        );
+        expect(generatedFile1.size).toBeGreaterThan(0);
+        const generatedFile2 = file(
+            resolve(import.meta.dirname, ".test-generated/decisions/.gitkeep"),
+        );
+        expect(generatedFile2.size).toBeGreaterThan(0);
+        const generatedFile3 = file(
+            resolve(import.meta.dirname, ".test-generated/docs/.gitkeep"),
+        );
+        expect(generatedFile3.size).toBeGreaterThan(0);
     });
 });
