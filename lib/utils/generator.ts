@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import chalk from "chalk";
 import type { Answers, PromptModule, QuestionCollection } from "inquirer";
 import type { AddAction, AddManyAction } from "./actions";
@@ -9,20 +8,16 @@ export type Generator<A extends Answers> = {
     prompts: QuestionCollection<A>;
     actions: (AddAction | AddManyAction)[];
     workspacePath: string;
+    templates: Map<string, string>;
 };
 
 async function executeAction<A extends Answers>(
     action: AddAction | AddManyAction,
     data: A,
-    workspacePath: string,
 ): Promise<boolean> {
     switch (action.type) {
         case ActionTypes.Add: {
-            const { path, ...rest } = action;
-            return add(data, {
-                ...rest,
-                path: resolve(workspacePath, path),
-            });
+            return add(data, action);
         }
         case ActionTypes.AddMany: {
             return addMany(data, action);
@@ -43,7 +38,14 @@ export async function createGenerator<A extends Answers>(
 
     await Promise.all(
         generator.actions.map((action) =>
-            executeAction(action, responses, generator.workspacePath),
+            executeAction(
+                {
+                    ...action,
+                    rootPath: generator.workspacePath,
+                    templates: generator.templates,
+                },
+                responses,
+            ),
         ),
     );
 }

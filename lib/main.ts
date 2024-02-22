@@ -4,6 +4,7 @@ import inquirer from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import workspaceGenerator from "./generators/workspace";
+import templates from "./templates/bundle";
 import { createGenerator } from "./utils/generator";
 import { getWorkspacePath } from "./utils/workspace";
 
@@ -35,6 +36,7 @@ Let's create a new one by answering the questions below.
     try {
         await createGenerator(prompt, {
             ...workspaceGenerator,
+            templates,
             workspacePath: workspacePath ?? defaultPath,
         });
         process.exit(0);

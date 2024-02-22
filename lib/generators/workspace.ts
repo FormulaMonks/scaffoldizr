@@ -1,6 +1,4 @@
 import { $ } from "bun";
-import systemViewTemplate from "../templates/views/system.hbs";
-import workspaceTemplate from "../templates/workspace.hbs";
 import { AddAction, AddManyAction } from "../utils/actions";
 
 const globalUserName = await $`git config --global user.name`.text();
@@ -56,7 +54,7 @@ export default {
         {
             type: "add",
             path: "architecture/workspace.dsl",
-            templateFile: workspaceTemplate,
+            templateFile: "templates/workspace.hbs",
         } as AddAction,
         {
             type: "addMany",
@@ -72,7 +70,7 @@ export default {
         {
             type: "add",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
-            templateFile: systemViewTemplate,
+            templateFile: "templates/views/system.hbs",
         } as AddAction,
         // TODO: Add ".structurizr" path to gitignore file
     ],

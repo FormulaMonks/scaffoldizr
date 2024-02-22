@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
 import { $, file } from "bun";
 import { ActionTypes } from ".";
-import testTemplate from "../../templates/test-template.hbs";
+import templates from "../../templates/bundle";
 import { add } from "./add";
 
 describe("actions > add", () => {
@@ -11,10 +11,10 @@ describe("actions > add", () => {
             { filename: "testFile" },
             {
                 type: ActionTypes.Add,
-                templateFile: testTemplate,
-                path: `${
-                    import.meta.dirname
-                }/.test-generated/{{kebabCase filename}}.txt`,
+                templates,
+                templateFile: "templates/test-template.hbs",
+                rootPath: import.meta.dirname,
+                path: ".test-generated/{{kebabCase filename}}.txt",
             },
         );
 
@@ -30,11 +30,11 @@ describe("actions > add", () => {
             { filename: "testFile" },
             {
                 type: ActionTypes.Add,
-                templateFile: testTemplate,
+                templates,
+                templateFile: "templates/test-template.hbs",
+                rootPath: import.meta.dirname,
                 skipIfExists: true,
-                path: `${
-                    import.meta.dirname
-                }/.test-generated/{{kebabCase filename}}.txt`,
+                path: ".test-generated/{{kebabCase filename}}.txt",
             },
         );
 
@@ -46,9 +46,6 @@ describe("actions > add", () => {
         expect(generatedFile.size).toBeGreaterThan(0);
     });
     afterAll(async () => {
-        await $`rm ${resolve(
-            import.meta.dirname,
-            ".test-generated/test-file.txt",
-        )}`;
+        await $`rm -rf ${resolve(import.meta.dirname, ".test-generated")}`;
     });
 });
