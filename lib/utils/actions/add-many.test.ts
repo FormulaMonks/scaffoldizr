@@ -8,7 +8,6 @@ import { addMany } from "./add-many";
 describe("actions > addMany", () => {
     test("should add multiple files", async () => {
         const result = await addMany(
-            {},
             {
                 type: ActionTypes.AddMany,
                 templates,
@@ -16,6 +15,7 @@ describe("actions > addMany", () => {
                 rootPath: import.meta.dirname,
                 destination: ".test-generated",
             },
+            {},
         );
 
         expect(result).toBeTrue();
@@ -35,7 +35,6 @@ describe("actions > addMany", () => {
         )}`;
 
         const result = await addMany(
-            {},
             {
                 type: ActionTypes.AddMany,
                 templates,
@@ -44,6 +43,7 @@ describe("actions > addMany", () => {
                 skipIfExists: true,
                 destination: ".test-generated",
             },
+            {},
         );
 
         expect(result).toBeTrue();
@@ -63,7 +63,6 @@ describe("actions > addMany", () => {
         )}`;
 
         const result = await addMany(
-            {},
             {
                 type: ActionTypes.AddMany,
                 templates,
@@ -72,6 +71,7 @@ describe("actions > addMany", () => {
                 skipIfExists: true,
                 destination: ".test-generated",
             },
+            {},
         );
 
         expect(result).toBeTrue();

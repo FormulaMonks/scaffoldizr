@@ -13,11 +13,11 @@ export type AddAction = BaseAction & {
 };
 
 export async function add<A extends Answers>(
-    data: A,
     options: AddAction,
+    answers: A,
 ): Promise<boolean> {
     const { templates, rootPath, ...opts } = options;
-    const compiledOpts = compileSource<AddAction>(opts, data);
+    const compiledOpts = compileSource<AddAction>(opts, answers);
     const targetFile = file(resolve(rootPath, compiledOpts.path));
 
     if (targetFile.size > 0 && compiledOpts.skipIfExists) {
@@ -38,7 +38,7 @@ export async function add<A extends Answers>(
 
     const template = await compileTemplateFile(
         templateLocation,
-        data,
+        answers,
         rootPath,
     );
 
@@ -47,5 +47,6 @@ export async function add<A extends Answers>(
     console.log(
         `${chalk.gray("[ADDED]:")} ./${relative(rootPath, compiledOpts.path)}`,
     );
+
     return true;
 }

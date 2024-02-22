@@ -8,7 +8,6 @@ import { add } from "./add";
 describe("actions > add", () => {
     test("should add single file", async () => {
         const result = await add(
-            { filename: "testFile" },
             {
                 type: ActionTypes.Add,
                 templates,
@@ -16,6 +15,7 @@ describe("actions > add", () => {
                 rootPath: import.meta.dirname,
                 path: ".test-generated/{{kebabCase filename}}.txt",
             },
+            { filename: "testFile" },
         );
 
         expect(result).toBeTrue();
@@ -27,7 +27,6 @@ describe("actions > add", () => {
     });
     test("should not add if exists", async () => {
         const result = await add(
-            { filename: "testFile" },
             {
                 type: ActionTypes.Add,
                 templates,
@@ -36,6 +35,7 @@ describe("actions > add", () => {
                 skipIfExists: true,
                 path: ".test-generated/{{kebabCase filename}}.txt",
             },
+            { filename: "testFile" },
         );
 
         expect(result).toBeFalse();

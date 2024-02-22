@@ -12,11 +12,11 @@ export type AddManyAction = BaseAction & {
 };
 
 export async function addMany<A extends Answers>(
-    data: A,
     options: AddManyAction,
+    answers: A,
 ): Promise<boolean> {
     const { templates, rootPath, ...opts } = options;
-    const compiledOpts = compileSource<AddManyAction>(opts, data);
+    const compiledOpts = compileSource<AddManyAction>(opts, answers);
     const pattern = new Glob(compiledOpts.templateFiles);
 
     const filesToCreate = [];
@@ -24,22 +24,24 @@ export async function addMany<A extends Answers>(
     for (const [path] of templates) {
         if (pattern.match(path)) {
             filesToCreate.push(
-                add(data, {
-                    templates,
-                    rootPath,
-                    type: ActionTypes.Add,
-                    templateFile: path,
-                    path: join(
-                        compiledOpts.destination,
-                        path.replace("templates", ""),
-                    ),
-                    skipIfExists: compiledOpts.skipIfExists,
-                }),
+                add(
+                    {
+                        templates,
+                        rootPath,
+                        type: ActionTypes.Add,
+                        templateFile: path,
+                        path: join(
+                            compiledOpts.destination,
+                            path.replace("templates", ""),
+                        ),
+                        skipIfExists: compiledOpts.skipIfExists,
+                    },
+                    answers,
+                ),
             );
         }
     }
 
     const results = await Promise.all(filesToCreate);
-
     return results.some(Boolean) || false;
 }

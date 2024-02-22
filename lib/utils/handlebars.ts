@@ -9,7 +9,7 @@ Handlebars.registerHelper("removeSpaces", (txt) => txt.replace(/\s/g, ""));
 
 export function compileSource<T extends Record<string, unknown>>(
     sourceObject: Record<string, unknown>,
-    data: Record<string, unknown>,
+    answers: Record<string, unknown>,
 ): T {
     return Object.fromEntries(
         Object.entries(sourceObject).map(([key, value]) => {
@@ -17,21 +17,21 @@ export function compileSource<T extends Record<string, unknown>>(
                 typeof value === "string"
                     ? Handlebars.compile(value)
                     : () => value;
-            return [key, template(data)];
+            return [key, template(answers)];
         }),
     ) as T;
 }
 
 export async function compileTemplateFile(
     path: string,
-    data: Record<string, unknown>,
+    answers: Record<string, unknown>,
     dir: string = process.cwd(),
 ): Promise<string> {
     const templateFile = file(resolve(dir, path));
     const fileContents = await templateFile.text();
     const template = Handlebars.compile(fileContents);
 
-    return template(data);
+    return template(answers);
 }
 
 export default Handlebars;

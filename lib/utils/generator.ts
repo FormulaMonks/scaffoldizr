@@ -13,14 +13,14 @@ export type Generator<A extends Answers> = {
 
 async function executeAction<A extends Answers>(
     action: AddAction | AddManyAction,
-    data: A,
+    answers: A,
 ): Promise<boolean> {
     switch (action.type) {
         case ActionTypes.Add: {
-            return add(data, action);
+            return add(action, answers);
         }
         case ActionTypes.AddMany: {
-            return addMany(data, action);
+            return addMany(action, answers);
         }
         default: {
             console.error("Action not found");
@@ -34,7 +34,7 @@ export async function createGenerator<A extends Answers>(
     generator: Generator<A>,
 ): Promise<void> {
     console.log(chalk.bold(chalk.gray(generator.description)));
-    const responses = await prompt(generator.prompts);
+    const answers = await prompt(generator.prompts);
 
     await Promise.all(
         generator.actions.map((action) =>
@@ -44,7 +44,7 @@ export async function createGenerator<A extends Answers>(
                     rootPath: generator.workspacePath,
                     templates: generator.templates,
                 },
-                responses,
+                answers,
             ),
         ),
     );
