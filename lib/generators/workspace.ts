@@ -1,10 +1,22 @@
 import { $ } from "bun";
 import { AddAction, AddManyAction } from "../utils/actions";
+import { GeneratorDeclaration } from "../utils/generator";
 
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
 
-export default {
+type WorkspaceAnswers = {
+    workspaceName: string;
+    workspaceDescription: string;
+    systemName: string;
+    systemDescription: string;
+    authorName: string;
+    authorEmail: string;
+    shouldIncludeTheme?: boolean;
+};
+
+const workspaceGenerator: GeneratorDeclaration<WorkspaceAnswers> = {
+    name: "Workspace",
     description: "Create a new workspace",
     prompts: [
         {
@@ -43,12 +55,13 @@ export default {
             message: "Author email:",
             default: globalUserEmail.trim(),
         },
-        {
-            type: "confirm",
-            name: "shouldIncludeTheme",
-            message: "Include default theme?",
-            default: true,
-        },
+        // TODO: think how this will do when Open Source
+        // {
+        //     type: "confirm",
+        //     name: "shouldIncludeTheme",
+        //     message: "Include default theme?",
+        //     default: true,
+        // },
     ],
     actions: [
         {
@@ -75,3 +88,5 @@ export default {
         // TODO: Add ".structurizr" path to gitignore file
     ],
 };
+
+export default workspaceGenerator;

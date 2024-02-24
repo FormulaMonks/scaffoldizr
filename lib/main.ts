@@ -1,11 +1,16 @@
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
 import chalk from "chalk";
-import inquirer from "inquirer";
+import inquirer, { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import workspaceGenerator from "./generators/workspace";
+import { constantGenerator, workspaceGenerator } from "./generators";
 import templates from "./templates/bundle";
-import { createGenerator } from "./utils/generator";
+import {
+    Generator,
+    GeneratorDeclaration,
+    GetAnswers,
+    createGenerator,
+} from "./utils/generator";
 import { getWorkspacePath } from "./utils/workspace";
 
 const args = await yargs(hideBin(process.argv))
@@ -34,15 +39,49 @@ Base folder: ${chalk.blue(defaultPath)}
 Let's create a new one by answering the questions below.
 `);
     try {
-        await createGenerator(prompt, {
+        const generator: Generator<GetAnswers<typeof workspaceGenerator>> = {
             ...workspaceGenerator,
             templates,
             workspacePath: workspacePath ?? defaultPath,
-        });
+        };
+
+        await createGenerator(prompt, generator);
         process.exit(0);
     } catch (err) {
-        console.log(err);
-        console.error(`Error: ${err}`);
+        console.error(err);
         process.exit(1);
     }
+}
+
+console.log(
+    `Architecture folder: ${chalk.blue(
+        relative(process.cwd(), workspacePath),
+    )}\n`,
+);
+
+const mainPrompt = inquirer.createPromptModule();
+const generate = await mainPrompt<{ element: GeneratorDeclaration<Answers> }>([
+    {
+        name: "element",
+        message: "Create a new element:",
+        type: "list",
+        choices: [constantGenerator].map((g) => ({
+            name: g.name,
+            value: g,
+        })),
+    },
+]);
+
+try {
+    const generator: Generator<GetAnswers<typeof generate.element>> = {
+        ...generate.element,
+        templates,
+        workspacePath: workspacePath ?? defaultPath,
+    };
+
+    await createGenerator(prompt, generator);
+    process.exit(0);
+} catch (err) {
+    console.error(err);
+    process.exit(1);
 }
