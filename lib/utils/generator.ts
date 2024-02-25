@@ -3,19 +3,21 @@ import type { Answers, PromptModule, QuestionCollection } from "inquirer";
 import type { AddAction, AddManyAction, AppendAction } from "./actions";
 import { ActionTypes, add, addMany, append } from "./actions";
 
-export type GeneratorDeclaration<A extends Answers> = {
+export type GeneratorDefinition<A extends Answers> = {
     name: string;
     description: string;
-    prompts: QuestionCollection<A>;
+    questions:
+        | QuestionCollection<A>
+        | ((prompt: PromptModule, generator: Generator<A>) => Promise<A>);
     actions: (AddAction | AddManyAction | AppendAction)[];
 };
 
-export type Generator<A extends Answers> = GeneratorDeclaration<A> & {
-    workspacePath: string;
+export type Generator<A extends Answers> = GeneratorDefinition<A> & {
+    destPath: string;
     templates: Map<string, string>;
 };
 
-export type GetAnswers<Type> = Type extends GeneratorDeclaration<infer X>
+export type GetAnswers<Type> = Type extends GeneratorDefinition<infer X>
     ? X
     : null;
 
@@ -42,16 +44,20 @@ async function executeAction<A extends Answers>(
 export async function createGenerator<A extends Answers>(
     prompt: PromptModule,
     generator: Generator<A>,
+    execute = executeAction,
 ): Promise<void> {
     console.log(chalk.bold(chalk.gray(generator.description)));
-    const answers = await prompt(generator.prompts);
+    const answers =
+        generator.questions instanceof Function
+            ? await generator.questions(prompt, generator)
+            : await prompt(generator.questions);
 
     await Promise.all(
         generator.actions.map((action) =>
-            executeAction(
+            execute(
                 {
                     ...action,
-                    rootPath: generator.workspacePath,
+                    rootPath: generator.destPath,
                     templates: generator.templates,
                 },
                 answers,

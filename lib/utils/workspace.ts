@@ -1,17 +1,17 @@
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { file } from "bun";
 
 export const getWorkspacePath = (input: string): string | undefined => {
     let workspaceFullPath = resolve(`${input}/workspace.dsl`);
     let workspaceFile = file(workspaceFullPath);
 
-    if (workspaceFile.size > 0) return workspaceFullPath;
+    if (workspaceFile.size > 0) return dirname(workspaceFullPath);
 
     // Try again with the "architecture" inner path
     workspaceFullPath = resolve(`${input}/architecture/workspace.dsl`);
     workspaceFile = file(workspaceFullPath);
 
-    if (workspaceFile.size > 0) return workspaceFullPath;
+    if (workspaceFile.size > 0) return dirname(workspaceFullPath);
 
     return undefined;
 };

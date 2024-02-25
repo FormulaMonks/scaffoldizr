@@ -1,6 +1,6 @@
 import { $ } from "bun";
 import { AddAction, AddManyAction } from "../utils/actions";
-import { GeneratorDeclaration } from "../utils/generator";
+import { GeneratorDefinition } from "../utils/generator";
 
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
@@ -15,10 +15,10 @@ type WorkspaceAnswers = {
     shouldIncludeTheme?: boolean;
 };
 
-const workspaceGenerator: GeneratorDeclaration<WorkspaceAnswers> = {
+const workspaceGenerator: GeneratorDefinition<WorkspaceAnswers> = {
     name: "Workspace",
     description: "Create a new workspace",
-    prompts: [
+    questions: [
         {
             type: "input",
             name: "workspaceName",
@@ -70,10 +70,26 @@ const workspaceGenerator: GeneratorDeclaration<WorkspaceAnswers> = {
             templateFile: "templates/workspace.hbs",
         } as AddAction,
         {
+            type: "add",
+            path: "architecture/systems/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/system/system.hbs",
+        } as AddAction,
+        {
+            type: "add",
+            path: "architecture/containers/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/empty.hbs",
+        } as AddAction,
+        {
+            type: "add",
+            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/empty.hbs",
+        } as AddAction,
+        {
             type: "addMany",
             destination: "architecture",
             templateFiles: "templates/scripts/**/*.sh",
             skipIfExists: true,
+            filePermissions: "744",
         } as AddManyAction,
         {
             type: "addMany",

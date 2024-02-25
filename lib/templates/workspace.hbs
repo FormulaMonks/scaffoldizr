@@ -5,19 +5,9 @@ workspace "{{workspaceName}}" {
     !docs docs
 
     model {
-        !include system
+        # Constants
 
-        {{properCase (removeSpaces systemName)}} = softwareSystem "{{systemName}}" {
-            description "{{systemDescription}}"
-
-            # Constants
-
-            !include containers
-            !include relationships
-
-            tags "System"
-        }
-
+        !include systems
         !include environments
     }
 

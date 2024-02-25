@@ -1,15 +1,15 @@
 import { AppendAction } from "../utils/actions";
-import { GeneratorDeclaration } from "../utils/generator";
+import { GeneratorDefinition } from "../utils/generator";
 
 type ConstantAnswers = {
     constantName: string;
     constantValue: string;
 };
 
-const constantGenerator: GeneratorDeclaration<ConstantAnswers> = {
+const constantGenerator: GeneratorDefinition<ConstantAnswers> = {
     name: "Constant",
     description: "Create a new workspace constant",
-    prompts: [
+    questions: [
         {
             type: "input",
             name: "constantName",

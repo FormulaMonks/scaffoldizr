@@ -9,6 +9,7 @@ export type AddManyAction = BaseAction & {
     type: ActionTypes.AddMany;
     destination: string;
     templateFiles: string;
+    filePermissions?: string;
     skipIfExists?: boolean;
 };
 
@@ -21,6 +22,7 @@ export async function addMany<A extends Answers>(
         rootPath,
         when = () => true,
         skip = () => false,
+        filePermissions = "644",
         ...opts
     } = options;
     const compiledOpts = compileSource<AddManyAction>(opts, answers);
@@ -51,6 +53,7 @@ export async function addMany<A extends Answers>(
                         rootPath,
                         type: ActionTypes.Add,
                         templateFile: path,
+                        filePermissions,
                         path: join(
                             compiledOpts.destination,
                             path.replace("templates", ""),

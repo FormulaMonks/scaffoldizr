@@ -1,5 +1,5 @@
 import { join, relative, resolve } from "node:path";
-import { file, write } from "bun";
+import { $, file, write } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
 import { ActionTypes, BaseAction } from ".";
@@ -9,6 +9,7 @@ export type AddAction = BaseAction & {
     type: ActionTypes.Add;
     templateFile: string;
     path: string;
+    filePermissions?: string;
     skipIfExists?: boolean;
 };
 
@@ -19,6 +20,7 @@ export async function add<A extends Answers>(
     const {
         templates,
         rootPath,
+        filePermissions = "644",
         when = () => true,
         skip = () => false,
         ...opts
@@ -54,6 +56,7 @@ export async function add<A extends Answers>(
     );
 
     await write(join(rootPath, compiledOpts.path), template);
+    await $`chmod ${filePermissions} ${join(rootPath, compiledOpts.path)}`;
 
     console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 

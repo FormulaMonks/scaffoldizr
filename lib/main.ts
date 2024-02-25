@@ -3,11 +3,15 @@ import chalk from "chalk";
 import inquirer, { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { constantGenerator, workspaceGenerator } from "./generators";
+import {
+    constantGenerator,
+    personGenerator,
+    workspaceGenerator,
+} from "./generators";
 import templates from "./templates/bundle";
 import {
     Generator,
-    GeneratorDeclaration,
+    GeneratorDefinition,
     GetAnswers,
     createGenerator,
 } from "./utils/generator";
@@ -35,14 +39,14 @@ if (!workspacePath) {
     console.log(`${chalk.yellow(
         'It seems the folder you selected does not have a "workspace.dsl" file.',
     )}
-Architecture folder: ${chalk.blue(relative(process.cwd(), destPath))}
+Destination folder: ${chalk.blue(relative(process.cwd(), destPath))}
 Let's create a new one by answering the questions below.
 `);
     try {
         const generator: Generator<GetAnswers<typeof workspaceGenerator>> = {
             ...workspaceGenerator,
             templates,
-            workspacePath: destPath,
+            destPath,
         };
 
         await createGenerator(prompt, generator);
@@ -60,12 +64,12 @@ console.log(
 );
 
 const mainPrompt = inquirer.createPromptModule();
-const generate = await mainPrompt<{ element: GeneratorDeclaration<Answers> }>([
+const generate = await mainPrompt<{ element: GeneratorDefinition<Answers> }>([
     {
         name: "element",
         message: "Create a new element:",
         type: "list",
-        choices: [constantGenerator].map((g) => ({
+        choices: [constantGenerator, personGenerator].map((g) => ({
             name: g.name,
             value: g,
         })),
@@ -76,7 +80,7 @@ try {
     const generator: Generator<GetAnswers<typeof generate.element>> = {
         ...generate.element,
         templates,
-        workspacePath: destPath,
+        destPath,
     };
 
     await createGenerator(prompt, generator);
