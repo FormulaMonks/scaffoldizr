@@ -28,21 +28,21 @@ Create a Structurizr DSL scaffolding in seconds!
 );
 
 const prompt = inquirer.createPromptModule();
-const defaultPath = resolve(process.cwd(), args.dest);
-const workspacePath = getWorkspacePath(defaultPath);
+const destPath = resolve(process.cwd(), args.dest);
+const workspacePath = getWorkspacePath(destPath);
 
 if (!workspacePath) {
     console.log(`${chalk.yellow(
         'It seems the folder you selected does not have a "workspace.dsl" file.',
     )}
-Base folder: ${chalk.blue(defaultPath)}
+Architecture folder: ${chalk.blue(relative(process.cwd(), destPath))}
 Let's create a new one by answering the questions below.
 `);
     try {
         const generator: Generator<GetAnswers<typeof workspaceGenerator>> = {
             ...workspaceGenerator,
             templates,
-            workspacePath: workspacePath ?? defaultPath,
+            workspacePath: destPath,
         };
 
         await createGenerator(prompt, generator);
@@ -76,7 +76,7 @@ try {
     const generator: Generator<GetAnswers<typeof generate.element>> = {
         ...generate.element,
         templates,
-        workspacePath: workspacePath ?? defaultPath,
+        workspacePath: destPath,
     };
 
     await createGenerator(prompt, generator);

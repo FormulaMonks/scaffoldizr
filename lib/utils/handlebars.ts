@@ -6,6 +6,8 @@ import Handlebars from "handlebars";
 Handlebars.registerHelper("kebabCase", (target) => kebabCase(target));
 Handlebars.registerHelper("properCase", (target) => pascalCase(target));
 Handlebars.registerHelper("pascalCase", (target) => pascalCase(target));
+Handlebars.registerHelper("upperCase", (target = "") => target.toUpperCase());
+Handlebars.registerHelper("lowerCase", (target = "") => target.toLowerCase());
 Handlebars.registerHelper("eq", (arg1, arg2) => arg1 === arg2);
 Handlebars.registerHelper("removeSpaces", (txt = "") => txt.replace(/\s/g, ""));
 

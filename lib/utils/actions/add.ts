@@ -27,7 +27,10 @@ export async function add<A extends Answers>(
     const targetFile = file(resolve(rootPath, compiledOpts.path));
 
     const shouldSkip = !when(answers, rootPath) || skip(answers, rootPath);
-    const relativePath = relative(rootPath, compiledOpts.path);
+    const relativePath = relative(
+        process.cwd(),
+        resolve(rootPath, compiledOpts.path),
+    );
 
     if (shouldSkip || (targetFile.size > 0 && compiledOpts.skipIfExists)) {
         console.log(

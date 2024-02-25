@@ -1,13 +1,13 @@
 import chalk from "chalk";
 import type { Answers, PromptModule, QuestionCollection } from "inquirer";
-import type { AddAction, AddManyAction } from "./actions";
-import { ActionTypes, add, addMany } from "./actions";
+import type { AddAction, AddManyAction, AppendAction } from "./actions";
+import { ActionTypes, add, addMany, append } from "./actions";
 
 export type GeneratorDeclaration<A extends Answers> = {
     name: string;
     description: string;
     prompts: QuestionCollection<A>;
-    actions: (AddAction | AddManyAction)[];
+    actions: (AddAction | AddManyAction | AppendAction)[];
 };
 
 export type Generator<A extends Answers> = GeneratorDeclaration<A> & {
@@ -20,7 +20,7 @@ export type GetAnswers<Type> = Type extends GeneratorDeclaration<infer X>
     : null;
 
 async function executeAction<A extends Answers>(
-    action: AddAction | AddManyAction,
+    action: AddAction | AddManyAction | AppendAction,
     answers: A,
 ): Promise<boolean> {
     switch (action.type) {
@@ -29,6 +29,9 @@ async function executeAction<A extends Answers>(
         }
         case ActionTypes.AddMany: {
             return addMany(action, answers);
+        }
+        case ActionTypes.Append: {
+            return append(action, answers);
         }
         default: {
             throw new Error("Action not found");

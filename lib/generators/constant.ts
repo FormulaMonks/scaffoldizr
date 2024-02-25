@@ -1,3 +1,4 @@
+import { AppendAction } from "../utils/actions";
 import { GeneratorDeclaration } from "../utils/generator";
 
 type ConstantAnswers = {
@@ -5,7 +6,7 @@ type ConstantAnswers = {
     constantValue: string;
 };
 
-const costantGenerator: GeneratorDeclaration<ConstantAnswers> = {
+const constantGenerator: GeneratorDeclaration<ConstantAnswers> = {
     name: "Constant",
     description: "Create a new workspace constant",
     prompts: [
@@ -29,8 +30,8 @@ const costantGenerator: GeneratorDeclaration<ConstantAnswers> = {
             path: "architecture/workspace.dsl",
             pattern: /# Constants/,
             templateFile: "templates/constant.hbs",
-        },
+        } as AppendAction,
     ],
 };
 
-export default costantGenerator;
+export default constantGenerator;

@@ -3,6 +3,7 @@ import type { Answers } from "inquirer";
 export enum ActionTypes {
     Add = "add",
     AddMany = "addMany",
+    Append = "append",
 }
 
 declare function whenOrSkip<A extends Answers>(
@@ -19,3 +20,4 @@ export type BaseAction = {
 
 export * from "./add";
 export * from "./add-many";
+export * from "./append";
