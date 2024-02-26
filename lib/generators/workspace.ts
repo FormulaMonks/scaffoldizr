@@ -56,13 +56,12 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
             message: "Author email:",
             default: globalUserEmail.trim(),
         },
-        // TODO: think what this will do when Open Source
-        // {
-        //     type: "confirm",
-        //     name: "shouldIncludeTheme",
-        //     message: "Include default theme?",
-        //     default: true,
-        // },
+        {
+            type: "confirm",
+            name: "shouldIncludeTheme",
+            message: "Include default theme?",
+            default: true,
+        },
     ],
     actions: [
         {

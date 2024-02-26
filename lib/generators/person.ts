@@ -1,12 +1,15 @@
-import { kebabCase } from "change-case";
 import type { QuestionCollection } from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
+import {
+    defaultParser,
+    getRelationships,
+    relationshipsForElement,
+} from "../utils/questions/relationships";
 import { getSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
-    duplicatedSystemName,
     stringEmpty,
     validateDuplicates,
 } from "../utils/questions/validators";
@@ -24,20 +27,18 @@ const generator: GeneratorDefinition<PersonAnswers> = {
     name: "Person",
     description: "Create a new person (customer, user, etc)",
     questions: async (prompt, generator) => {
-        const systemQuestion = await getSystemQuestion(generator.destPath);
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
 
         const questions: QuestionCollection<PersonAnswers> = [
-            systemQuestion,
+            await getSystemQuestion(generator.destPath),
             {
                 type: "input",
                 name: "elementName",
                 message: "Person name:",
                 validate: chainValidators(
                     stringEmpty,
-                    duplicatedSystemName,
                     validateDuplicates(workspaceInfo),
                 ),
             },
@@ -47,33 +48,53 @@ const generator: GeneratorDefinition<PersonAnswers> = {
                 message: "Person description:",
                 default: "Default user",
             },
-            {
-                type: "input",
-                name: "relationship",
-                message: "Relationship:",
-                default: "Consumes",
-            },
-            {
-                type: "list",
-                name: "relationshipType",
-                message: "Relationship type:",
-                choices: [
-                    {
-                        name: "outgoing (System → Person)",
-                        value: "outgoing",
-                    },
-                    {
-                        name: "incoming (Person → System)",
-                        value: "incoming",
-                    },
-                ],
-                default: "incoming",
-            },
         ];
 
-        return prompt(questions);
+        const partialAnswers = await prompt(questions);
+        const relationshipDefaults = {
+            defaultRelationship: "Consumes",
+            defaultRelationshipType: "outgoing",
+        };
+
+        const relationshipWithSystem = await prompt(
+            relationshipsForElement(
+                partialAnswers.systemName,
+                partialAnswers.elementName,
+                relationshipDefaults,
+            ),
+        );
+
+        const mainRelationship = defaultParser(relationshipWithSystem);
+        const relationships = await getRelationships(
+            partialAnswers.elementName,
+            workspaceInfo,
+            prompt,
+            {
+                filterChoices: (elm) => elm.value !== partialAnswers.systemName,
+                ...relationshipDefaults,
+            },
+        );
+
+        const compiledAnswers = {
+            ...partialAnswers,
+            source: "relationships/_people.dsl",
+            relationships: { ...mainRelationship, ...relationships },
+        };
+
+        return compiledAnswers;
     },
     actions: [
+        {
+            skip: (_answers, rootPath) =>
+                whenFileExists(
+                    "relationships/_people.dsl",
+                    getWorkspacePath(rootPath),
+                ),
+            type: "append",
+            path: "architecture/workspace.dsl",
+            pattern: /# Relationships/,
+            templateFile: "templates/include.hbs",
+        } as AppendAction,
         {
             when: (_answers, rootPath) =>
                 whenFileExists(
@@ -85,14 +106,14 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             templateFile: "templates/system/person.hbs",
         } as AppendAction,
         {
-            when: (answers, rootPath) =>
+            when: (_answers, rootPath) =>
                 whenFileExists(
-                    `relationships/${kebabCase(answers.systemName)}.dsl`,
+                    "relationships/_people.dsl",
                     getWorkspacePath(rootPath),
                 ),
             type: "append",
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            templateFile: "templates/relationships/{{relationshipType}}.hbs",
+            path: "architecture/relationships/_people.dsl",
+            templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction,
         {
             type: "add",
@@ -103,8 +124,8 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         {
             type: "add",
             skipIfExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            templateFile: "templates/relationships/{{relationshipType}}.hbs",
+            path: "architecture/relationships/_people.dsl",
+            templateFile: "templates/relationships/multiple.hbs",
         } as AddAction,
     ],
 };

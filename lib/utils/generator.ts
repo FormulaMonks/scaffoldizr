@@ -57,16 +57,14 @@ export async function createGenerator<A extends Answers>(
             ? await generator.questions(prompt, generator)
             : await prompt(generator.questions);
 
-    await Promise.all(
-        generator.actions.map((action) =>
-            execute(
-                {
-                    ...action,
-                    rootPath: generator.destPath,
-                    templates: generator.templates,
-                },
-                answers,
-            ),
-        ),
-    );
+    for await (const action of generator.actions) {
+        await execute(
+            {
+                ...action,
+                rootPath: generator.destPath,
+                templates: generator.templates,
+            },
+            answers,
+        );
+    }
 }

@@ -9,11 +9,13 @@ workspace "{{workspaceName}}" {
 
         !include systems
         !include environments
+
+        # Relationships
     }
 
     views {
         {{#if shouldIncludeTheme}}
-        themes "https://structurizr.test.zemoga-client.com/share/1/theme"
+        themes "https://static.structurizr.com/themes/default/theme.json"
         {{/if}}
         !constant AUTHOR "Author: {{authorName}} <{{authorEmail}}>"
 

@@ -3,6 +3,7 @@ import constant from "./constant.hbs";
 import containersContainer from "./containers/container.hbs";
 import empty from "./empty.hbs";
 import environmentsDeployment from "./environments/deployment.hbs";
+import include from "./include.hbs";
 import relationshipsIncoming from "./relationships/incoming.hbs";
 import relationshipsMultiple from "./relationships/multiple.hbs";
 import relationshipsOutgoing from "./relationships/outgoing.hbs";
@@ -31,6 +32,7 @@ const templatesMap = new Map([
     ["templates/relationships/.gitkeep", gitkeep],
     ["templates/environments/.gitkeep", gitkeep],
     ["templates/environments/deployment.hbs", environmentsDeployment],
+    ["templates/include.hbs", include],
     ["templates/relationships/incoming.hbs", relationshipsIncoming],
     ["templates/relationships/multiple.hbs", relationshipsMultiple],
     ["templates/relationships/outgoing.hbs", relationshipsOutgoing],
