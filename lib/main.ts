@@ -3,6 +3,7 @@ import chalk from "chalk";
 import inquirer, { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import pkg from "../package.json";
 import {
     constantGenerator,
     personGenerator,
@@ -18,11 +19,12 @@ import {
 import { getWorkspacePath } from "./utils/workspace";
 
 const args = await yargs(hideBin(process.argv))
+    .version("version", "Show current tool version", pkg.version)
+    .usage("Blueprint DSL: Create a Structurizr DSL scaffolding in seconds!")
     .option("dest", {
         default: ".",
-        desc: "Target architecture folder.",
-    })
-    .parse();
+        desc: "Target architecture folder",
+    }).argv;
 
 console.log(
     chalk.bold(`

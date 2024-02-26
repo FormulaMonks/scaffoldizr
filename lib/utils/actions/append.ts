@@ -3,18 +3,18 @@ import { relative, resolve } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
-import { ActionTypes, BaseAction } from ".";
+import { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
 
 export type AppendAction = BaseAction & {
     type: ActionTypes.Append;
+    templateFile: string;
     path: string;
     pattern?: RegExp;
-    templateFile: string;
 };
 
 export async function append<A extends Answers>(
-    options: AppendAction,
+    options: ExtendedAction & AppendAction,
     answers: A,
 ): Promise<boolean> {
     const {
@@ -29,7 +29,12 @@ export async function append<A extends Answers>(
     const relativePath = relative(process.cwd(), targetFilePath);
     const targetFile = file(targetFilePath);
 
-    const shouldSkip = !when(answers, rootPath) || skip(answers, rootPath);
+    const [doWhen, doSkip] = await Promise.all([
+        when(answers, rootPath),
+        skip(answers, rootPath),
+    ]);
+
+    const shouldSkip = !doWhen || doSkip;
 
     if (shouldSkip) {
         console.log(

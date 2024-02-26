@@ -108,7 +108,7 @@ describe("actions > append", () => {
         const result = await append(
             {
                 type: ActionTypes.Append,
-                when: ({ doCreate }) => !doCreate,
+                when: async ({ doCreate }) => !doCreate,
                 rootPath: import.meta.dirname,
                 templates: templates,
                 path: testFilePath,

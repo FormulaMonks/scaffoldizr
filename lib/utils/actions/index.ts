@@ -9,13 +9,16 @@ export enum ActionTypes {
 declare function whenOrSkip<A extends Answers>(
     answers: A,
     rootPath: string,
-): boolean | string;
+): boolean | string | Promise<boolean | string>;
 
 export type BaseAction = {
-    rootPath: string;
-    templates: Map<string, string>;
     when?: typeof whenOrSkip;
     skip?: typeof whenOrSkip;
+};
+
+export type ExtendedAction = {
+    rootPath: string;
+    templates: Map<string, string>;
 };
 
 export * from "./add";

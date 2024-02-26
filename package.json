@@ -1,5 +1,6 @@
 {
     "name": "blueprint-dsl",
+    "version": "0.2.0",
     "description": "Opinionated Scaffolding Tool for Structurizr",
     "module": "src/main.mjs",
     "bin": {
@@ -21,6 +22,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^1.4.0",
+        "@types/yargs": "^17.0.32",
         "@types/bun": "^1.0.6",
         "commitizen": "^4.3.0",
         "cz-conventional-changelog": "^3.3.0",

@@ -1,6 +1,17 @@
-import { QuestionCollection } from "inquirer";
-import { GeneratorDefinition } from "../utils/generator";
+import { resolve } from "node:path";
+import { file } from "bun";
+import { kebabCase } from "change-case";
+import type { QuestionCollection } from "inquirer";
+import type { AddAction, AppendAction } from "../utils/actions";
+import type { GeneratorDefinition } from "../utils/generator";
 import { getSystemQuestion } from "../utils/questions/system";
+import {
+    chainValidators,
+    duplicatedSystemName,
+    stringEmpty,
+    validateDuplicates,
+} from "../utils/questions/validators";
+import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type PersonAnswers = {
     systemName: string;
@@ -10,11 +21,24 @@ type PersonAnswers = {
     relationshipType: "outgoing" | "incoming";
 };
 
+const whenFileExists = async (
+    filePath: string,
+    workspacePath: string | undefined,
+): Promise<boolean | string> => {
+    if (!workspacePath) return false;
+    const foundFile = file(resolve(workspacePath, filePath));
+
+    return foundFile.size > 0;
+};
+
 const constantGenerator: GeneratorDefinition<PersonAnswers> = {
     name: "Person",
     description: "Create a new person (customer, user, etc)",
     questions: async (prompt, generator) => {
         const systemQuestion = await getSystemQuestion(generator.destPath);
+        const workspaceInfo = await getWorkspaceJson(
+            getWorkspacePath(generator.destPath),
+        );
 
         const questions: QuestionCollection<PersonAnswers> = [
             systemQuestion,
@@ -22,13 +46,11 @@ const constantGenerator: GeneratorDefinition<PersonAnswers> = {
                 type: "input",
                 name: "elementName",
                 message: "Person name:",
-                validate: (input, answers) => {
-                    if (input === answers?.systemName) {
-                        throw new Error(`Name "${input}" already exists`);
-                    }
-
-                    return true;
-                },
+                validate: chainValidators(
+                    stringEmpty,
+                    duplicatedSystemName,
+                    validateDuplicates(workspaceInfo),
+                ),
             },
             {
                 type: "input",
@@ -62,7 +84,40 @@ const constantGenerator: GeneratorDefinition<PersonAnswers> = {
 
         return prompt(questions);
     },
-    actions: [],
+    actions: [
+        {
+            when: (_answers, rootPath) =>
+                whenFileExists(
+                    "systems/_people.dsl",
+                    getWorkspacePath(rootPath),
+                ),
+            type: "append",
+            path: "architecture/systems/_people.dsl",
+            templateFile: "templates/system/person.hbs",
+        } as AppendAction,
+        {
+            when: (answers, rootPath) =>
+                whenFileExists(
+                    `relationships/${kebabCase(answers.systemName)}.dsl`,
+                    getWorkspacePath(rootPath),
+                ),
+            type: "append",
+            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/relationships/{{relationshipType}}.hbs",
+        } as AppendAction,
+        {
+            type: "add",
+            skipIfExists: true,
+            path: "architecture/systems/_people.dsl",
+            templateFile: "templates/system/person.hbs",
+        } as AddAction,
+        {
+            type: "add",
+            skipIfExists: true,
+            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/relationships/{{relationshipType}}.hbs",
+        } as AddAction,
+    ],
 };
 
 export default constantGenerator;

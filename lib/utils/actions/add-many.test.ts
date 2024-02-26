@@ -108,7 +108,7 @@ describe("actions > addMany", () => {
         const result = await addMany(
             {
                 type: ActionTypes.AddMany,
-                skip: () => "This should be skipped.",
+                skip: async () => "This should be skipped.",
                 templates,
                 templateFiles: "templates/containers/**/*.hbs",
                 rootPath: import.meta.dirname,

@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { Glob } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
-import { ActionTypes, BaseAction, add } from ".";
+import { ActionTypes, BaseAction, ExtendedAction, add } from ".";
 import { compileSource } from "../handlebars";
 
 export type AddManyAction = BaseAction & {
@@ -14,7 +14,7 @@ export type AddManyAction = BaseAction & {
 };
 
 export async function addMany<A extends Answers>(
-    options: AddManyAction,
+    options: ExtendedAction & AddManyAction,
     answers: A,
 ): Promise<boolean> {
     const {
@@ -28,7 +28,12 @@ export async function addMany<A extends Answers>(
     const compiledOpts = compileSource<AddManyAction>(opts, answers);
     const pattern = new Glob(compiledOpts.templateFiles);
 
-    const shouldSkip = !when(answers, rootPath) || skip(answers, rootPath);
+    const [doWhen, doSkip] = await Promise.all([
+        when(answers, rootPath),
+        skip(answers, rootPath),
+    ]);
+
+    const shouldSkip = !doWhen || doSkip;
 
     if (shouldSkip) {
         console.log(

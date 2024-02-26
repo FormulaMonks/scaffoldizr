@@ -1,5 +1,6 @@
-import { AppendAction } from "../utils/actions";
-import { GeneratorDefinition } from "../utils/generator";
+import type { AppendAction } from "../utils/actions";
+import type { GeneratorDefinition } from "../utils/generator";
+import { stringEmpty } from "../utils/questions/validators";
 
 type ConstantAnswers = {
     constantName: string;
@@ -14,14 +15,14 @@ const constantGenerator: GeneratorDefinition<ConstantAnswers> = {
             type: "input",
             name: "constantName",
             message: "Constant:",
-            validate: (input: string) => input.length > 0,
+            validate: stringEmpty,
         },
         {
             type: "input",
             name: "constantValue",
             message: "Value:",
             default: "New Value",
-            validate: (input: string) => input.length > 0,
+            validate: stringEmpty,
         },
     ],
     actions: [

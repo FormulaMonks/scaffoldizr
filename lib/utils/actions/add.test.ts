@@ -50,7 +50,7 @@ describe("actions > add", () => {
         const result = await add(
             {
                 type: ActionTypes.Add,
-                when: ({ doCreate }) => !doCreate,
+                when: async ({ doCreate }) => !doCreate,
                 templates,
                 templateFile: "templates/test-template.hbs",
                 rootPath: import.meta.dirname,

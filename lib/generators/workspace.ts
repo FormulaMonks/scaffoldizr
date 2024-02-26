@@ -1,6 +1,7 @@
 import { $ } from "bun";
 import { AddAction, AddManyAction } from "../utils/actions";
 import { GeneratorDefinition } from "../utils/generator";
+import { stringEmpty } from "../utils/questions/validators";
 
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
@@ -23,7 +24,7 @@ const workspaceGenerator: GeneratorDefinition<WorkspaceAnswers> = {
             type: "input",
             name: "workspaceName",
             message: "Workspace name:",
-            validate: (input: string) => input.length > 0,
+            validate: stringEmpty,
         },
         {
             type: "input",
@@ -35,7 +36,7 @@ const workspaceGenerator: GeneratorDefinition<WorkspaceAnswers> = {
             type: "input",
             name: "systemName",
             message: "System name:",
-            validate: (input: string) => input.length > 0,
+            validate: stringEmpty,
         },
         {
             type: "input",
@@ -55,7 +56,7 @@ const workspaceGenerator: GeneratorDefinition<WorkspaceAnswers> = {
             message: "Author email:",
             default: globalUserEmail.trim(),
         },
-        // TODO: think how this will do when Open Source
+        // TODO: think what this will do when Open Source
         // {
         //     type: "confirm",
         //     name: "shouldIncludeTheme",

@@ -1,6 +1,11 @@
 import chalk from "chalk";
 import type { Answers, PromptModule, QuestionCollection } from "inquirer";
-import type { AddAction, AddManyAction, AppendAction } from "./actions";
+import type {
+    AddAction,
+    AddManyAction,
+    AppendAction,
+    ExtendedAction,
+} from "./actions";
 import { ActionTypes, add, addMany, append } from "./actions";
 
 export type GeneratorDefinition<A extends Answers> = {
@@ -22,7 +27,7 @@ export type GetAnswers<Type> = Type extends GeneratorDefinition<infer X>
     : null;
 
 async function executeAction<A extends Answers>(
-    action: AddAction | AddManyAction | AppendAction,
+    action: ExtendedAction & (AddAction | AddManyAction | AppendAction),
     answers: A,
 ): Promise<boolean> {
     switch (action.type) {

@@ -2,7 +2,7 @@ import { join, relative, resolve } from "node:path";
 import { $, file, write } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
-import { ActionTypes, BaseAction } from ".";
+import { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
 
 export type AddAction = BaseAction & {
@@ -14,7 +14,7 @@ export type AddAction = BaseAction & {
 };
 
 export async function add<A extends Answers>(
-    options: AddAction,
+    options: ExtendedAction & AddAction,
     answers: A,
 ): Promise<boolean> {
     const {
@@ -28,7 +28,13 @@ export async function add<A extends Answers>(
     const compiledOpts = compileSource<AddAction>(opts, answers);
     const targetFile = file(resolve(rootPath, compiledOpts.path));
 
-    const shouldSkip = !when(answers, rootPath) || skip(answers, rootPath);
+    const [doWhen, doSkip] = await Promise.all([
+        when(answers, rootPath),
+        skip(answers, rootPath),
+    ]);
+
+    const shouldSkip = !doWhen || doSkip;
+
     const relativePath = relative(
         process.cwd(),
         resolve(rootPath, compiledOpts.path),

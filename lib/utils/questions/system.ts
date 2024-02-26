@@ -2,12 +2,31 @@ import { resolve } from "node:path";
 import { file } from "bun";
 import { kebabCase } from "change-case";
 import type { Question } from "inquirer";
-import { getWorkspacePath } from "../workspace";
+import { getWorkspaceJson, getWorkspacePath } from "../workspace";
 
 export async function getSystemQuestion(
     workspacePath: string,
-    when = () => true,
+    { when = () => true, message = "System name:" } = {},
 ): Promise<Question> {
+    const workspaceFolder = getWorkspacePath(workspacePath);
+    const workspaceInfo = await getWorkspaceJson(workspaceFolder);
+
+    if (workspaceInfo) {
+        const systems = (workspaceInfo.model?.softwareSystems ?? [])
+            .filter((system) => !system.tags.split(",").includes("External"))
+            .map((system) => system.name);
+
+        const systemQuestion = {
+            type: "list",
+            name: "systemName",
+            message,
+            choices: systems,
+            when,
+        };
+
+        return systemQuestion;
+    }
+
     const systemQuestion: Question = {
         type: "input",
         name: "systemName",
@@ -17,12 +36,11 @@ export async function getSystemQuestion(
             if (!answers) return true;
 
             answers.systemName = input;
-            const workspaceFolder = getWorkspacePath(workspacePath);
 
             if (workspaceFolder) {
                 const systemPath = resolve(
                     workspaceFolder,
-                    `views/${kebabCase(input)}.dsl`,
+                    `systems/${kebabCase(input)}.dsl`,
                 );
                 const isSystem = file(systemPath);
                 if (isSystem.size > 0) return true;
@@ -33,5 +51,6 @@ export async function getSystemQuestion(
             );
         },
     };
+
     return systemQuestion;
 }
