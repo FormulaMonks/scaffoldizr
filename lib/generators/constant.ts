@@ -7,7 +7,7 @@ type ConstantAnswers = {
     constantValue: string;
 };
 
-const constantGenerator: GeneratorDefinition<ConstantAnswers> = {
+const generator: GeneratorDefinition<ConstantAnswers> = {
     name: "Constant",
     description: "Create a new workspace constant",
     questions: [
@@ -35,4 +35,4 @@ const constantGenerator: GeneratorDefinition<ConstantAnswers> = {
     ],
 };
 
-export default constantGenerator;
+export default generator;

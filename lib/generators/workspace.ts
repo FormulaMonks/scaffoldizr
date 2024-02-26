@@ -16,7 +16,7 @@ type WorkspaceAnswers = {
     shouldIncludeTheme?: boolean;
 };
 
-const workspaceGenerator: GeneratorDefinition<WorkspaceAnswers> = {
+const generator: GeneratorDefinition<WorkspaceAnswers> = {
     name: "Workspace",
     description: "Create a new workspace",
     questions: [
@@ -106,4 +106,4 @@ const workspaceGenerator: GeneratorDefinition<WorkspaceAnswers> = {
     ],
 };
 
-export default workspaceGenerator;
+export default generator;

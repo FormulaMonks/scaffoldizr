@@ -6,7 +6,7 @@ import { getWorkspaceJson, getWorkspacePath } from "../workspace";
 
 export async function getSystemQuestion(
     workspacePath: string,
-    { when = () => true, message = "System name:" } = {},
+    { when = () => true, message = "Relates to system:" } = {},
 ): Promise<Question> {
     const workspaceFolder = getWorkspacePath(workspacePath);
     const workspaceInfo = await getWorkspaceJson(workspaceFolder);
@@ -30,7 +30,7 @@ export async function getSystemQuestion(
     const systemQuestion: Question = {
         type: "input",
         name: "systemName",
-        message: "Base system name:",
+        message,
         when,
         validate: (input, answers) => {
             if (!answers) return true;

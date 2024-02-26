@@ -12,29 +12,29 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-type PersonAnswers = {
+type ExternalSystemAnswers = {
     systemName: string;
     elementName: string;
-    personDescription: string;
+    extSystemDescription: string;
     relationship: string;
     relationshipType: "outgoing" | "incoming";
 };
 
-const generator: GeneratorDefinition<PersonAnswers> = {
-    name: "Person",
-    description: "Create a new person (customer, user, etc)",
+const generator: GeneratorDefinition<ExternalSystemAnswers> = {
+    name: "External System",
+    description: "Create a new external system",
     questions: async (prompt, generator) => {
         const systemQuestion = await getSystemQuestion(generator.destPath);
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
 
-        const questions: QuestionCollection<PersonAnswers> = [
+        const questions: QuestionCollection<ExternalSystemAnswers> = [
             systemQuestion,
             {
                 type: "input",
                 name: "elementName",
-                message: "Person name:",
+                message: "External system name:",
                 validate: chainValidators(
                     stringEmpty,
                     duplicatedSystemName,
@@ -43,15 +43,15 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             },
             {
                 type: "input",
-                name: "personDescription",
-                message: "Person description:",
-                default: "Default user",
+                name: "extSystemDescription",
+                message: "System description:",
+                default: "Untitled System",
             },
             {
                 type: "input",
                 name: "relationship",
                 message: "Relationship:",
-                default: "Consumes",
+                default: "Interacts with",
             },
             {
                 type: "list",
@@ -59,15 +59,15 @@ const generator: GeneratorDefinition<PersonAnswers> = {
                 message: "Relationship type:",
                 choices: [
                     {
-                        name: "outgoing (System → Person)",
+                        name: "outgoing (System → ExtSystem)",
                         value: "outgoing",
                     },
                     {
-                        name: "incoming (Person → System)",
+                        name: "incoming (ExtSystem → System)",
                         value: "incoming",
                     },
                 ],
-                default: "incoming",
+                default: "outgoing",
             },
         ];
 
@@ -77,12 +77,12 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         {
             when: (_answers, rootPath) =>
                 whenFileExists(
-                    "systems/_people.dsl",
+                    "systems/_external.dsl",
                     getWorkspacePath(rootPath),
                 ),
             type: "append",
-            path: "architecture/systems/_people.dsl",
-            templateFile: "templates/system/person.hbs",
+            path: "architecture/systems/_external.dsl",
+            templateFile: "templates/system/external.hbs",
         } as AppendAction,
         {
             when: (answers, rootPath) =>
@@ -97,8 +97,8 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         {
             type: "add",
             skipIfExists: true,
-            path: "architecture/systems/_people.dsl",
-            templateFile: "templates/system/person.hbs",
+            path: "architecture/systems/_external.dsl",
+            templateFile: "templates/system/external.hbs",
         } as AddAction,
         {
             type: "add",

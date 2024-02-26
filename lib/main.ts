@@ -6,6 +6,7 @@ import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
 import {
     constantGenerator,
+    extSystemGenerator,
     personGenerator,
     workspaceGenerator,
 } from "./generators";
@@ -71,10 +72,12 @@ const generate = await mainPrompt<{ element: GeneratorDefinition<Answers> }>([
         name: "element",
         message: "Create a new element:",
         type: "list",
-        choices: [constantGenerator, personGenerator].map((g) => ({
-            name: g.name,
-            value: g,
-        })),
+        choices: [constantGenerator, personGenerator, extSystemGenerator].map(
+            (g) => ({
+                name: g.name,
+                value: g,
+            }),
+        ),
     },
 ]);
 
