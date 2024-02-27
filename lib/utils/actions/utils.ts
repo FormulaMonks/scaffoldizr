@@ -1,5 +1,12 @@
 import { resolve } from "node:path";
 import { file } from "bun";
+import type { Answers } from "inquirer";
+
+export const skipUnlessViewType = (type: string) => (answer: Answers) =>
+    answer.viewType !== type && `View type "${type}" selected.`;
+
+export const whenViewType = (type: string) => (answer: Answers) =>
+    answer.viewType === type;
 
 export const whenFileExists = async (
     filePath: string,

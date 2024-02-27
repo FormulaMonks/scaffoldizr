@@ -12,7 +12,7 @@ import {
     chainValidators,
     duplicatedSystemName,
     stringEmpty,
-    validateDuplicates,
+    validateDuplicateElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
@@ -28,9 +28,11 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
     name: "External System",
     description: "Create a new external system",
     questions: async (prompt, generator) => {
-        const systemQuestion = await getSystemQuestion(generator.destPath);
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
+        );
+        const systemQuestion = await getSystemQuestion(
+            workspaceInfo ?? generator.destPath,
         );
 
         const questions: QuestionCollection<ExternalSystemAnswers> = [
@@ -42,7 +44,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
                 validate: chainValidators(
                     stringEmpty,
                     duplicatedSystemName,
-                    validateDuplicates(workspaceInfo),
+                    validateDuplicateElements(workspaceInfo),
                 ),
             },
             {

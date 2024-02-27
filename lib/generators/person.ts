@@ -11,7 +11,7 @@ import { getSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
-    validateDuplicates,
+    validateDuplicateElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
@@ -32,14 +32,14 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         );
 
         const questions: QuestionCollection<PersonAnswers> = [
-            await getSystemQuestion(generator.destPath),
+            await getSystemQuestion(workspaceInfo ?? generator.destPath),
             {
                 type: "input",
                 name: "elementName",
                 message: "Person name:",
                 validate: chainValidators(
                     stringEmpty,
-                    validateDuplicates(workspaceInfo),
+                    validateDuplicateElements(workspaceInfo),
                 ),
             },
             {

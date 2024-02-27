@@ -1,15 +1,22 @@
 import { resolve } from "node:path";
 import { file } from "bun";
 import { kebabCase } from "change-case";
-import type { Question } from "inquirer";
-import { getWorkspaceJson, getWorkspacePath } from "../workspace";
+import type { Answers, AsyncDynamicQuestionProperty, Question } from "inquirer";
+import { StructurizrWorkspace, getWorkspacePath } from "../workspace";
+
+type GetSystemQuestionOptions = {
+    when?: AsyncDynamicQuestionProperty<boolean, Answers>;
+    message?: string;
+};
 
 export async function getSystemQuestion(
-    workspacePath: string,
-    { when = () => true, message = "Relates to system:" } = {},
+    workspace: string | StructurizrWorkspace,
+    {
+        when = () => true,
+        message = "Relates to system:",
+    }: GetSystemQuestionOptions = {},
 ): Promise<Question> {
-    const workspaceFolder = getWorkspacePath(workspacePath);
-    const workspaceInfo = await getWorkspaceJson(workspaceFolder);
+    const workspaceInfo = typeof workspace !== "string" && workspace;
 
     if (workspaceInfo) {
         const systems = (workspaceInfo.model?.softwareSystems ?? [])
@@ -26,6 +33,11 @@ export async function getSystemQuestion(
 
         return systemQuestion;
     }
+
+    const workspacePath = typeof workspace === "string" && workspace;
+    if (!workspacePath) return {};
+
+    const workspaceFolder = getWorkspacePath(workspacePath);
 
     const systemQuestion: Question = {
         type: "input",

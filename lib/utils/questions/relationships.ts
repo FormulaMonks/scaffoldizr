@@ -1,5 +1,9 @@
 import { pascalCase } from "change-case";
-import type { PromptModule } from "inquirer";
+import type {
+    Answers,
+    AsyncDynamicQuestionProperty,
+    PromptModule,
+} from "inquirer";
 import { removeSpaces } from "../../../src/utils/helpers.mjs";
 import type { StructurizrWorkspace } from "../workspace";
 
@@ -16,7 +20,7 @@ type RelationshipForElementOptions = {
 };
 
 type GetRelationshipsOptions = {
-    when?: (elms: unknown) => boolean;
+    when?: AsyncDynamicQuestionProperty<boolean, Answers>;
     filterChoices?: (
         elm: Record<string, unknown>,
         pos: number,

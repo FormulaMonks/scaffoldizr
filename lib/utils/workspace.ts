@@ -126,9 +126,13 @@ export type StructurizrWorkspace = {
         softwareSystems: SoftwareSystem[];
         deploymentNodes: DeploymentNode[];
     };
-    documentation: Documentation;
-    systemContextViews: View[];
     configuration: Configuration;
+    documentation: Documentation;
+    views: {
+        systemLandscapeViews: View[];
+        systemContextViews: View[];
+        configuration: Configuration;
+    };
 };
 
 export const getWorkspacePath = (input: string): string | undefined => {

@@ -14,7 +14,7 @@ export const duplicatedSystemName = (input: string, answers: Answers) => {
     return true;
 };
 
-export const validateDuplicates =
+export const validateDuplicateElements =
     (workspaceInfo: StructurizrWorkspace | undefined): Validator =>
     (input: string) => {
         if (!workspaceInfo) return true;
@@ -26,6 +26,32 @@ export const validateDuplicates =
         const elementName = pascalCase(input.replace(/\s/g, ""));
         if (systemElements.includes(elementName)) {
             return `Element with name "${elementName}" already exists.`;
+        }
+
+        return true;
+    };
+
+export const validateDuplicateViews =
+    (workspaceInfo: StructurizrWorkspace | undefined): Validator =>
+    (input: string) => {
+        if (!workspaceInfo) return true;
+
+        const systemViews = Object.values(workspaceInfo.views)
+            .filter((elm) => Array.isArray(elm))
+            .flat()
+            .map(
+                (elm) =>
+                    (
+                        elm as Exclude<
+                            typeof elm,
+                            StructurizrWorkspace["configuration"]
+                        >
+                    ).key,
+            );
+
+        const viewName = pascalCase(input.replace(/\s/g, ""));
+        if (systemViews.includes(viewName)) {
+            return `View with name "${viewName}" already exists.`;
         }
 
         return true;

@@ -8,6 +8,7 @@ import {
     constantGenerator,
     extSystemGenerator,
     personGenerator,
+    viewGenerator,
     workspaceGenerator,
 } from "./generators";
 import templates from "./templates/bundle";
@@ -72,12 +73,15 @@ const generate = await mainPrompt<{ element: GeneratorDefinition<Answers> }>([
         name: "element",
         message: "Create a new element:",
         type: "list",
-        choices: [constantGenerator, personGenerator, extSystemGenerator].map(
-            (g) => ({
-                name: g.name,
-                value: g,
-            }),
-        ),
+        choices: [
+            constantGenerator,
+            personGenerator,
+            extSystemGenerator,
+            viewGenerator,
+        ].map((g) => ({
+            name: g.name,
+            value: g,
+        })),
     },
 ]);
 
