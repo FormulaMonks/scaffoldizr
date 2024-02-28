@@ -19,8 +19,6 @@ type PersonAnswers = {
     systemName: string;
     elementName: string;
     personDescription: string;
-    relationship: string;
-    relationshipType: "outgoing" | "incoming";
 };
 
 const generator: GeneratorDefinition<PersonAnswers> = {

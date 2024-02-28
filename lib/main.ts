@@ -4,13 +4,7 @@ import inquirer, { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
-import {
-    constantGenerator,
-    extSystemGenerator,
-    personGenerator,
-    viewGenerator,
-    workspaceGenerator,
-} from "./generators";
+import * as generators from "./generators";
 import templates from "./templates/bundle";
 import {
     Generator,
@@ -38,6 +32,8 @@ Create a Structurizr DSL scaffolding in seconds!
 const prompt = inquirer.createPromptModule();
 const destPath = resolve(process.cwd(), args.dest);
 const workspacePath = getWorkspacePath(destPath);
+
+const { workspaceGenerator, ...otherGenerators } = generators;
 
 if (!workspacePath) {
     console.log(`${chalk.yellow(
@@ -73,12 +69,7 @@ const generate = await mainPrompt<{ element: GeneratorDefinition<Answers> }>([
         name: "element",
         message: "Create a new element:",
         type: "list",
-        choices: [
-            constantGenerator,
-            personGenerator,
-            extSystemGenerator,
-            viewGenerator,
-        ].map((g) => ({
+        choices: Object.values(otherGenerators).map((g) => ({
             name: g.name,
             value: g,
         })),

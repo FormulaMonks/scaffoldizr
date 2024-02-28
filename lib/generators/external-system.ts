@@ -20,8 +20,6 @@ type ExternalSystemAnswers = {
     systemName: string;
     elementName: string;
     extSystemDescription: string;
-    relationship: string;
-    relationshipType: "outgoing" | "incoming";
 };
 
 const generator: GeneratorDefinition<ExternalSystemAnswers> = {

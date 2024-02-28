@@ -71,7 +71,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         } as AddAction,
         {
             type: "add",
-            path: "architecture/systems/{{kebabCase systemName}}.dsl",
+            path: "architecture/systems/_system.dsl",
             templateFile: "templates/system/system.hbs",
         } as AddAction,
         {
@@ -81,7 +81,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         } as AddAction,
         {
             type: "add",
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/empty.hbs",
         } as AddAction,
         {

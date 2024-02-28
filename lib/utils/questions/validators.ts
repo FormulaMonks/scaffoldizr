@@ -21,7 +21,7 @@ export const validateDuplicateElements =
 
         const systemElements = Object.values(workspaceInfo.model)
             .flat()
-            .map((elm) => elm.name);
+            .map((elm) => pascalCase(elm.name.replace(/\s/g, "")));
 
         const elementName = pascalCase(input.replace(/\s/g, ""));
         if (systemElements.includes(elementName)) {

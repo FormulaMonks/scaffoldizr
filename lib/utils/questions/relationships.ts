@@ -86,6 +86,16 @@ export const relationshipsForElement = (
     ];
 };
 
+const identifyElementByTags = (tags: string): string => {
+    for (const tag of tags.split(",")) {
+        if (tag === "Person") return "👤";
+        if (tag === "External") return "⚪️";
+        if (tag === "Container") return "🔹";
+    }
+
+    return "🔵";
+};
+
 export async function getRelationships(
     elementName: string,
     workspaceInfo: StructurizrWorkspace | undefined,
@@ -102,9 +112,19 @@ export async function getRelationships(
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
 
-    const systemElements = Object.values(workspaceInfo.model)
+    type Model = StructurizrWorkspace["model"];
+
+    const systemElements = (
+        [
+            ...(workspaceInfo.model?.people ?? []),
+            ...(workspaceInfo.model?.softwareSystems ?? []),
+        ] as Model["people"] | Model["softwareSystems"]
+    )
         .flat()
-        .map((elm) => ({ name: `[S]: ${elm.name}`, value: elm.name }))
+        .map((elm) => ({
+            name: `${identifyElementByTags(elm.tags)} ${elm.name}`,
+            value: elm.name,
+        }))
         .filter(filterChoices);
 
     if (!systemElements.length) return {};
