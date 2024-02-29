@@ -14,7 +14,7 @@ export const duplicatedSystemName = (input: string, answers: Answers) => {
     return true;
 };
 
-export const validateDuplicateElements =
+export const validateDuplicatedElements =
     (workspaceInfo: StructurizrWorkspace | undefined): Validator =>
     (input: string) => {
         if (!workspaceInfo) return true;
@@ -31,7 +31,7 @@ export const validateDuplicateElements =
         return true;
     };
 
-export const validateDuplicateViews =
+export const validateDuplicatedViews =
     (workspaceInfo: StructurizrWorkspace | undefined): Validator =>
     (input: string) => {
         if (!workspaceInfo) return true;
@@ -39,14 +39,15 @@ export const validateDuplicateViews =
         const systemViews = Object.values(workspaceInfo.views)
             .filter((elm) => Array.isArray(elm))
             .flat()
-            .map(
-                (elm) =>
+            .map((elm) =>
+                pascalCase(
                     (
                         elm as Exclude<
                             typeof elm,
                             StructurizrWorkspace["configuration"]
                         >
-                    ).key,
+                    ).key.replace(/\s/g, ""),
+                ),
             );
 
         const viewName = pascalCase(input.replace(/\s/g, ""));

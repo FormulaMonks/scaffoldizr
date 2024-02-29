@@ -11,7 +11,7 @@ import { getSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
-    validateDuplicateElements,
+    validateDuplicatedElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
@@ -37,7 +37,7 @@ const generator: GeneratorDefinition<PersonAnswers> = {
                 message: "Person name:",
                 validate: chainValidators(
                     stringEmpty,
-                    validateDuplicateElements(workspaceInfo),
+                    validateDuplicatedElements(workspaceInfo),
                 ),
             },
             {
@@ -75,7 +75,8 @@ const generator: GeneratorDefinition<PersonAnswers> = {
 
         const compiledAnswers = {
             ...partialAnswers,
-            source: "relationships/_people.dsl",
+            includeSource: "relationships/_people.dsl",
+            includeTabs: "        ",
             relationships: { ...mainRelationship, ...relationships },
         };
 

@@ -38,6 +38,7 @@
         "signal-exit": "3.x"
     },
     "lint-staged": {
-        "*": "bun biome ci"
+        "*": ["bun biome ci"],
+        "*.{ts,mjs}": ["bun test:ci"]
     }
 }

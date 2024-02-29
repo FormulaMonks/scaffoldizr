@@ -12,7 +12,7 @@ import {
     chainValidators,
     duplicatedSystemName,
     stringEmpty,
-    validateDuplicateElements,
+    validateDuplicatedElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
@@ -42,7 +42,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
                 validate: chainValidators(
                     stringEmpty,
                     duplicatedSystemName,
-                    validateDuplicateElements(workspaceInfo),
+                    validateDuplicatedElements(workspaceInfo),
                 ),
             },
             {
@@ -80,7 +80,8 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
 
         const compiledAnswers = {
             ...partialAnswers,
-            source: "relationships/_external.dsl",
+            includeSource: "relationships/_external.dsl",
+            includeTabs: "        ",
             relationships: { ...mainRelationship, ...relationships },
         };
 

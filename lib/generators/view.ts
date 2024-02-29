@@ -6,7 +6,7 @@ import { getSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
-    validateDuplicateViews,
+    validateDuplicatedViews,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
@@ -55,7 +55,7 @@ const generator: GeneratorDefinition<ViewAnswers> = {
                 message: "View name:",
                 validate: chainValidators(
                     stringEmpty,
-                    validateDuplicateViews(workspaceInfo),
+                    validateDuplicatedViews(workspaceInfo),
                 ),
             },
             {

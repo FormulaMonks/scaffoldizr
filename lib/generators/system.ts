@@ -5,7 +5,7 @@ import { getRelationships } from "../utils/questions/relationships";
 import {
     chainValidators,
     stringEmpty,
-    validateDuplicateElements,
+    validateDuplicatedElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
@@ -28,7 +28,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
                 message: "System Name:",
                 validate: chainValidators(
                     stringEmpty,
-                    validateDuplicateElements(workspaceInfo),
+                    validateDuplicatedElements(workspaceInfo),
                 ),
             },
             {
