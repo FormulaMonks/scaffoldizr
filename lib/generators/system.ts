@@ -72,7 +72,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
         {
             type: "add",
             skipIfExists: true,
-            path: "architecture/containers/{{kebabCase systemName}}.dsl",
+            path: "architecture/containers/{{kebabCase systemName}}/.gitkeep",
             templateFile: "templates/empty.hbs",
         } as AddAction,
         {

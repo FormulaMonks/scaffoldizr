@@ -1,7 +1,7 @@
 {{properCase (removeSpaces systemName)}} = softwareSystem "{{systemName}}" {
     description "{{systemDescription}}"
 
-    !include ../containers/{{kebabCase systemName}}.dsl
+    !include ../containers/{{kebabCase systemName}}
 
     tags "System"
 }

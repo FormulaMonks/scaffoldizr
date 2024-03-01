@@ -20,7 +20,7 @@ type ViewAnswers = {
 // - Container
 // - Component
 // - Dynamic
-// - System
+// - Filtered
 // // - System landscape
 // // - Deployment
 const generator: GeneratorDefinition<ViewAnswers> = {

@@ -76,7 +76,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         } as AddAction,
         {
             type: "add",
-            path: "architecture/containers/{{kebabCase systemName}}.dsl",
+            path: "architecture/containers/{{kebabCase systemName}}/.gitkeep",
             templateFile: "templates/empty.hbs",
         } as AddAction,
         {

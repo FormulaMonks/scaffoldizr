@@ -4,6 +4,7 @@ import type {
     AsyncDynamicQuestionProperty,
     PromptModule,
 } from "inquirer";
+import inquirer from "inquirer";
 import { removeSpaces } from "../../../src/utils/helpers.mjs";
 import type { StructurizrWorkspace } from "../workspace";
 
@@ -19,10 +20,13 @@ type RelationshipForElementOptions = {
     defaultTechnology?: string;
 };
 
+type Model = StructurizrWorkspace["model"];
+type SoftwareElement = Model["people"][number];
+
 type GetRelationshipsOptions = {
     when?: AsyncDynamicQuestionProperty<boolean, Answers>;
     filterChoices?: (
-        elm: Record<string, unknown>,
+        elm: inquirer.Separator | { name: string; value: string },
         pos: number,
         arr: unknown[],
     ) => boolean;
@@ -112,22 +116,35 @@ export async function getRelationships(
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
 
-    type Model = StructurizrWorkspace["model"];
+    const softwareSystems = workspaceInfo.model?.softwareSystems ?? [];
+    const people = workspaceInfo.model?.people ?? [];
 
     const systemElements = (
         [
-            ...(workspaceInfo.model?.people ?? []),
-            ...(workspaceInfo.model?.softwareSystems ?? []),
-        ] as Model["people"] | Model["softwareSystems"]
+            softwareSystems.length
+                ? new inquirer.Separator("-- Systems --")
+                : [],
+            ...softwareSystems,
+            people.length ? new inquirer.Separator("-- People --") : [],
+            ...people,
+        ] as (SoftwareElement | inquirer.Separator)[]
     )
         .flat()
-        .map((elm) => ({
-            name: `${identifyElementByTags(elm.tags)} ${elm.name}`,
-            value: elm.name,
-        }))
+        .map((elm) =>
+            elm instanceof inquirer.Separator
+                ? elm
+                : {
+                      name: `${identifyElementByTags(elm.tags)} ${elm.name}`,
+                      value: elm.name,
+                  },
+        )
         .filter(filterChoices);
 
-    if (!systemElements.length) return {};
+    if (
+        !systemElements.filter((elm) => !(elm instanceof inquirer.Separator))
+            .length
+    )
+        return {};
 
     const { relationships } = await prompt({
         type: "checkbox",

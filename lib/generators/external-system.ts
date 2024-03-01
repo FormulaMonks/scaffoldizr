@@ -1,4 +1,5 @@
 import type { QuestionCollection } from "inquirer";
+import inquirer from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
@@ -73,7 +74,9 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             workspaceInfo,
             prompt,
             {
-                filterChoices: (elm) => elm.value !== partialAnswers.systemName,
+                filterChoices: (elm) =>
+                    elm instanceof inquirer.Separator ||
+                    elm.value !== partialAnswers.systemName,
                 ...relationshipDefaults,
             },
         );

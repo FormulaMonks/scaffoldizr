@@ -1,5 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import type { PromptModule } from "inquirer";
+import inquirer from "inquirer";
 import { StructurizrWorkspace } from "../workspace";
 import { getRelationships } from "./relationships";
 
@@ -11,14 +12,14 @@ describe("relationships", () => {
         test("should return empty when no workspaceInfo passed", async () => {
             const relationships = await getRelationships(
                 "someElement",
-                {} as StructurizrWorkspace,
+                undefined,
                 mock() as unknown as PromptModule,
             );
 
             expect(relationships).toEqual({});
         });
         test("should return empty when no system elements found", async () => {
-            const prompt = mock() as unknown as PromptModule;
+            const prompt = mock().mockResolvedValue({ relationships: [] });
 
             const relationships = await getRelationships(
                 "someElement",
@@ -35,7 +36,7 @@ describe("relationships", () => {
                         ] as SoftwareElement[],
                     },
                 } as StructurizrWorkspace,
-                prompt,
+                prompt as unknown as PromptModule,
             );
 
             expect(relationships).toEqual({});
@@ -43,9 +44,7 @@ describe("relationships", () => {
         });
 
         test("should return empty when no elements flagged for relationship", async () => {
-            const prompt = mock(() =>
-                Promise.resolve({ relationships: [] }),
-            ) as unknown as PromptModule;
+            const prompt = mock().mockResolvedValue({ relationships: [] });
 
             const relationships = await getRelationships(
                 "someElement",
@@ -74,7 +73,7 @@ describe("relationships", () => {
                         ] as SoftwareElement[],
                     },
                 } as StructurizrWorkspace,
-                prompt,
+                prompt as unknown as PromptModule,
             );
 
             expect(prompt).toHaveBeenCalledWith({
@@ -82,13 +81,15 @@ describe("relationships", () => {
                 name: "relationships",
                 message: expect.any(String),
                 choices: [
-                    {
-                        name: "👤 SomePerson",
-                        value: "SomePerson",
-                    },
+                    expect.any(inquirer.Separator),
                     {
                         name: "🔵 SomeSystem",
                         value: "SomeSystem",
+                    },
+                    expect.any(inquirer.Separator),
+                    {
+                        name: "👤 SomePerson",
+                        value: "SomePerson",
                     },
                 ],
                 when: expect.any(Function),

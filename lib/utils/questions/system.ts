@@ -1,5 +1,5 @@
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { file } from "bun";
 import { kebabCase } from "change-case";
 import type { Answers, AsyncDynamicQuestionProperty, Question } from "inquirer";
 import { StructurizrWorkspace, getWorkspacePath } from "../workspace";
@@ -52,10 +52,9 @@ export async function getSystemQuestion(
             if (workspaceFolder) {
                 const systemPath = resolve(
                     workspaceFolder,
-                    `systems/${kebabCase(input)}.dsl`,
+                    `containers/${kebabCase(input)}`,
                 );
-                const isSystem = file(systemPath);
-                if (isSystem.size > 0) return true;
+                if (existsSync(systemPath)) return true;
             }
 
             throw new Error(

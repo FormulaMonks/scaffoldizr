@@ -3,7 +3,7 @@ import { file } from "bun";
 import type { Answers } from "inquirer";
 
 export const skipUnlessViewType = (type: string) => (answer: Answers) =>
-    answer.viewType !== type && `View type "${type}" selected.`;
+    answer.viewType !== type && `View type "${type}" not selected.`;
 
 export const whenViewType = (type: string) => (answer: Answers) =>
     answer.viewType === type;
