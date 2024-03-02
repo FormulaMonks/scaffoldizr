@@ -22,6 +22,7 @@ type RelationshipForElementOptions = {
 
 type Model = StructurizrWorkspace["model"];
 type SoftwareElement = Model["people"][number];
+type SoftwareSystem = Model["softwareSystems"][number];
 
 type GetRelationshipsOptions = {
     when?: AsyncDynamicQuestionProperty<boolean, Answers>;
@@ -31,6 +32,7 @@ type GetRelationshipsOptions = {
         arr: unknown[],
     ) => boolean;
     parse?: typeof defaultParser;
+    includeContainers?: string;
     message?: string;
 } & RelationshipForElementOptions;
 
@@ -100,6 +102,27 @@ const identifyElementByTags = (tags: string): string => {
     return "🔵";
 };
 
+const findSystemContainers = (
+    systemName: string,
+    systems: SoftwareSystem[],
+): SoftwareSystem["containers"] => {
+    const containers =
+        systems.find(({ name }) => name === systemName)?.containers ?? [];
+
+    return containers;
+};
+
+const separator = (
+    name: string,
+    elements: unknown[],
+): inquirer.Separator | unknown[] => {
+    const maybeSeparator = elements.length
+        ? new inquirer.Separator(`-- ${name} --`)
+        : [];
+
+    return maybeSeparator;
+};
+
 export async function getRelationships(
     elementName: string,
     workspaceInfo: StructurizrWorkspace | undefined,
@@ -112,20 +135,27 @@ export async function getRelationships(
         defaultRelationship = "Interacts with",
         defaultRelationshipType = "outgoing",
         defaultTechnology = "Web/HTTP",
+        includeContainers,
     }: GetRelationshipsOptions = {},
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
 
     const softwareSystems = workspaceInfo.model?.softwareSystems ?? [];
     const people = workspaceInfo.model?.people ?? [];
+    const containers = includeContainers
+        ? findSystemContainers(
+              includeContainers,
+              workspaceInfo.model?.softwareSystems,
+          )
+        : [];
 
     const systemElements = (
         [
-            softwareSystems.length
-                ? new inquirer.Separator("-- Systems --")
-                : [],
+            separator(`Containers (${includeContainers})`, containers),
+            ...containers,
+            separator("Systems", softwareSystems),
             ...softwareSystems,
-            people.length ? new inquirer.Separator("-- People --") : [],
+            separator("People", people),
             ...people,
         ] as (SoftwareElement | inquirer.Separator)[]
     )

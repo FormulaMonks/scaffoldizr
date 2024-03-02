@@ -45,6 +45,7 @@ export async function append<A extends Answers>(
         return false;
     }
 
+    // TODO: Extend functionality to create if file doesn't exist
     try {
         await access(targetFilePath);
     } catch {

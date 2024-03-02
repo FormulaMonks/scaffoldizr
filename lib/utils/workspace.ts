@@ -27,49 +27,6 @@ type Element = {
     y: number;
 };
 
-type SoftwareElement = {
-    id: string;
-    tags: string;
-    properties: Properties;
-    name: string;
-    description: string;
-    location: string;
-    documentation: Documentation;
-    relationships: Relationship[];
-};
-
-type SoftwareSystem = SoftwareElement & {
-    containers: Item[];
-};
-
-type DeploymentNode = SoftwareElement & {
-    environment: string;
-    instances: string;
-    softwareSystemInstances: [
-        {
-            id: "112";
-            tags: "Software System Instance";
-            properties: {
-                "structurizr.dsl.identifier": "slackinstance";
-            };
-            relationships: [
-                {
-                    id: "117";
-                    sourceId: "112";
-                    destinationId: "116";
-                    description: "Receive incoming webhook commands";
-                    technology: "JSON/HTTP API";
-                    linkedRelationshipId: "110";
-                },
-            ];
-            environment: "Live";
-            deploymentGroups: ["Default"];
-            instanceId: 1;
-            softwareSystemId: "1";
-        },
-    ];
-};
-
 type Relationship = {
     id: string;
     description: string;
@@ -85,6 +42,38 @@ type Relationship = {
     destinationId: string;
     technology: string;
     linkedRelationshipId: string;
+};
+
+type SoftwareElement = {
+    id: string;
+    tags: string;
+    properties: Properties;
+    name: string;
+    description: string;
+    documentation: Documentation;
+    relationships: Relationship[];
+};
+
+type Container = SoftwareElement & {
+    technology: string;
+};
+
+type SoftwareSystem = SoftwareElement & {
+    location: string;
+    containers: Container[];
+};
+
+type SoftwareSystemInstance = SoftwareElement & {
+    environment: string;
+    deploymentGroups: string[];
+    instanceId: number;
+    softwareSystemId: string;
+};
+
+type DeploymentNode = SoftwareElement & {
+    environment: string;
+    instances: string;
+    softwareSystemInstances: SoftwareSystemInstance[];
 };
 
 type View = {
