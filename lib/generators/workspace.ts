@@ -81,6 +81,11 @@ const generator: GeneratorDefinition<Answers> = {
             templateFile: "templates/.gitignore",
         } as AddAction,
         {
+            type: "add",
+            path: "architecture/.env-arch",
+            templateFile: "templates/.env-arch",
+        } as AddAction,
+        {
             type: "addMany",
             destination: "architecture",
             templateFiles: "templates/scripts/**/*.sh",

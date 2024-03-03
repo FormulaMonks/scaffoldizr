@@ -1,5 +1,6 @@
 import { kebabCase, pascalCase } from "change-case";
 import type { Answers, Question } from "inquirer";
+import { removeSpaces } from "../handlebars";
 import type { StructurizrWorkspace } from "../workspace";
 import { getAllSystemElements } from "./system";
 
@@ -21,9 +22,9 @@ export const validateDuplicatedElements =
         if (!workspaceInfo) return true;
 
         const systemElements = getAllSystemElements(workspaceInfo).map((elm) =>
-            pascalCase(elm.name.replace(/\s/g, "")),
+            pascalCase(removeSpaces(elm.name)),
         );
-        const elementName = pascalCase(input.replace(/\s/g, ""));
+        const elementName = pascalCase(removeSpaces(input));
         if (systemElements.includes(elementName)) {
             return `Element with name "${elementName}" already exists.`;
         }
@@ -41,16 +42,18 @@ export const validateDuplicatedViews =
             .flat()
             .map((elm) =>
                 pascalCase(
-                    (
-                        elm as Exclude<
-                            typeof elm,
-                            StructurizrWorkspace["configuration"]
-                        >
-                    ).key.replace(/\s/g, ""),
+                    removeSpaces(
+                        (
+                            elm as Exclude<
+                                typeof elm,
+                                StructurizrWorkspace["configuration"]
+                            >
+                        ).key,
+                    ),
                 ),
             );
 
-        const viewName = pascalCase(input.replace(/\s/g, ""));
+        const viewName = pascalCase(removeSpaces(input));
         if (systemViews.includes(viewName)) {
             return `View with name "${viewName}" already exists.`;
         }

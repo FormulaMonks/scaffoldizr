@@ -1,7 +1,8 @@
+import envArch from "./.env-arch.hbs";
 import gitignore from "./.gitignore";
-import gitkeep from "./.gitkeep";
 import constant from "./constant.hbs";
 import containersContainer from "./containers/container.hbs";
+import gitkeep from "./docs/.gitkeep";
 import empty from "./empty.hbs";
 import environmentsDeployment from "./environments/deployment.hbs";
 import include from "./include.hbs";
@@ -24,7 +25,7 @@ const templatesMap = new Map([
     ["templates/constant.hbs", constant],
     ["templates/empty.hbs", empty],
     ["templates/containers/container.hbs", containersContainer],
-    ["templates/.gitkeep", gitkeep],
+    ["templates/.env-arch", envArch],
     ["templates/.gitignore", gitignore],
     ["templates/decisions/.gitkeep", gitkeep],
     ["templates/docs/.gitkeep", gitkeep],

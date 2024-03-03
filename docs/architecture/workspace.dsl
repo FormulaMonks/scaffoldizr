@@ -23,7 +23,7 @@ workspace "Blueprint DSL" {
 
     views {
         themes "https://structurizr.test.zemoga-client.com/share/1/theme"
-        !constant AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
+        !const AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
 
         !include views
     }

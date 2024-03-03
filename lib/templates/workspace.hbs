@@ -18,7 +18,7 @@ workspace "{{workspaceName}}" {
         {{#if shouldIncludeTheme}}
         themes "https://static.structurizr.com/themes/default/theme.json"
         {{/if}}
-        !constant AUTHOR "Author: {{authorName}} <{{authorEmail}}>"
+        !const AUTHOR "Author: {{authorName}} <{{authorEmail}}>"
 
         !include views
     }

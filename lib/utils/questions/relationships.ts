@@ -1,7 +1,7 @@
 import { pascalCase } from "change-case";
 import type { Answers, PromptModule, Question } from "inquirer";
 import inquirer from "inquirer";
-import { removeSpaces } from "../../../src/utils/helpers.mjs";
+import { removeSpaces } from "../handlebars";
 import { labelElementByTags } from "../labels";
 import type { StructurizrWorkspace } from "../workspace";
 

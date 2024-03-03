@@ -83,20 +83,16 @@ describe("actions", () => {
 
             expect(result).toBeTrue();
             const generatedFile1 = file(
-                resolve(import.meta.dirname, ".test-generated/.gitkeep"),
-            );
-            expect(generatedFile1.size).toBeGreaterThan(0);
-            const generatedFile2 = file(
                 resolve(
                     import.meta.dirname,
                     ".test-generated/decisions/.gitkeep",
                 ),
             );
-            expect(generatedFile2.size).toBeGreaterThan(0);
-            const generatedFile3 = file(
+            expect(generatedFile1.size).toBeGreaterThan(0);
+            const generatedFile2 = file(
                 resolve(import.meta.dirname, ".test-generated/docs/.gitkeep"),
             );
-            expect(generatedFile3.size).toBeGreaterThan(0);
+            expect(generatedFile2.size).toBeGreaterThan(0);
         });
 
         test("should skip if when() is declared", async () => {

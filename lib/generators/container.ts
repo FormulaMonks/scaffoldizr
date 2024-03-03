@@ -4,6 +4,7 @@ import { kebabCase, pascalCase } from "change-case";
 import type { Answers, QuestionCollection } from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
+import { removeSpaces } from "../utils/handlebars";
 import { getRelationships } from "../utils/questions/relationships";
 import { getSystemQuestion } from "../utils/questions/system";
 import {
@@ -142,9 +143,7 @@ const generator: GeneratorDefinition<Answers> = {
                 const systemView = await file(systemViewPath).text();
 
                 const match = new RegExp(
-                    `container ${pascalCase(
-                        answers.systemName.replace(/\s/g, ""),
-                    )}`,
+                    `container ${pascalCase(removeSpaces(answers.systemName))}`,
                     "g",
                 ).test(systemView);
 
