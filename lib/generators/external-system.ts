@@ -1,4 +1,4 @@
-import type { QuestionCollection } from "inquirer";
+import type { Answers, QuestionCollection } from "inquirer";
 import inquirer from "inquirer";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
@@ -17,13 +17,7 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-type ExternalSystemAnswers = {
-    systemName: string;
-    elementName: string;
-    extSystemDescription: string;
-};
-
-const generator: GeneratorDefinition<ExternalSystemAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "External System",
     description: "Create a new external system",
     questions: async (prompt, generator) => {
@@ -34,7 +28,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             workspaceInfo ?? generator.destPath,
         );
 
-        const questions: QuestionCollection<ExternalSystemAnswers> = [
+        const questions: QuestionCollection<Answers> = [
             systemQuestion,
             {
                 type: "input",

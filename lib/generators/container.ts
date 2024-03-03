@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
-import type { QuestionCollection } from "inquirer";
+import type { Answers, QuestionCollection } from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { getRelationships } from "../utils/questions/relationships";
@@ -14,15 +14,7 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-type ContainerAnswers = {
-    systemName: string;
-    elementName: string;
-    containerDescription: string;
-    containerType: string;
-    containerTechnology?: string;
-};
-
-const generator: GeneratorDefinition<ContainerAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "Container",
     description: "Create a new system container",
     questions: async (prompt, generator) => {
@@ -36,7 +28,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             },
         );
 
-        const questions: QuestionCollection<ContainerAnswers> = [
+        const questions: QuestionCollection<Answers> = [
             systemQuestion,
             {
                 type: "input",
@@ -96,7 +88,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             ...partialAnswers,
             includeTabs: "",
             includeSource: `${kebabCase(partialAnswers.systemName)}.dsl`,
-            relationships: { ...relationships },
+            relationships,
         };
 
         return compiledAnswers;

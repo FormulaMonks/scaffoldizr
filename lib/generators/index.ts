@@ -5,5 +5,4 @@ export { default as extSystemGenerator } from "./external-system";
 export { default as viewGenerator } from "./view";
 export { default as systemGenerator } from "./system";
 export { default as containerGenerator } from "./container";
-// TODO (for MVP):
-// - relationshipGenerator
+export { default as relationshipGenerator } from "./relationship";

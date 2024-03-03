@@ -1,4 +1,4 @@
-import type { QuestionCollection } from "inquirer";
+import type { Answers, QuestionCollection } from "inquirer";
 import type { AddAction } from "../utils/actions";
 import { skipUnlessViewType, whenViewType } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
@@ -10,12 +10,6 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-type ViewAnswers = {
-    viewType: string;
-    viewName: string;
-    viewDescription: string;
-};
-
 // TODO: Other types of views
 // - Container
 // - Component
@@ -23,7 +17,7 @@ type ViewAnswers = {
 // - Filtered
 // // - System landscape
 // // - Deployment
-const generator: GeneratorDefinition<ViewAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "View",
     description: "Create a new view",
     questions: async (prompt, generator) => {
@@ -31,7 +25,7 @@ const generator: GeneratorDefinition<ViewAnswers> = {
             getWorkspacePath(generator.destPath),
         );
 
-        const questions: QuestionCollection<ViewAnswers> = [
+        const questions: QuestionCollection<Answers> = [
             {
                 type: "list",
                 name: "viewType",

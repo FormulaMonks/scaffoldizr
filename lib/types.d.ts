@@ -4,6 +4,12 @@ declare module "*.hbs" {
     export default content;
 }
 
+declare module "*.gitignore" {
+    const content: string;
+    // biome-ignore lint/correctness/noUndeclaredVariables: Ignore known file extensions
+    export default content;
+}
+
 declare module "*.sh" {
     const content: string;
     // biome-ignore lint/correctness/noUndeclaredVariables: Ignore known file extensions

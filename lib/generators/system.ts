@@ -1,4 +1,4 @@
-import type { QuestionCollection } from "inquirer";
+import type { Answers, QuestionCollection } from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { getRelationships } from "../utils/questions/relationships";
@@ -9,19 +9,14 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-type SystemAnswers = {
-    systemName: string;
-    systemDescription: string;
-};
-
-const generator: GeneratorDefinition<SystemAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "System",
     description: "Create a new software system",
     questions: async (prompt, generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
-        const questions: QuestionCollection<SystemAnswers> = [
+        const questions: QuestionCollection<Answers> = [
             {
                 type: "input",
                 name: "systemName",

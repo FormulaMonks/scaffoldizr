@@ -28,26 +28,29 @@ export async function append<A extends Answers>(
         skip = () => false,
         ...opts
     } = options;
-    const compiledOpts = compileSource<AppendAction>(opts, answers);
-    const targetFilePath = resolve(rootPath, compiledOpts.path);
-    const relativePath = relative(process.cwd(), targetFilePath);
-    const targetFile = file(targetFilePath);
 
     const [doWhen, doSkip] = await Promise.all([
         when(answers, rootPath),
         skip(answers, rootPath),
     ]);
 
-    const shouldSkip = !doWhen || doSkip;
+    const shouldSkip = doSkip || !doWhen;
 
     if (shouldSkip) {
         console.log(
             `${chalk.gray("[SKIPPED]:")} ${
-                typeof shouldSkip === "string" ? shouldSkip : relativePath
+                typeof shouldSkip === "string"
+                    ? shouldSkip
+                    : resolve(rootPath, options.path)
             }`,
         );
         return false;
     }
+
+    const compiledOpts = compileSource<AppendAction>(opts, answers);
+    const targetFilePath = resolve(rootPath, compiledOpts.path);
+    const relativePath = relative(process.cwd(), targetFilePath);
+    const targetFile = file(targetFilePath);
 
     const templateLocation = templates.get(compiledOpts.templateFile);
 

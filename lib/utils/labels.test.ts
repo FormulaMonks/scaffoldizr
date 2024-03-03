@@ -24,6 +24,9 @@ describe("labels", () => {
             expect(labelElementByName("Container")).toEqual(Labels.Container);
             expect(labelElementByName("View")).toEqual(Labels.View);
             expect(labelElementByName("Constant")).toEqual(Labels.Constant);
+            expect(labelElementByName("Relationship")).toEqual(
+                Labels.Relationship,
+            );
             expect(labelElementByName("DoesNotExist")).toEqual(Labels.System);
         });
     });

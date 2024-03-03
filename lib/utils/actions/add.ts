@@ -25,22 +25,33 @@ export async function add<A extends Answers>(
         skip = () => false,
         ...opts
     } = options;
-    const compiledOpts = compileSource<AddAction>(opts, answers);
-    const targetFile = file(resolve(rootPath, compiledOpts.path));
-
     const [doWhen, doSkip] = await Promise.all([
         when(answers, rootPath),
         skip(answers, rootPath),
     ]);
 
-    const shouldSkip = !doWhen || doSkip;
+    const shouldSkip = doSkip || !doWhen;
+
+    if (shouldSkip) {
+        console.log(
+            `${chalk.gray("[SKIPPED]:")} ${
+                typeof shouldSkip === "string"
+                    ? shouldSkip
+                    : resolve(rootPath, options.path)
+            }`,
+        );
+        return false;
+    }
+
+    const compiledOpts = compileSource<AddAction>(opts, answers);
+    const targetFile = file(resolve(rootPath, compiledOpts.path));
 
     const relativePath = relative(
         process.cwd(),
         resolve(rootPath, compiledOpts.path),
     );
 
-    if (shouldSkip || (targetFile.size > 0 && compiledOpts.skipIfExists)) {
+    if (targetFile.size > 0 && compiledOpts.skipIfExists) {
         console.log(
             `${chalk.gray("[SKIPPED]:")} ${
                 typeof shouldSkip === "string" ? shouldSkip : relativePath

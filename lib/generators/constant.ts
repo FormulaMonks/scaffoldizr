@@ -1,13 +1,9 @@
+import type { Answers } from "inquirer";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
-type ConstantAnswers = {
-    constantName: string;
-    constantValue: string;
-};
-
-const generator: GeneratorDefinition<ConstantAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "Constant",
     description: "Create a new workspace constant",
     questions: [

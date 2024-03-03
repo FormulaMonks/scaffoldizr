@@ -1,12 +1,11 @@
+import gitignore from "./.gitignore";
 import gitkeep from "./.gitkeep";
 import constant from "./constant.hbs";
 import containersContainer from "./containers/container.hbs";
 import empty from "./empty.hbs";
 import environmentsDeployment from "./environments/deployment.hbs";
 import include from "./include.hbs";
-import relationshipsIncoming from "./relationships/incoming.hbs";
 import relationshipsMultiple from "./relationships/multiple.hbs";
-import relationshipsOutgoing from "./relationships/outgoing.hbs";
 import scriptsRun from "./scripts/run.sh";
 import scriptsUpdate from "./scripts/update.sh";
 import systemExternal from "./system/external.hbs";
@@ -26,6 +25,7 @@ const templatesMap = new Map([
     ["templates/empty.hbs", empty],
     ["templates/containers/container.hbs", containersContainer],
     ["templates/.gitkeep", gitkeep],
+    ["templates/.gitignore", gitignore],
     ["templates/decisions/.gitkeep", gitkeep],
     ["templates/docs/.gitkeep", gitkeep],
     ["templates/containers/.gitkeep", gitkeep],
@@ -33,9 +33,7 @@ const templatesMap = new Map([
     ["templates/environments/.gitkeep", gitkeep],
     ["templates/environments/deployment.hbs", environmentsDeployment],
     ["templates/include.hbs", include],
-    ["templates/relationships/incoming.hbs", relationshipsIncoming],
     ["templates/relationships/multiple.hbs", relationshipsMultiple],
-    ["templates/relationships/outgoing.hbs", relationshipsOutgoing],
     ["templates/scripts/run.sh", scriptsRun],
     ["templates/scripts/update.sh", scriptsUpdate],
     ["templates/system/external.hbs", systemExternal],

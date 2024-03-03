@@ -1,4 +1,5 @@
 import { $ } from "bun";
+import type { Answers } from "inquirer";
 import { AddAction, AddManyAction } from "../utils/actions";
 import { GeneratorDefinition } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
@@ -6,17 +7,7 @@ import { stringEmpty } from "../utils/questions/validators";
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
 
-type WorkspaceAnswers = {
-    workspaceName: string;
-    workspaceDescription: string;
-    systemName: string;
-    systemDescription: string;
-    authorName: string;
-    authorEmail: string;
-    shouldIncludeTheme?: boolean;
-};
-
-const generator: GeneratorDefinition<WorkspaceAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "Workspace",
     description: "Create a new workspace",
     questions: [
@@ -83,6 +74,11 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
             type: "add",
             path: "architecture/relationships/_system.dsl",
             templateFile: "templates/empty.hbs",
+        } as AddAction,
+        {
+            type: "add",
+            path: "architecture/.gitignore",
+            templateFile: "templates/.gitignore",
         } as AddAction,
         {
             type: "addMany",

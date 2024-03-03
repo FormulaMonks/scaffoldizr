@@ -9,6 +9,38 @@ type GetSystemQuestionOptions = {
     message?: string;
 };
 
+type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
+type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
+
+type GetAllSystemElementsOptions = {
+    includeContainers?: boolean;
+};
+
+export function getAllSystemElements(
+    workspaceInfo: StructurizrWorkspace | undefined,
+    { includeContainers = true }: GetAllSystemElementsOptions = {},
+): (SoftwareElement & { systemName?: string })[] {
+    if (!workspaceInfo) return [];
+    const systemElements = Object.values(workspaceInfo.model)
+        .flat()
+        .flatMap((elm) => {
+            const sysElm = elm as SoftwareSystem;
+            if (includeContainers && sysElm.containers) {
+                return [
+                    sysElm,
+                    ...sysElm.containers.map((container) => ({
+                        ...container,
+                        systemName: sysElm.name,
+                    })),
+                ];
+            }
+
+            return elm;
+        });
+
+    return systemElements;
+}
+
 export async function getSystemQuestion(
     workspace: string | StructurizrWorkspace,
     {

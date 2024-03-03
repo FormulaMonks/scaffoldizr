@@ -1,9 +1,5 @@
 import { pascalCase } from "change-case";
-import type {
-    Answers,
-    AsyncDynamicQuestionProperty,
-    PromptModule,
-} from "inquirer";
+import type { Answers, PromptModule, Question } from "inquirer";
 import inquirer from "inquirer";
 import { removeSpaces } from "../../../src/utils/helpers.mjs";
 import { labelElementByTags } from "../labels";
@@ -26,7 +22,8 @@ type SoftwareElement = Model["people"][number];
 type SoftwareSystem = Model["softwareSystems"][number];
 
 type GetRelationshipsOptions = {
-    when?: AsyncDynamicQuestionProperty<boolean, Answers>;
+    when?: Question<Answers>["when"];
+    validate?: Question<Answers>["validate"];
     filterChoices?: (
         elm: inquirer.Separator | { name: string; value: string },
         pos: number,
@@ -120,6 +117,7 @@ export async function getRelationships(
     prompt: PromptModule,
     {
         when = () => true,
+        validate = () => true,
         filterChoices = () => true,
         parse = defaultParser,
         message = "Relates to elements:",
@@ -173,6 +171,7 @@ export async function getRelationships(
         message,
         choices: systemElements,
         when,
+        validate,
     });
 
     if (!relationships.length) return {};

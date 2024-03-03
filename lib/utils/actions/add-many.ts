@@ -25,27 +25,26 @@ export async function addMany<A extends Answers>(
         filePermissions = "644",
         ...opts
     } = options;
-    const compiledOpts = compileSource<AddManyAction>(opts, answers);
-    const pattern = new Glob(compiledOpts.templateFiles);
-
     const [doWhen, doSkip] = await Promise.all([
         when(answers, rootPath),
         skip(answers, rootPath),
     ]);
 
-    const shouldSkip = !doWhen || doSkip;
+    const shouldSkip = doSkip || !doWhen;
 
     if (shouldSkip) {
         console.log(
             `${chalk.gray("[SKIPPED]:")} ${
                 typeof shouldSkip === "string"
                     ? shouldSkip
-                    : compiledOpts.templateFiles
+                    : options.templateFiles
             }`,
         );
 
         return false;
     }
+    const compiledOpts = compileSource<AddManyAction>(opts, answers);
+    const pattern = new Glob(compiledOpts.templateFiles);
 
     const filesToCreate = [];
 

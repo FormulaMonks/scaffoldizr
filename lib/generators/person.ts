@@ -1,4 +1,4 @@
-import type { QuestionCollection } from "inquirer";
+import type { Answers, QuestionCollection } from "inquirer";
 import inquirer from "inquirer";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
@@ -16,13 +16,7 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-type PersonAnswers = {
-    systemName: string;
-    elementName: string;
-    personDescription: string;
-};
-
-const generator: GeneratorDefinition<PersonAnswers> = {
+const generator: GeneratorDefinition<Answers> = {
     name: "Person",
     description: "Create a new person (customer, user, etc)",
     questions: async (prompt, generator) => {
@@ -30,7 +24,7 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             getWorkspacePath(generator.destPath),
         );
 
-        const questions: QuestionCollection<PersonAnswers> = [
+        const questions: QuestionCollection<Answers> = [
             await getSystemQuestion(workspaceInfo ?? generator.destPath),
             {
                 type: "input",

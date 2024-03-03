@@ -93,6 +93,7 @@ describe("relationships", () => {
                     },
                 ],
                 when: expect.any(Function),
+                validate: expect.any(Function),
             });
 
             expect(relationships).toEqual({});
