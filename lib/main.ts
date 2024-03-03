@@ -40,7 +40,9 @@ if (!workspacePath) {
     console.log(`${chalk.yellow(
         'It seems the folder you selected does not have a "workspace.dsl" file.',
     )}
-Destination folder: ${chalk.blue(relative(process.cwd(), destPath))}
+Destination folder: ${chalk.blue(
+        relative(process.cwd(), destPath) || process.cwd(),
+    )}
 Let's create a new one by answering the questions below.
 `);
     try {
