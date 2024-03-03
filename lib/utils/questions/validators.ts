@@ -3,6 +3,7 @@ import type { Answers, Question } from "inquirer";
 import type { StructurizrWorkspace } from "../workspace";
 
 type Validator = Question["validate"];
+type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
 
 export const stringEmpty = (input: string) => input.length > 0;
 
@@ -21,6 +22,14 @@ export const validateDuplicatedElements =
 
         const systemElements = Object.values(workspaceInfo.model)
             .flat()
+            .flatMap((elm) => {
+                const sysElm = elm as SoftwareSystem;
+                if (sysElm.containers) {
+                    return [sysElm, ...sysElm.containers];
+                }
+
+                return elm;
+            })
             .map((elm) => pascalCase(elm.name.replace(/\s/g, "")));
 
         const elementName = pascalCase(input.replace(/\s/g, ""));

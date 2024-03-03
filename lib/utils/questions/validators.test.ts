@@ -71,6 +71,8 @@ describe("validators", () => {
 
             type SoftwareElement =
                 StructurizrWorkspace["model"]["people"][number];
+            type SoftwareSystem =
+                StructurizrWorkspace["model"]["softwareSystems"][number];
 
             const loadedValidator = validateDuplicatedElements({
                 model: {
@@ -86,8 +88,15 @@ describe("validators", () => {
                             id: "123",
                             tags: "Element,SoftwareSystem",
                             name: "SomeSystem",
+                            containers: [
+                                {
+                                    id: "123",
+                                    tags: "Element,Container",
+                                    name: "SomeContainer",
+                                },
+                            ],
                         },
-                    ] as SoftwareElement[],
+                    ] as SoftwareSystem[],
                     deploymentNodes: [
                         {
                             id: "123",
@@ -106,6 +115,9 @@ describe("validators", () => {
             );
             expect(loadedValidator?.("Some Person")).toEqual(
                 `Element with name "SomePerson" already exists.`,
+            );
+            expect(loadedValidator?.("SomeContainer")).toEqual(
+                `Element with name "SomeContainer" already exists.`,
             );
             expect(loadedValidator?.("Not Duplicated")).toEqual(true);
         });

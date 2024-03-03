@@ -12,6 +12,7 @@ import {
     GetAnswers,
     createGenerator,
 } from "./utils/generator";
+import { labelElementByName } from "./utils/labels";
 import { getWorkspacePath } from "./utils/workspace";
 
 const args = await yargs(hideBin(process.argv))
@@ -69,10 +70,13 @@ const generate = await mainPrompt<{ element: GeneratorDefinition<Answers> }>([
         name: "element",
         message: "Create a new element:",
         type: "list",
-        choices: Object.values(otherGenerators).map((g) => ({
-            name: g.name,
-            value: g,
-        })),
+        choices: Object.values(otherGenerators)
+            .map((g) => ({
+                name: `${labelElementByName(g.name)} ${g.name}`,
+                value: g,
+            }))
+            .toReversed()
+            .toSorted(),
     },
 ]);
 

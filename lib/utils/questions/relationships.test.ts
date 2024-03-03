@@ -83,7 +83,7 @@ describe("relationships", () => {
                 choices: [
                     expect.any(inquirer.Separator),
                     {
-                        name: "🔵 SomeSystem",
+                        name: "🟦 SomeSystem",
                         value: "SomeSystem",
                     },
                     expect.any(inquirer.Separator),

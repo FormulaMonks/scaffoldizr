@@ -6,6 +6,7 @@ import type {
 } from "inquirer";
 import inquirer from "inquirer";
 import { removeSpaces } from "../../../src/utils/helpers.mjs";
+import { labelElementByTags } from "../labels";
 import type { StructurizrWorkspace } from "../workspace";
 
 type Relationship = {
@@ -92,16 +93,6 @@ export const relationshipsForElement = (
     ];
 };
 
-const identifyElementByTags = (tags: string): string => {
-    for (const tag of tags.split(",")) {
-        if (tag === "Person") return "👤";
-        if (tag === "External") return "⚪️";
-        if (tag === "Container") return "🔹";
-    }
-
-    return "🔵";
-};
-
 const findSystemContainers = (
     systemName: string,
     systems: SoftwareSystem[],
@@ -164,7 +155,7 @@ export async function getRelationships(
             elm instanceof inquirer.Separator
                 ? elm
                 : {
-                      name: `${identifyElementByTags(elm.tags)} ${elm.name}`,
+                      name: `${labelElementByTags(elm.tags)} ${elm.name}`,
                       value: elm.name,
                   },
         )
