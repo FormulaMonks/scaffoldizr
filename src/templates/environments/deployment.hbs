@@ -1,7 +1,0 @@
-deploymentEnvironment "{{viewName}}" {
-    deploymentNode "{{properCase (removeSpaces systemName)}}'s Infrastructure" {
-        {{properCase (removeSpaces systemName)}}{{properCase viewName}}Instance = infrastructureNode {{properCase (removeSpaces systemName)}} {
-            description "Start here..."
-        }
-    }
-}
