@@ -130,9 +130,10 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
 
                 return (
                     match &&
-                    `Container relationship for "${answers.systemName}" already included.`
+                    `Container relationship for "${answers.systemName}" already included`
                 );
             },
+            pattern: /.*\n!include.*/,
             templateFile: "templates/include.hbs",
         } as AppendAction,
         {
@@ -157,19 +158,14 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
 
                 return (
                     match &&
-                    `Container view for "${answers.systemName}" already exists.`
+                    `Container view for "${answers.systemName}" already exists`
                 );
             },
             templateFile: "templates/views/container.hbs",
         } as AppendAction,
         {
-            type: "add",
-            skipIfExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            templateFile: "templates/relationships/multiple.hbs",
-        } as AddAction,
-        {
             type: "append",
+            createIfNotExists: true,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction,

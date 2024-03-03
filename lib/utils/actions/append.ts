@@ -1,6 +1,6 @@
 import { access } from "node:fs/promises";
-import { relative, resolve } from "node:path";
-import { file, write } from "bun";
+import { join, relative, resolve } from "node:path";
+import { $, file, write } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
 import { ActionTypes, BaseAction, ExtendedAction } from ".";
@@ -10,6 +10,8 @@ export type AppendAction = BaseAction & {
     type: ActionTypes.Append;
     templateFile: string;
     path: string;
+    filePermissions?: string;
+    createIfNotExists?: boolean;
     pattern?: RegExp;
 };
 
@@ -20,6 +22,8 @@ export async function append<A extends Answers>(
     const {
         templates,
         rootPath,
+        createIfNotExists = false,
+        filePermissions = "644",
         when = () => true,
         skip = () => false,
         ...opts
@@ -45,17 +49,30 @@ export async function append<A extends Answers>(
         return false;
     }
 
-    // TODO: Extend functionality to create if file doesn't exist
-    try {
-        await access(targetFilePath);
-    } catch {
-        throw new Error(`File not found: ${targetFilePath}`);
-    }
-
     const templateLocation = templates.get(compiledOpts.templateFile);
 
     if (!templateLocation) {
         throw new Error(`Template not found: ${compiledOpts.templateFile}`);
+    }
+
+    try {
+        await access(targetFilePath);
+    } catch {
+        if (!createIfNotExists)
+            throw new Error(`File not found: ${targetFilePath}`);
+
+        const template = await compileTemplateFile(
+            templateLocation,
+            answers,
+            rootPath,
+        );
+
+        await write(targetFilePath, template);
+        await $`chmod ${filePermissions} ${join(rootPath, compiledOpts.path)}`;
+
+        console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
+
+        return true;
     }
 
     const templatePromise = compileTemplateFile(
@@ -77,15 +94,14 @@ export async function append<A extends Answers>(
         const [match] = fileContents.match(compiledOpts.pattern) ?? [];
         if (!match) {
             console.log(
-                `${chalk.gray(
-                    "[SKIPPED]:",
-                )} ${relativePath} - No matches for pattern`,
+                `${chalk.yellow(
+                    "[WARN]:",
+                )} ${relativePath} - No matches for pattern ${compiledOpts.pattern.toString()}`,
             );
-            return false;
+        } else {
+            const [part1, part2] = fileContents.split(match);
+            newContent = `${part1}${match.trimEnd()}\n${template}${part2}`;
         }
-
-        const [part1, part2] = fileContents.split(match);
-        newContent = `${part1}${match.trimEnd()}\n${template}${part2}`;
     }
 
     await write(targetFilePath, newContent);

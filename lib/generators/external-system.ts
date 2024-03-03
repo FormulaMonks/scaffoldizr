@@ -1,6 +1,6 @@
 import type { QuestionCollection } from "inquirer";
 import inquirer from "inquirer";
-import type { AddAction, AppendAction } from "../utils/actions";
+import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
@@ -103,37 +103,17 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             templateFile: "templates/include.hbs",
         } as AppendAction,
         {
-            when: (_answers, rootPath) =>
-                whenFileExists(
-                    "systems/_external.dsl",
-                    getWorkspacePath(rootPath),
-                ),
+            createIfNotExists: true,
             type: "append",
             path: "architecture/systems/_external.dsl",
             templateFile: "templates/system/external.hbs",
         } as AppendAction,
         {
-            when: (_answers, rootPath) =>
-                whenFileExists(
-                    "relationships/_external.dsl",
-                    getWorkspacePath(rootPath),
-                ),
+            createIfNotExists: true,
             type: "append",
             path: "architecture/relationships/_external.dsl",
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction,
-        {
-            type: "add",
-            skipIfExists: true,
-            path: "architecture/systems/_external.dsl",
-            templateFile: "templates/system/external.hbs",
-        } as AddAction,
-        {
-            type: "add",
-            skipIfExists: true,
-            path: "architecture/relationships/_external.dsl",
-            templateFile: "templates/relationships/multiple.hbs",
-        } as AddAction,
     ],
 };
 

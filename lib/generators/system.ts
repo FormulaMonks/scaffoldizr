@@ -78,6 +78,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
         {
             type: "append",
             path: "architecture/relationships/_system.dsl",
+            pattern: /\n.* -> .*\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction,
         {

@@ -61,7 +61,7 @@ describe("actions", () => {
                 "Content 1\ncontent 2\ntemplate append-test\ncontent 3",
             );
         });
-        test("should skip when pattern not found", async () => {
+        test("should append to end of file when pattern not found", async () => {
             const initialContent = "Content 1\ncontent 2\ncontent 3";
             const testFilePath = resolve(
                 import.meta.dirname,
@@ -82,7 +82,11 @@ describe("actions", () => {
                 { filename: "Append test" },
             );
 
-            expect(result).toBeFalse();
+            expect(result).toBeTrue();
+            const fileContents = await file(testFilePath).text();
+            expect(fileContents).toEqual(
+                "Content 1\ncontent 2\ncontent 3\ntemplate append-test",
+            );
         });
         test("should error when file not found", async () => {
             expect(
@@ -98,6 +102,29 @@ describe("actions", () => {
                         { filename: "Append test" },
                     ),
             ).toThrow(/File not found/);
+        });
+        test("should not error if createIfNotExists flag passed", async () => {
+            let result;
+            expect(async () => {
+                result = await append(
+                    {
+                        type: ActionTypes.Append,
+                        rootPath: import.meta.dirname,
+                        createIfNotExists: true,
+                        templates: templates,
+                        path: ".test-generated/not-found.txt",
+                        templateFile: "templates/test-template.hbs",
+                    },
+                    { filename: "Append test" },
+                );
+                return result;
+            }).not.toThrow();
+
+            expect(result).toBeTrue();
+            const fileContents = await file(
+                resolve(import.meta.dirname, ".test-generated/not-found.txt"),
+            ).text();
+            expect(fileContents).toEqual("template append-test");
         });
         test("should skip if when() is declared", async () => {
             const initialContent = "Content 1\ncontent 2\ncontent 3";
