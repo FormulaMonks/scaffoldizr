@@ -1,10 +1,10 @@
 {
-    "name": "blueprint-dsl",
+    "name": "scaffoldizr",
     "version": "0.2.0",
     "description": "Opinionated Scaffolding Tool for Structurizr",
     "module": "src/main.mjs",
     "bin": {
-        "bpdsl": "lib/main.ts"
+        "scfz": "lib/main.ts"
     },
     "scripts": {
         "test:dev": "bun test --watch --preload ./test-setup.ts",

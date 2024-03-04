@@ -6,11 +6,11 @@
     "formatter": {
         "indentWidth": 4,
         "indentStyle": "space",
-        "ignore": ["docs/**/*.json"]
+        "ignore": ["architecture/**/*.json", ".vscode/**/*.json"]
     },
     "linter": {
         "enabled": true,
-        "ignore": ["docs/**/*.json"],
+        "ignore": ["architecture/**/*.json", ".vscode/**/*.json"],
         "rules": {
             "recommended": true,
             "correctness": {

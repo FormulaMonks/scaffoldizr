@@ -177,4 +177,6 @@ dist
 __base
 docs/architecture/.structurizr
 **/.test-generated
-lib/main
+lib/scfz
+
+*.bun-build

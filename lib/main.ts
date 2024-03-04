@@ -1,5 +1,6 @@
 import { relative, resolve } from "node:path";
 import chalk from "chalk";
+import { capitalCase } from "change-case";
 import inquirer, { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -17,7 +18,11 @@ import { getWorkspacePath } from "./utils/workspace";
 
 const args = await yargs(hideBin(process.argv))
     .version("version", "Show current tool version", pkg.version)
-    .usage("Blueprint DSL: Create a Structurizr DSL scaffolding in seconds!")
+    .usage(
+        `${capitalCase(
+            pkg.name,
+        )}: Create a Structurizr DSL scaffolding in seconds!`,
+    )
     .option("dest", {
         default: ".",
         desc: "Target architecture folder",
@@ -25,7 +30,7 @@ const args = await yargs(hideBin(process.argv))
 
 console.log(
     chalk.bold(`
-Welcome to Blueprint DSL.
+Welcome to ${chalk.cyan(capitalCase(pkg.name))}
 Create a Structurizr DSL scaffolding in seconds!
     `),
 );

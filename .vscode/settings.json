@@ -13,5 +13,8 @@
     "[json]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
-    "cSpell.words": ["structurizr"]
+    "cSpell.words": [
+        "scaffoldizr",
+        "structurizr"
+    ]
 }
