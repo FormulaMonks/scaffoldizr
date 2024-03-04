@@ -22,10 +22,11 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^1.4.0",
-        "@types/yargs": "^17.0.32",
         "@types/bun": "^1.0.6",
+        "@types/yargs": "^17.0.32",
         "commitizen": "^4.3.0",
         "cz-conventional-changelog": "^3.3.0",
+        "generate-changelog": "^1.8.0",
         "husky": "^8.0.3",
         "lint-staged": "^14.0.0"
     },
