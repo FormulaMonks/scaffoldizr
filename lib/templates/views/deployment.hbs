@@ -1,5 +1,5 @@
-deployment {{properCase (removeSpaces systemName)}} "{{viewName}}" "{{properCase (removeSpaces systemName)}}{{properCase viewName}}Deployment" {
-    description "{{viewDescription}}. ${AUTHOR}"
+deployment {{properCase (removeSpaces systemName)}} "{{{viewName}}}" "{{properCase (removeSpaces systemName)}}{{properCase viewName}}Deployment" {
+    description "{{{viewDescription}}}. ${AUTHOR}"
     include *
     exclude relationship.tag==component
     exclude relationship.tag==system

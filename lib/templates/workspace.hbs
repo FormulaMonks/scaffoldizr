@@ -1,5 +1,5 @@
-workspace "{{workspaceName}}" {
-    description "{{workspaceDescription}}"
+workspace "{{{workspaceName}}}" {
+    description "{{{workspaceDescription}}}"
 
     !adrs decisions
     !docs docs
@@ -18,7 +18,7 @@ workspace "{{workspaceName}}" {
         {{#if shouldIncludeTheme}}
         themes "https://static.structurizr.com/themes/default/theme.json"
         {{/if}}
-        !const AUTHOR "Author: {{authorName}} <{{authorEmail}}>"
+        !const AUTHOR "Author: {{{authorName}}} <{{authorEmail}}>"
 
         !include views
     }

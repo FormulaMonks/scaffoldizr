@@ -6,3 +6,4 @@ export { default as viewGenerator } from "./view";
 export { default as systemGenerator } from "./system";
 export { default as containerGenerator } from "./container";
 export { default as relationshipGenerator } from "./relationship";
+// TODO: componentGenerator
