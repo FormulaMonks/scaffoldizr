@@ -11,7 +11,7 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
-          version: latest # FIXME: Lock version if needed
+          version: 2024.3.1
           install: true
           cache: true
           experimental: true
