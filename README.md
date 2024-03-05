@@ -11,7 +11,7 @@ This is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.
 ## Usage
 
 ```bash
-sfcz --dest {docs_folder}
+scfz --dest {docs_folder}
 ```
 
 where `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there.
