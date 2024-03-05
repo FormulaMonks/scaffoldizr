@@ -32,7 +32,8 @@ jobs:
           bun build ./lib/main.ts --compile --outfile ./dist/scfz
           tar -czvf ./dist/scfz.tar.gz ./lib/scfz
           ./lib/scfz --version
-          bun changelog --file dist/changelog.txt --tag $(git tag --list --sort=v:refname | grep -v beta | tail -n 1)
+          bun changelog --file ./dist/changelog.txt --tag $(git tag --list --sort=v:refname | grep -v beta | tail -n 1)
+          cat ./dist/changelog.txt
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
