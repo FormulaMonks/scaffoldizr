@@ -17,6 +17,7 @@ jobs:
           experimental: true
       - name: Test
         run: |
+          bun install
           bun test:ci
       - name: Create binary
         run: |
