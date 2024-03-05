@@ -22,16 +22,21 @@ jobs:
         run: |
           bun install
           bun test:ci
-      - name: Create binary
+      - name: Create binary and release files # FIXME: Bun issue with bin path
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           bun build ./lib/main.ts --compile --outfile ./dist/scfz
-      - name: Verify binary version
-        run: ./lib/scfz --version
+          tar -czvf ./dist/scfz.tar.gz ./lib/scfz
+          ./lib/scfz --version
+          bun changelog --file dist/changelog.txt --tag $(git tag --sort=v:refname | grep -v beta | tail -n 1)
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          draft: ${{contains(github.ref, '-beta')}}
-          files: |
+          draft: true
+          prerelease: ${{contains(github.ref, '-beta')}}
+          body_path: ./dist/changelog.txt
+          files: | # FIXME: Bun issue with bin path
             ./lib/scfz
+            ./dist/scfz.tar.gz
             LICENSE
