@@ -7,7 +7,18 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
+
+    # Run steps on a matrix of 2 arch/distro combinations
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64
+            distro: ubuntu22.04
+          - arch: none
+            distro: none
+            base_image: armv7/ubuntu_latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,12 +37,34 @@ jobs:
           bun install
           bun test:ci
       - name: Create binary and release files # FIXME: Bun issue with bin path
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.distro }}
+          githubToken: ${{ github.token }}
+          dockerRunArgs: |
+            --volume "${PWD}/dist:/dist"
+          setup: |
+            mkdir -p "${PWD}/dist"
+          install: |
+            case "${{ matrix.distro }}" in
+              ubuntu*|jessie|stretch|buster|bullseye)
+                apt-get update -q -y
+                apt-get install -q -y git
+                ;;
+            esac
+          env: | # YAML, but pipe character is necessary
+            artifact_name: scfz-${{ matrix.arch }}
+          run: |
+            bun build ./lib/main.ts --compile --outfile ${PWD}/dist/${artifact_name}
+            tar -czvf ${PWD}/dist/${artifact_name}.tar.gz ${PWD}/lib/${artifact_name}
+            ${PWD}/lib/${artifact_name} --version
+      - name: Show artifacts
+        run: |
+          ls -la ${PWD}/dist
+      - name: Create Changelog
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          mkdir ./dist
-          bun build ./lib/main.ts --compile --outfile ./dist/scfz
-          tar -czvf ./dist/scfz.tar.gz ./lib/scfz
-          ./lib/scfz --version
           bun changelog --file ./dist/changelog.txt --tag $(git tag --list --sort=v:refname | grep -v beta | tail -n 1)
           cat ./dist/changelog.txt
       - name: Release
@@ -42,6 +75,6 @@ jobs:
           prerelease: ${{contains(github.ref, '-beta')}}
           body_path: ./dist/changelog.txt
           files: | # FIXME: Bun issue with bin path
-            ./lib/scfz
-            ./dist/scfz.tar.gz
+            ${PWD}/lib/scfz*
+            ${PWD}/dist/scfz*.tar.gz
             LICENSE
