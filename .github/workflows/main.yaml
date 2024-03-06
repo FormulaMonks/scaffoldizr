@@ -32,34 +32,18 @@ jobs:
             name: linux-x64
             target: x86_64-unknown-linux-gnu
             runs-on: ubuntu-latest
-          # - os: ubuntu
-          #   name: linux-x64-musl
-          #   target: x86_64-unknown-linux-musl
-          #   runs-on: ubuntu-latest
           - os: ubuntu
             name: linux-arm64
             target: aarch64-unknown-linux-gnu
             runs-on: ubuntu-latest
-          # - os: ubuntu
-          #   name: linux-arm64-musl
-          #   target: aarch64-unknown-linux-musl
-          #   runs-on: ubuntu-latest
           - os: ubuntu
             name: linux-armv7
             target: armv7-unknown-linux-gnueabi
             runs-on: ubuntu-latest
-          # - os: ubuntu
-          #   name: linux-armv7-musl
-          #   target: armv7-unknown-linux-musleabi
-          #   runs-on: ubuntu-latest
           - os: ubuntu
             name: linux-armv6
             target: arm-unknown-linux-gnueabi
             runs-on: ubuntu-latest
-          # - os: ubuntu
-          #   name: linux-armv6-musl
-          #   target: arm-unknown-linux-musleabi
-          #   runs-on: ubuntu-latest
           - os: macos
             name: macos-x64
             target: x86_64-apple-darwin
@@ -68,10 +52,6 @@ jobs:
             name: macos-arm64
             target: aarch64-apple-darwin
             runs-on: macos-14
-          # - os: macos
-          #   name: macos
-          #   target: universal2-apple-darwin
-          #   runs-on: macos-12
     steps:
       - uses: actions/checkout@v4
       - name: Mise Tools install
@@ -111,6 +91,7 @@ jobs:
       - run: bun install
       - name: Create changelog
         run: |
+          mkdir ./dist
           bun changelog --file ./dist/changelog.txt --tag $(git tag --list --sort=v:refname | grep -v beta | tail -n 1)
           cat ./dist/changelog.txt
       - uses: actions/download-artifact@v4
