@@ -68,8 +68,9 @@ jobs:
           ./lib/scfz --version
           mv ./lib/scfz ./dist/${{ matrix.name }}/scfz
           cd ./dist/
-          tar czvf ../scfz-${{ matrix.name }}.tar.gz ./
+          tar -czvf ../scfz-${{ matrix.name }}.tar.gz ./
           cd ..
+          ls -la ./dist/
       - uses: actions/upload-artifact@v4
         with:
           name: tarball-${{matrix.target}}
