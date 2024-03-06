@@ -6,24 +6,10 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    name: Build on ${{ matrix.distro }} ${{ matrix.arch }}
-
-    # Run steps on a matrix of 2 arch/distro combinations
-    strategy:
-      matrix:
-        include:
-          - arch: aarch64
-            distro: ubuntu22.04
-          - arch: armv7
-            distro: ubuntu_latest
+  test:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
+      - uses: actions/checkout@v4
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
@@ -35,45 +21,108 @@ jobs:
         run: |
           bun install
           bun test:ci
-      - name: Create binary and release files # FIXME: Bun issue with bin path
-        uses: uraimo/run-on-arch-action@v2
+  build:
+    name: build-${{matrix.name}}
+    runs-on: ${{matrix.runs-on}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            name: linux-x64
+            target: x86_64-unknown-linux-gnu
+            runs-on: ubuntu-latest
+          # - os: ubuntu
+          #   name: linux-x64-musl
+          #   target: x86_64-unknown-linux-musl
+          #   runs-on: ubuntu-latest
+          - os: ubuntu
+            name: linux-arm64
+            target: aarch64-unknown-linux-gnu
+            runs-on: ubuntu-latest
+          # - os: ubuntu
+          #   name: linux-arm64-musl
+          #   target: aarch64-unknown-linux-musl
+          #   runs-on: ubuntu-latest
+          - os: ubuntu
+            name: linux-armv7
+            target: armv7-unknown-linux-gnueabi
+            runs-on: ubuntu-latest
+          # - os: ubuntu
+          #   name: linux-armv7-musl
+          #   target: armv7-unknown-linux-musleabi
+          #   runs-on: ubuntu-latest
+          - os: ubuntu
+            name: linux-armv6
+            target: arm-unknown-linux-gnueabi
+            runs-on: ubuntu-latest
+          # - os: ubuntu
+          #   name: linux-armv6-musl
+          #   target: arm-unknown-linux-musleabi
+          #   runs-on: ubuntu-latest
+          - os: macos
+            name: macos-x64
+            target: x86_64-apple-darwin
+            runs-on: macos-14
+          - os: macos
+            name: macos-arm64
+            target: aarch64-apple-darwin
+            runs-on: macos-14
+          # - os: macos
+          #   name: macos
+          #   target: universal2-apple-darwin
+          #   runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mise Tools install
+        uses: jdx/mise-action@v2
         with:
-          arch: ${{ matrix.arch }}
-          distro: ${{ matrix.distro }}
-          githubToken: ${{ github.token }}
-          dockerRunArgs: |
-            --volume "${PWD}/dist:/dist"
-          setup: |
-            mkdir -p "${PWD}/dist"
-          install: |
-            case "${{ matrix.distro }}" in
-              ubuntu*|jessie|stretch|buster|bullseye)
-                apt-get update -q -y
-                apt-get install -q -y git
-                ;;
-            esac
-          env: | # YAML, but pipe character is necessary
-            artifact_name: scfz-${{ matrix.arch }}
-          run: |
-            bun build ./lib/main.ts --compile --outfile ${PWD}/dist/${artifact_name}
-            tar -czvf ${PWD}/dist/${artifact_name}.tar.gz ${PWD}/lib/${artifact_name}
-            ${PWD}/lib/${artifact_name} --version
-      - name: Show artifacts
+          version: 2024.3.1
+          install: true
+          cache: true
+          experimental: true
+      - run: bun install
+      - name: Create binary and release files # FIXME: Bun issue with bin path
         run: |
-          ls -la ${PWD}/dist
-      - name: Create Changelog
-        if: startsWith(github.ref, 'refs/tags/')
+          mkdir ./dist
+          bun build ./lib/main.ts --compile --outfile ./dist/scfz-${{ matrix.name }}
+          tar -czvf ./dist/scfz-${{ matrix.name }}.tar.gz ./lib/scfz-${{ matrix.name }}
+          ./lib/scfz-${{ matrix.name }} --version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scfz-${{matrix.target}}
+          path: |
+            ./dist/scfz-*.tar.gz
+          if-no-files-found: error
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Mise Tools install
+        uses: jdx/mise-action@v2
+        with:
+          version: 2024.3.1
+          install: true
+          cache: true
+          experimental: true
+      - name: Create changelog
         run: |
           bun changelog --file ./dist/changelog.txt --tag $(git tag --list --sort=v:refname | grep -v beta | tail -n 1)
           cat ./dist/changelog.txt
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          draft: true
-          prerelease: ${{contains(github.ref, '-beta')}}
-          body_path: ./dist/changelog.txt
-          files: | # FIXME: Bun issue with bin path
-            ${PWD}/lib/scfz*
-            ${PWD}/dist/scfz*.tar.gz
-            LICENSE
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts }
+      - run: ls -la .
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     draft: true
+      #     prerelease: ${{contains(github.ref, '-beta')}}
+      #     body_path: ./dist/changelog.txt
+      #     files: | # FIXME: Bun issue with bin path
+      #       ./lib/scfz
+      #       ./dist/scfz.tar.gz
+      #       LICENSE
