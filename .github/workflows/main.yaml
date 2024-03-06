@@ -62,7 +62,7 @@ jobs:
       - run: bun install
       - name: Create binary and release files
         run: |
-          mkdir ./dist/${{ matrix.name }}
+          mkdir -p ./dist/${{ matrix.name }}
           bun build ./lib/main.ts --compile --outfile ./dist/${{ matrix.name }}/scfz
           # FIXME: Bun issue with bin path
           ./lib/scfz --version
