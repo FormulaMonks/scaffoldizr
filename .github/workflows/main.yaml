@@ -16,7 +16,7 @@ jobs:
         include:
           - arch: aarch64
             distro: ubuntu22.04
-          - arch: none
+          - arch: armv7
             distro: ubuntu_latest
     steps:
       - name: Checkout
