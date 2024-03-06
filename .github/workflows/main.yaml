@@ -108,6 +108,7 @@ jobs:
           install: true
           cache: true
           experimental: true
+      - run: bun install
       - name: Create changelog
         run: |
           bun changelog --file ./dist/changelog.txt --tag $(git tag --list --sort=v:refname | grep -v beta | tail -n 1)
