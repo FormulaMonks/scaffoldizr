@@ -119,7 +119,7 @@ jobs:
           file_pattern: 'assets/install.sh'
           repository: .
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
-          # status_options: '--untracked-files=no'
+          status_options: '--untracked-files=no'
           # add_options: '-u'
           push_options: '--force'
           skip_dirty_check: true    
