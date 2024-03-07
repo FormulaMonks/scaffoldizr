@@ -6,11 +6,19 @@
     "formatter": {
         "indentWidth": 4,
         "indentStyle": "space",
-        "ignore": ["architecture/**/*.json", ".vscode/**/*.json"]
+        "ignore": [
+            "architecture/**/*.json",
+            ".vscode/**/*.json",
+            "**/bun.lockb"
+        ]
     },
     "linter": {
         "enabled": true,
-        "ignore": ["architecture/**/*.json", ".vscode/**/*.json"],
+        "ignore": [
+            "architecture/**/*.json",
+            ".vscode/**/*.json",
+            "**/bun.lockb"
+        ],
         "rules": {
             "recommended": true,
             "correctness": {
