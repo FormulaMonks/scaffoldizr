@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 
 if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
     # /dev/tty is available and usable
