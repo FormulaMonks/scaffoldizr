@@ -106,7 +106,9 @@ jobs:
           prerelease: ${{contains(github.ref, '-beta')}}
           body_path: ./dist/changelog.txt
           files: ./dist/releases/${{github.ref_name}}/*
-      - run: mv dist/releases/install.sh assets/install.sh
+      - run: |
+          mkdir -p assets
+          mv dist/releases/install.sh assets/install.sh
         if: startsWith(github.ref, 'refs/tags/')
       - uses: stefanzweifel/git-auto-commit-action@v5
         if: startsWith(github.ref, 'refs/tags/')
