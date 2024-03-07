@@ -106,3 +106,22 @@ jobs:
           prerelease: ${{contains(github.ref, '-beta')}}
           body_path: ./dist/changelog.txt
           files: ./dist/releases/${{github.ref_name}}/*
+      - run: mv dist/releases/install.sh assets/install.sh
+        if: startsWith(github.ref, 'refs/tags/')
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          commit_message: Updated install script
+          branch: gh-pages
+          commit_options: '--no-verify --signoff'
+          file_pattern: 'assets/install.sh'
+          repository: .
+          commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
+          status_options: '--untracked-files=no'
+          add_options: '-u'
+          push_options: '--force'
+          skip_dirty_check: true    
+          skip_fetch: true    
+          skip_checkout: true
+          disable_globbing: true
+          create_branch: false
