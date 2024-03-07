@@ -1,15 +1,29 @@
-# blueprint-dsl
+# Scaffoldizr: Scaffolding to create Structurizr Workspaces
 
-To install dependencies:
+[Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a frustrating feeling of not knowing where to start.
+
+This is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.sh/) that attempts to create the building blocks of a solid system architecture documentation, that accounts for newcomers as well as architects experienced in Structurizr, to allow them to follow a convention while setting them up for success.
+
+## Installation
+
+Run in your terminal:
 
 ```bash
-bun install
+curl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh
 ```
 
-To run:
+Then, verify the tool is correctly installed:
 
 ```bash
-bun run src/main.mjs
+scfz --version
 ```
 
-This project was created using `bun init` in bun v1.0.4. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## Usage
+
+```bash
+scfz --dest {docs_folder}
+```
+
+where `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command
+
+Full documentation [here](architecture/docs/01-usage.md).

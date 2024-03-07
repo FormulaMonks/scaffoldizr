@@ -1,0 +1,30 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.4.0/schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "formatter": {
+        "indentWidth": 4,
+        "indentStyle": "space",
+        "ignore": [
+            "architecture/**/*.json",
+            ".vscode/**/*.json",
+            "**/bun.lockb"
+        ]
+    },
+    "linter": {
+        "enabled": true,
+        "ignore": [
+            "architecture/**/*.json",
+            ".vscode/**/*.json",
+            "**/bun.lockb"
+        ],
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedVariables": "error",
+                "noUndeclaredVariables": "error"
+            }
+        }
+    }
+}

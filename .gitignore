@@ -175,3 +175,8 @@ dist
 .DS_Store
 
 __base
+docs/architecture/.structurizr
+**/.test-generated
+lib/scfz
+
+*.bun-build

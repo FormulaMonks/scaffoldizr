@@ -1,0 +1,25 @@
+workspace "{{{workspaceName}}}" {
+    description "{{{workspaceDescription}}}"
+
+    !adrs decisions
+    !docs docs
+
+    model {
+        # Constants
+
+        !include systems
+        !include environments
+
+        # Relationships
+        !include relationships/_system.dsl
+    }
+
+    views {
+        {{#if shouldIncludeTheme}}
+        themes "https://static.structurizr.com/themes/default/theme.json"
+        {{/if}}
+        !const AUTHOR "Author: {{{authorName}}} <{{authorEmail}}>"
+
+        !include views
+    }
+}

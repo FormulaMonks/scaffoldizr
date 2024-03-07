@@ -1,0 +1,239 @@
+{
+  "configuration" : { },
+  "description" : "Opinionated Scaffolding Tool for Structurizr DSL",
+  "documentation" : {
+    "sections" : [ {
+      "content" : "# Scaffoldizr\n\n## Supported Elements\n\n|        Elements        | Description                                                                                                                                   |\n| :--------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |\n|      `Workspace`       | Creates a new workspace, with the proper scaffolding. Created only when architecture folder not found.                                        |\n|      `🟦 System`       | Something that delivers value. E.g. application, product, service. [See this for more information](https://arc.net/l/quote/vcentqxx).         |\n| `⬜️ External System`   | An external system is a system not owned by the development team. E.g. third party dependencies.                                              |\n|      `👤 Person`       | Actor or user interacting with the system.                                                                                                    |\n|     `🔸 Constant`      | To reuse within other diagrams. Useful for relationships.                                                                                     |\n|    `🔹 Container`      | A Software Element within the system that is needed for the system to run. [See this for more information](https://arc.net/l/quote/adfwciig). |\n|   `⇢  Relationship`    | A relationship represents a unidirectional connection between two software systems, elements or people.                                       |\n|       `🔳 View`        | Creates a Structurizr view. [See below](#supported-view-types).                                                                               |\n\n## Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
+      "filename" : "01-usage.md",
+      "format" : "Markdown",
+      "order" : 1,
+      "title" : ""
+    }, {
+      "content" : "# Scaffoldizr\n\n## Workspace preview\n\nOnce a Structurizr Workspace is created, you can preview it using [Structurizr/lite](https://docs.structurizr.com/lite) in your local machine, as long as you have [Docker](https://www.docker.com/products/docker-desktop/) running. To run your created Workspace, you can find a generated bash shell script under `/your-path/to/docs/architecture/scripts/run.sh`. It will run an ephemeral container that will close once you end the process.\n\nDefault port is `8080`. You can change it by setting a different port at the beginning of the command:\n\n```bash\n/your-path/to/docs/architecture/scripts/run.sh 7311\n```\n\n## Workspace sync\n\n> TODO\n",
+      "filename" : "02-workspace.md",
+      "format" : "Markdown",
+      "order" : 2,
+      "title" : ""
+    } ]
+  },
+  "id" : 1,
+  "lastModifiedAgent" : "structurizr-javascript",
+  "lastModifiedDate" : "2024-03-04T22:09:04Z",
+  "model" : {
+    "people" : [ {
+      "description" : "Architect",
+      "id" : "5",
+      "location" : "Unspecified",
+      "name" : "Architect",
+      "properties" : {
+        "structurizr.dsl.identifier" : "architect"
+      },
+      "relationships" : [ {
+        "description" : "Previews DSL diagrams",
+        "destinationId" : "1",
+        "id" : "7",
+        "properties" : {
+          "structurizr.dsl.identifier" : "2ae6a86a-3126-4606-a9a9-b1589523e922"
+        },
+        "sourceId" : "5",
+        "tags" : "Relationship",
+        "technology" : "Web/HTTP"
+      }, {
+        "description" : "Send commands to",
+        "destinationId" : "4",
+        "id" : "10",
+        "properties" : {
+          "structurizr.dsl.identifier" : "08ea81dd-4d24-4d26-b56d-2fbfb80d7aad"
+        },
+        "sourceId" : "5",
+        "tags" : "Relationship",
+        "technology" : "CLI/Terminal"
+      }, {
+        "description" : "Send commands to",
+        "destinationId" : "3",
+        "id" : "11",
+        "linkedRelationshipId" : "10",
+        "sourceId" : "5",
+        "technology" : "CLI/Terminal"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "description" : "Local instance for Structurizr diagram visualization.",
+      "documentation" : { },
+      "id" : "1",
+      "location" : "Unspecified",
+      "name" : "Structurizr/Lite",
+      "properties" : {
+        "structurizr.dsl.identifier" : "structurizrlite"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Architect's local file system",
+      "documentation" : { },
+      "id" : "2",
+      "location" : "Unspecified",
+      "name" : "File System",
+      "properties" : {
+        "structurizr.dsl.identifier" : "filesystem"
+      },
+      "relationships" : [ {
+        "description" : "Uses DSL files to generate workspace.json file",
+        "destinationId" : "1",
+        "id" : "9",
+        "properties" : {
+          "structurizr.dsl.identifier" : "ec1e44ca-0600-460d-9be2-bd12935aa2bd"
+        },
+        "sourceId" : "2",
+        "tags" : "Relationship",
+        "technology" : "Structurizr/Lite File System"
+      } ],
+      "tags" : "Element,Software System,External"
+    }, {
+      "containers" : [ {
+        "description" : "Command Line Interface (binary)",
+        "documentation" : { },
+        "id" : "4",
+        "name" : "scfz",
+        "properties" : {
+          "structurizr.dsl.identifier" : "scfz"
+        },
+        "relationships" : [ {
+          "description" : "Outputs generated scaffolding",
+          "destinationId" : "2",
+          "id" : "12",
+          "properties" : {
+            "structurizr.dsl.identifier" : "c2861f78-1ba8-49fa-98dc-159d693292e0"
+          },
+          "sourceId" : "4",
+          "tags" : "Relationship",
+          "technology" : "CLI/Terminal"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "TypeScript/Bun (compiled)"
+      } ],
+      "description" : "Scaffolding tool",
+      "documentation" : { },
+      "id" : "3",
+      "location" : "Unspecified",
+      "name" : "Scaffoldizr",
+      "properties" : {
+        "structurizr.dsl.identifier" : "scaffoldizr"
+      },
+      "relationships" : [ {
+        "description" : "Creates scaffolding to preview",
+        "destinationId" : "1",
+        "id" : "6",
+        "properties" : {
+          "structurizr.dsl.identifier" : "8e5ffda3-7de3-4a7f-ba05-c536e05ca693"
+        },
+        "sourceId" : "3",
+        "tags" : "Relationship",
+        "technology" : "CLI/Terminal"
+      }, {
+        "description" : "Outputs generated scaffolding",
+        "destinationId" : "2",
+        "id" : "8",
+        "properties" : {
+          "structurizr.dsl.identifier" : "21a1a977-2806-443f-8527-c07aadfca219"
+        },
+        "sourceId" : "3",
+        "tags" : "Relationship",
+        "technology" : "CLI/Terminal"
+      } ],
+      "tags" : "Element,Software System,System"
+    } ]
+  },
+  "name" : "Scaffoldizr",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJTY2FmZm9sZGl6ciIgewogICAgZGVzY3JpcHRpb24gIk9waW5pb25hdGVkIFNjYWZmb2xkaW5nIFRvb2wgZm9yIFN0cnVjdHVyaXpyIERTTCIKCiAgICAhYWRycyBkZWNpc2lvbnMKICAgICFkb2NzIGRvY3MKCiAgICBtb2RlbCB7CiAgICAgICAgIyBDb25zdGFudHMKICAgICAgICAhY29uc3QgQ0xJICJDTEkvVGVybWluYWwiCgogICAgICAgIFN0cnVjdHVyaXpyTGl0ZSA9IHNvZnR3YXJlU3lzdGVtICJTdHJ1Y3R1cml6ci9MaXRlIiAiTG9jYWwgaW5zdGFuY2UgZm9yIFN0cnVjdHVyaXpyIGRpYWdyYW0gdmlzdWFsaXphdGlvbi4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwiCiAgICAgICAgfQogICAgICAgIAogICAgICAgIEZpbGVTeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiRmlsZSBTeXN0ZW0iICJBcmNoaXRlY3QncyBsb2NhbCBmaWxlIHN5c3RlbSIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCIKICAgICAgICB9CiAgICAgICAgU2NhZmZvbGRpenIgPSBzb2Z0d2FyZVN5c3RlbSAiU2NhZmZvbGRpenIiIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlNjYWZmb2xkaW5nIHRvb2wiCiAgICAgICAgCiAgICAgICAgICAgIFNjZnogPSBjb250YWluZXIgInNjZnoiICJDb21tYW5kIExpbmUgSW50ZXJmYWNlIChiaW5hcnkpIiAiVHlwZVNjcmlwdC9CdW4gKGNvbXBpbGVkKSIKICAgICAgICAKICAgICAgICAgICAgdGFncyAiU3lzdGVtIgogICAgICAgIH0KICAgICAgICBBcmNoaXRlY3QgPSBwZXJzb24gIkFyY2hpdGVjdCIgIkFyY2hpdGVjdCIKCiAgICAgICAgIyBSZWxhdGlvbnNoaXBzCiAgICAgICAgU2NhZmZvbGRpenIgLT4gU3RydWN0dXJpenJMaXRlICJDcmVhdGVzIHNjYWZmb2xkaW5nIHRvIHByZXZpZXciICIke0NMSX0iCiAgICAgICAgQXJjaGl0ZWN0IC0+IFN0cnVjdHVyaXpyTGl0ZSAiUHJldmlld3MgRFNMIGRpYWdyYW1zIiAiV2ViL0hUVFAiCiAgICAgICAgCiAgICAgICAgU2NhZmZvbGRpenIgLT4gRmlsZVN5c3RlbSAiT3V0cHV0cyBnZW5lcmF0ZWQgc2NhZmZvbGRpbmciICIke0NMSX0iCiAgICAgICAgRmlsZVN5c3RlbSAtPiBTdHJ1Y3R1cml6ckxpdGUgIlVzZXMgRFNMIGZpbGVzIHRvIGdlbmVyYXRlIHdvcmtzcGFjZS5qc29uIGZpbGUiICJTdHJ1Y3R1cml6ci9MaXRlIEZpbGUgU3lzdGVtIgogICAgICAgIAogICAgICAgIEFyY2hpdGVjdCAtPiBTY2Z6ICJTZW5kIGNvbW1hbmRzIHRvIiAiJHtDTEl9IgogICAgICAgIAogICAgICAgIFNjZnogLT4gRmlsZVN5c3RlbSAiT3V0cHV0cyBnZW5lcmF0ZWQgc2NhZmZvbGRpbmciICIke0NMSX0iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHRoZW1lcyAiaHR0cHM6Ly9zdHJ1Y3R1cml6ci50ZXN0LnplbW9nYS1jbGllbnQuY29tL3NoYXJlLzEvdGhlbWUiCiAgICAgICAgIWNvbnN0IEFVVEhPUiAiQXV0aG9yOiBGb3JtdWxhLm1vbmtzIDxhbmRyZXMuem9ycm9AbWVkaWFtb25rcy5jb20+IgoKICAgICAgICBzeXN0ZW1Db250ZXh0IFNjYWZmb2xkaXpyICJTY2FmZm9sZGl6ciIgewogICAgICAgICAgICBkZXNjcmlwdGlvbiAiU2NhZmZvbGRpbmcgdG9vbC4gJHtBVVRIT1J9IiAKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQogICAgICAgIAogICAgICAgIGNvbnRhaW5lciBTY2FmZm9sZGl6ciB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJDb21tYW5kIExpbmUgSW50ZXJmYWNlIChiaW5hcnkpLiAke0FVVEhPUn0iIAogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KICAgIH0KfQo="
+  },
+  "views" : {
+    "configuration" : {
+      "branding" : { },
+      "lastSavedView" : "Scaffoldizr",
+      "metadataSymbols" : "SquareBrackets",
+      "styles" : { },
+      "terminology" : { },
+      "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ]
+    },
+    "containerViews" : [ {
+      "automaticLayout" : {
+        "applied" : true,
+        "edgeSeparation" : 0,
+        "implementation" : "Graphviz",
+        "nodeSeparation" : 300,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 300,
+        "vertices" : false
+      },
+      "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "dimensions" : {
+        "height" : 841,
+        "width" : 2300
+      },
+      "elements" : [ {
+        "id" : "2",
+        "x" : 1650,
+        "y" : 249
+      }, {
+        "id" : "4",
+        "x" : 900,
+        "y" : 249
+      }, {
+        "id" : "5",
+        "x" : 200,
+        "y" : 199
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "generatedKey" : true,
+      "key" : "Container-001",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "10"
+      }, {
+        "id" : "12"
+      } ],
+      "softwareSystemId" : "3"
+    } ],
+    "systemContextViews" : [ {
+      "description" : "Scaffolding tool. Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "dimensions" : {
+        "height" : 1585,
+        "width" : 2665
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 1049,
+        "y" : 199
+      }, {
+        "id" : "2",
+        "x" : 2014,
+        "y" : 584
+      }, {
+        "id" : "3",
+        "x" : 1049,
+        "y" : 1084
+      }, {
+        "id" : "5",
+        "x" : 199,
+        "y" : 534
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "Scaffoldizr",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "11"
+      }, {
+        "id" : "6"
+      }, {
+        "id" : "7"
+      }, {
+        "id" : "8"
+      }, {
+        "id" : "9"
+      } ],
+      "softwareSystemId" : "3"
+    } ]
+  }
+}
