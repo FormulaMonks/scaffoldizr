@@ -4,7 +4,7 @@ set -euxo pipefail
 BASE_DIR="$(pwd)"
 RELEASE_DIR="dist/releases"
 BIN_DIR="dist/bin"
-SCFZ_VERSION="$(git tag --list | tail -n 1)"
+SCFZ_VERSION="$(git describe --tags)"
 
 export BASE_DIR RELEASE_DIR SCFZ_VERSION
 
