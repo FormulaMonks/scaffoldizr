@@ -62,7 +62,7 @@ install_tool() {
 	arch="$(get_arch)"
 	install_path="${SCFZ_INSTALL_PATH:-$HOME/.local/bin/scfz}"
 	install_dir="$(dirname "$install_path")"
-	tarball_url="https://github.com/${repo}/releases/download/${version}/mise-${version}-${os}-${arch}.tar.gz"
+	tarball_url="https://github.com/${repo}/releases/download/${version}/scfz-${version}-${os}-${arch}.tar.gz"
 
 	cache_file=$(download_file "$tarball_url")
 
@@ -74,8 +74,9 @@ install_tool() {
 	rm -rf "$install_path"
 	cd "$(mktemp -d)"
 	tar -xzf "$cache_file"
-	mv dist/bin/scfz "$install_path"
+	mv "${os}-${arch}/scfz" "$install_path"
 	info "Scaffoldizr: installed successfully to $install_path"
+    info "Make sure that \"$install_dir\" is in your \$PATH"
 }
 
-install_mise
+install_tool
