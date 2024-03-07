@@ -108,7 +108,8 @@ jobs:
           files: ./dist/releases/${{github.ref_name}}/*
       - run: mv dist/releases/install.sh docs/assets/install.sh
         if: startsWith(github.ref, 'refs/tags/')
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Update Install Script
+        uses: stefanzweifel/git-auto-commit-action@v5
         if: startsWith(github.ref, 'refs/tags/')
         with:
           commit_message: "ci(automated): Updated install script"

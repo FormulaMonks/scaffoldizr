@@ -6,7 +6,17 @@ This is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.
 
 ## Installation
 
-> TODO
+Run in your terminal:
+
+```bash
+curl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh
+```
+
+Then, verify the tool is correctly installed:
+
+```bash
+scfz --version
+```
 
 ## Usage
 
