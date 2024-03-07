@@ -114,6 +114,7 @@ jobs:
         with:
           commit_message: "ci(automated): Updated install script"
           commit_options: '--no-verify --signoff'
+          branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
           file_pattern: 'docs/**'
           repository: .
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
