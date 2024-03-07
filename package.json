@@ -10,7 +10,7 @@
         "test:dev": "bun test --watch",
         "test": "bun test",
         "test:ci": "bun test --coverage",
-        "postinstall": "husky install"
+        "postinstall": "scripts/install-git-hooks.sh"
     },
     "trustedDependencies": ["."],
     "type": "module",
