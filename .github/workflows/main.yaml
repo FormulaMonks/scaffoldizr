@@ -1,6 +1,10 @@
 name: Build, Test and Release
 
-on: push
+on:
+  push:
+    branches:
+      - develop
+      - main
 
 jobs:
   test:
