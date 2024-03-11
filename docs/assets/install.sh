@@ -56,7 +56,7 @@ download_file() {
 
 install_tool() {
 	# download the tarball
-	version="v0.2.0"
+	version="v0.2.1"
     repo="arch-formula/scaffoldizr"
 	os="$(get_os)"
 	arch="$(get_arch)"
