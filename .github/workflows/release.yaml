@@ -26,6 +26,24 @@ jobs:
       - name: Bump version
         run: scripts/bump-version.sh
         if: startsWith(github.ref, 'refs/tags/')
+      - name: Update package.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          commit_message: "[skip-ci]: Bump version"
+          commit_options: '--no-verify --signoff'
+          branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
+          file_pattern: 'package.json'
+          repository: .
+          commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
+          status_options: '--untracked-files=no'
+          # add_options: '-u'
+          push_options: '--force'
+          skip_dirty_check: true    
+          skip_fetch: true    
+          skip_checkout: true
+          disable_globbing: true
+          create_branch: false
   build:
     needs: bumpVersion
     name: build-${{matrix.name}}
@@ -104,9 +122,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           path: ./dist
-      - name: Update install.sh file
-        run: scripts/release.sh
-        if: startsWith(github.ref, 'refs/tags/')
       - name: Create Release Draft
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -124,7 +139,7 @@ jobs:
           commit_message: "[skip-ci]: Updated install script"
           commit_options: '--no-verify --signoff'
           branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
-          file_pattern: 'docs/** package.json'
+          file_pattern: 'docs/**'
           repository: .
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
           status_options: '--untracked-files=no'
