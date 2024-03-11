@@ -12,9 +12,7 @@
         "test:ci": "bun test --coverage",
         "postinstall": "scripts/install-git-hooks.sh"
     },
-    "trustedDependencies": [
-        "."
-    ],
+    "trustedDependencies": ["."],
     "type": "module",
     "dependencies": {
         "chalk": "^5.3.0",
@@ -44,35 +42,18 @@
         "signal-exit": "3.x"
     },
     "lint-staged": {
-        "*.{json,ts,js,mjs,mts}": [
-            "bun biome ci"
-        ],
-        "*.{ts,mjs}": [
-            "bun test:ci"
-        ]
+        "*.{json,ts,js,mjs,mts}": ["bun biome ci"],
+        "*.{ts,mjs}": ["bun test:ci"]
     },
     "branchNameLinter": {
-        "prefixes": [
-            "feature",
-            "bugfix",
-            "hotfix",
-            "release"
-        ],
+        "prefixes": ["feature", "bugfix", "hotfix", "release"],
         "suggestions": {
             "features": "feature",
             "feat": "feature",
             "fix": "bugfix",
             "releases": "release"
         },
-        "banned": [
-            "wip"
-        ],
-        "skip": [
-            "skip-ci"
-        ],
-        "disallowed": [
-            "main",
-            "develop"
-        ]
+        "banned": ["wip"],
+        "skip": ["skip-ci"]
     }
 }
