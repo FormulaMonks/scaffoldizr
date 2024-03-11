@@ -14,6 +14,8 @@ jobs:
   bumpVersion:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Mise Tools install
