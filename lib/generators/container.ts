@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
 import type { Answers, QuestionCollection } from "inquirer";
+import inquirer from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
@@ -80,6 +81,9 @@ const generator: GeneratorDefinition<Answers> = {
             workspaceInfo,
             prompt,
             {
+                filterChoices: (elm) =>
+                    elm instanceof inquirer.Separator ||
+                    elm.value !== partialAnswers.systemName,
                 ...relationshipDefaults,
                 includeContainers: partialAnswers.systemName,
             },

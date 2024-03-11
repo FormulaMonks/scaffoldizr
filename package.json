@@ -1,47 +1,49 @@
 {
-    "name": "scaffoldizr",
-    "version": "0.2.0",
-    "description": "Opinionated Scaffolding Tool for Structurizr",
-    "module": "src/main.mjs",
-    "bin": {
-        "scfz": "lib/main.ts"
-    },
-    "scripts": {
-        "test:dev": "bun test --watch",
-        "test": "bun test",
-        "test:ci": "bun test --coverage",
-        "postinstall": "scripts/install-git-hooks.sh"
-    },
-    "trustedDependencies": ["."],
-    "type": "module",
-    "dependencies": {
-        "chalk": "^5.3.0",
-        "change-case": "^5.2.0",
-        "handlebars": "^4.7.8",
-        "inquirer": "^9.2.15",
-        "minimist": "^1.2.8",
-        "yargs": "^17.7.2"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "^1.4.0",
-        "@types/bun": "^1.0.6",
-        "@types/yargs": "^17.0.32",
-        "commitizen": "^4.3.0",
-        "cz-conventional-changelog": "^3.3.0",
-        "generate-changelog": "^1.8.0",
-        "husky": "^8.0.3",
-        "lint-staged": "^14.0.0"
-    },
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog"
-        }
-    },
-    "resolutions": {
-        "signal-exit": "3.x"
-    },
-    "lint-staged": {
-        "*.{json,ts,js,mjs,mts}": ["bun biome ci"],
-        "*.{ts,mjs}": ["bun test:ci"]
+  "name": "scaffoldizr",
+  "version": "0.2.0",
+  "description": "Opinionated Scaffolding Tool for Structurizr",
+  "module": "src/main.mjs",
+  "bin": {
+    "scfz": "lib/main.ts"
+  },
+  "scripts": {
+    "test:dev": "bun test --watch",
+    "test": "bun test",
+    "test:ci": "bun test --coverage",
+    "build:dev": "bun build ./lib/main.ts --compile --watch --outfile ./dist/scfz",
+    "postinstall": "scripts/install-git-hooks.sh"
+  },
+  "trustedDependencies": ["."],
+  "type": "module",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "change-case": "^5.2.0",
+    "handlebars": "^4.7.8",
+    "inquirer": "^9.2.15",
+    "minimist": "^1.2.8",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.4.0",
+    "@types/bun": "^1.0.6",
+    "@types/inquirer": "^9.0.7",
+    "@types/yargs": "^17.0.32",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "generate-changelog": "^1.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "resolutions": {
+    "signal-exit": "3.x"
+  },
+  "lint-staged": {
+    "*.{json,ts,js,mjs,mts}": ["bun biome ci"],
+    "*.{ts,mjs}": ["bun test:ci"]
+  }
 }
