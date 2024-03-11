@@ -1,6 +1,6 @@
 {
     "name": "scaffoldizr",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Opinionated Scaffolding Tool for Structurizr",
     "module": "src/main.mjs",
     "bin": {
@@ -12,7 +12,9 @@
         "test:ci": "bun test --coverage",
         "postinstall": "scripts/install-git-hooks.sh"
     },
-    "trustedDependencies": ["."],
+    "trustedDependencies": [
+        "."
+    ],
     "type": "module",
     "dependencies": {
         "chalk": "^5.3.0",
@@ -42,18 +44,31 @@
         "signal-exit": "3.x"
     },
     "lint-staged": {
-        "*.{json,ts,js,mjs,mts}": ["bun biome ci"],
-        "*.{ts,mjs}": ["bun test:ci"]
+        "*.{json,ts,js,mjs,mts}": [
+            "bun biome ci"
+        ],
+        "*.{ts,mjs}": [
+            "bun test:ci"
+        ]
     },
     "branchNameLinter": {
-        "prefixes": ["feature", "bugfix", "hotfix", "release"],
+        "prefixes": [
+            "feature",
+            "bugfix",
+            "hotfix",
+            "release"
+        ],
         "suggestions": {
             "features": "feature",
             "feat": "feature",
             "fix": "bugfix",
             "releases": "release"
         },
-        "banned": ["wip"],
-        "skip": ["skip-ci"]
+        "banned": [
+            "wip"
+        ],
+        "skip": [
+            "skip-ci"
+        ]
     }
 }
