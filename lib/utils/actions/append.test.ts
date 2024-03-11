@@ -104,7 +104,7 @@ describe("actions", () => {
             ).toThrow(/File not found/);
         });
         test("should not error if createIfNotExists flag passed", async () => {
-            let result;
+            let result: unknown;
             expect(async () => {
                 result = await append(
                     {
