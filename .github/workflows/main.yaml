@@ -7,6 +7,10 @@ on:
       - main
     tags:
       - 'v*'
+  pull_request:
+    branches:
+      - develop
+      - main
 
 jobs:
   test:
@@ -28,6 +32,7 @@ jobs:
     needs: test
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
+    if: ${{ github.event_name == 'push' }}
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +83,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
     permissions:
       contents: write
     steps:
@@ -102,9 +108,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           path: ./dist
-      - run: scripts/release.sh
+      - name: Bump version and update install.sh file
+        run: scripts/release.sh
         if: startsWith(github.ref, 'refs/tags/')
-      - name: Release
+      - name: Create Release Draft
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -118,10 +125,10 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          commit_message: "ci(automated): Updated install script"
+          commit_message: "[skip-ci]: Updated install script"
           commit_options: '--no-verify --signoff'
           branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
-          file_pattern: 'docs/**'
+          file_pattern: 'docs/** package.json'
           repository: .
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
           status_options: '--untracked-files=no'
