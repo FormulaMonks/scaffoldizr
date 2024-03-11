@@ -1,6 +1,6 @@
 {
     "name": "scaffoldizr",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Opinionated Scaffolding Tool for Structurizr",
     "module": "src/main.mjs",
     "bin": {
@@ -54,7 +54,6 @@
             "releases": "release"
         },
         "banned": ["wip"],
-        "skip": ["skip-ci"],
-        "disallowed": ["main", "develop"]
+        "skip": ["skip-ci"]
     }
 }

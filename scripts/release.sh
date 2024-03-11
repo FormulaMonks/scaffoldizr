@@ -38,7 +38,3 @@ done
 # Renders and updates install script to reflect latest version
 ./scripts/render-install.sh >"$RELEASE_DIR"/install.sh
 chmod +x "$RELEASE_DIR"/install.sh
-
-# Update package.json with new version
-tmp_pkg=$(mktemp)
-jq --indent 4 --arg version "${SCFZ_VERSION/v/}" '.version = $version' ./package.json > "$tmp_pkg" && mv "$tmp_pkg" ./package.json

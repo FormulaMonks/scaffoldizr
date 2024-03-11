@@ -11,8 +11,15 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/test.yaml
-  build:
+  bumpVersion:
     needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bump version
+        run: scripts/bump-version.sh
+        if: startsWith(github.ref, 'refs/tags/')
+  build:
+    needs: bumpVersion
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     strategy:
@@ -89,7 +96,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           path: ./dist
-      - name: Bump version and update install.sh file
+      - name: Update install.sh file
         run: scripts/release.sh
         if: startsWith(github.ref, 'refs/tags/')
       - name: Create Release Draft
