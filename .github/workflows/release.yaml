@@ -1,4 +1,4 @@
-name: Build, Test and Release
+name: Test, Build and Release
 
 on:
   push:
@@ -7,32 +7,14 @@ on:
       - main
     tags:
       - 'v*'
-  pull_request:
-    branches:
-      - develop
-      - main
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Mise Tools install
-        uses: jdx/mise-action@v2
-        with:
-          version: 2024.3.1
-          install: true
-          cache: true
-          experimental: true
-      - name: Test
-        run: |
-          bun install
-          bun test:ci
+    uses: ./.github/workflows/test.yaml
   build:
     needs: test
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
-    if: ${{ github.event_name == 'push' }}
     strategy:
       fail-fast: false
       matrix:
@@ -83,7 +65,6 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
     permissions:
       contents: write
     steps:
