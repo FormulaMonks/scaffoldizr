@@ -26,6 +26,7 @@
         "@biomejs/biome": "^1.4.0",
         "@types/bun": "^1.0.6",
         "@types/yargs": "^17.0.32",
+        "branch-name-lint": "^2.1.1",
         "commitizen": "^4.3.0",
         "cz-conventional-changelog": "^3.3.0",
         "generate-changelog": "^1.8.0",
@@ -43,5 +44,17 @@
     "lint-staged": {
         "*.{json,ts,js,mjs,mts}": ["bun biome ci"],
         "*.{ts,mjs}": ["bun test:ci"]
+    },
+    "branchNameLinter": {
+        "prefixes": ["feature", "bugfix", "hotfix", "release"],
+        "suggestions": {
+            "features": "feature",
+            "feat": "feature",
+            "fix": "bugfix",
+            "releases": "release"
+        },
+        "banned": ["wip"],
+        "skip": ["skip-ci"],
+        "disallowed": ["main", "develop"]
     }
 }
