@@ -15,6 +15,14 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Mise Tools install
+        uses: jdx/mise-action@v2
+        with:
+          version: 2024.3.1
+          install: true
+          cache: true
+          experimental: true
       - name: Bump version
         run: scripts/bump-version.sh
         if: startsWith(github.ref, 'refs/tags/')
