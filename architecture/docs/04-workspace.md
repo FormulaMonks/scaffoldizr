@@ -1,3 +1,4 @@
+
 ## Structurizr/lite
 
 ### Workspace preview
