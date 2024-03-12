@@ -3,31 +3,31 @@
   "description" : "Opinionated Scaffolding Tool for Structurizr DSL",
   "documentation" : {
     "sections" : [ {
-      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Motivation\n\n[Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a feeling of not knowing where to start.\n\nThis is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.sh/) that attempts to create the building blocks of a solid system architecture documentation, that eases up the entry barrier for newcomers as well as allowing architects experienced in Structurizr to follow a convention while setting them up for success.\n",
+      "content" : "[//]: # (<!-- markdownlint-disable MD041 -->)\n[//]: # (<!-- markdownlint-disable MD022 -->)\n\n## Motivation\n\n[Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a feeling of not knowing where to start.\n\nThis is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.sh/) that attempts to create the building blocks of a solid system architecture documentation, that eases up the entry barrier for newcomers as well as allowing architects experienced in Structurizr to follow a convention while setting them up for success.\n",
       "filename" : "01-motivation.md",
       "format" : "Markdown",
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "[//]: # (<!-- markdownlint-disable MD041 -->)\n[//]: # (<!-- markdownlint-disable MD022 -->)\n\n## Getting Started\n\nRun in your terminal:\n\n```bash\ncurl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
+      "content" : "[//]: <> (<!-- {% comment %} -->)\n[//]: <> (<!-- markdownlint-disable MD041 -->)\n[//]: <> (<!-- markdownlint-disable MD022 -->)\n[//]: <> (<!-- {% endcomment %} -->)\n\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
       "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
       "title" : ""
     }, {
-      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Supported Elements\n\n|        Elements        | Description                                                                                                                                   |\n| :--------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |\n|      `Workspace`       | Creates a new workspace, with the proper scaffolding. Created only when architecture folder not found.                                        |\n|      `🟦 System`       | Something that delivers value. E.g. application, product, service. [See this for more information](https://arc.net/l/quote/vcentqxx).         |\n| `⬜️ External System`   | An external system is a system not owned by the development team. E.g. third party dependencies.                                              |\n|      `👤 Person`       | Actor or user interacting with the system.                                                                                                    |\n|     `🔸 Constant`      | To reuse within other diagrams. Useful for relationships.                                                                                     |\n|    `🔹 Container`      | A Software Element within the system that is needed for the system to run. [See this for more information](https://arc.net/l/quote/adfwciig). |\n|   `⇢  Relationship`    | A relationship represents a unidirectional connection between two software systems, elements or people.                                       |\n|       `🔳 View`        | Creates a Structurizr view. [See below](#supported-view-types).                                                                               |\n\n## Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
+      "content" : "[//]: # (<!-- markdownlint-disable MD041 -->)\n[//]: # (<!-- markdownlint-disable MD022 -->)\n\n## Supported Elements\n\n|        Elements        | Description                                                                                                                                   |\n| :--------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |\n|      `Workspace`       | Creates a new workspace, with the proper scaffolding. Created only when architecture folder not found.                                        |\n|      `🟦 System`       | Something that delivers value. E.g. application, product, service. [See this for more information](https://arc.net/l/quote/vcentqxx).         |\n| `⬜️ External System`   | An external system is a system not owned by the development team. E.g. third party dependencies.                                              |\n|      `👤 Person`       | Actor or user interacting with the system.                                                                                                    |\n|     `🔸 Constant`      | To reuse within other diagrams. Useful for relationships.                                                                                     |\n|    `🔹 Container`      | A Software Element within the system that is needed for the system to run. [See this for more information](https://arc.net/l/quote/adfwciig). |\n|   `⇢  Relationship`    | A relationship represents a unidirectional connection between two software systems, elements or people.                                       |\n|       `🔳 View`        | Creates a Structurizr view. [See below](#supported-view-types).                                                                               |\n\n## Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
       "filename" : "03-usage.md",
       "format" : "Markdown",
       "order" : 3,
       "title" : ""
     }, {
-      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Workspace preview\n\nOnce a Structurizr Workspace is created, you can preview it using [Structurizr/lite](https://docs.structurizr.com/lite) in your local machine, as long as you have [Docker](https://www.docker.com/products/docker-desktop/) running. To run your created Workspace, you can find a generated bash shell script under `/your-path/to/docs/architecture/scripts/run.sh`. It will run an ephemeral container that will close once you end the process.\n\nDefault port is `8080`. You can change it by setting a different port at the beginning of the command:\n\n```bash\n/your-path/to/docs/architecture/scripts/run.sh 7311\n```\n\n## Workspace sync\n\n> TODO\n",
+      "content" : "[//]: # (<!-- markdownlint-disable MD041 -->)\n[//]: # (<!-- markdownlint-disable MD022 -->)\n\n## Workspace preview\n\nOnce a Structurizr Workspace is created, you can preview it using [Structurizr/lite](https://docs.structurizr.com/lite) in your local machine, as long as you have [Docker](https://www.docker.com/products/docker-desktop/) running. To run your created Workspace, you can find a generated bash shell script under `/your-path/to/docs/architecture/scripts/run.sh`. It will run an ephemeral container that will close once you end the process.\n\nDefault port is `8080`. You can change it by setting a different port at the beginning of the command:\n\n```bash\n/your-path/to/docs/architecture/scripts/run.sh 7311\n```\n\n## Workspace sync\n\n> TODO\n",
       "filename" : "04-workspace.md",
       "format" : "Markdown",
       "order" : 4,
       "title" : ""
     }, {
-      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Contribute\n\n### Documentation\n\nTo preview GitHub Pages locally:\n\n1. Run `mise install`\n2. Run `mise run docs:dev`. This will start a Jekyll live reload server\n3. Navigate to `http://localhost:4000`\n4. Documentation source code is located in `docs` folder.\n\n### Remote include\n\nIn order to avoid duplicated documentation, Github Pages docs are generated from Architecture docs. Assuming a variable located in `docs/_data/settings.yml` named `content_url`, the way include docs into Jekyll pages is as follows:\n\n```liquid\n{% if site.data.settings.content_url %}\n    {% capture data_url %}{{ site.data.settings.content_url }}architecture/docs/path/to/file.md{% endcapture %}\n    {% remote_include {{ data_url }} %}\n{% endif %}\n```\n\nThese files need to be already located in the repository's `main` branch, therefore a best practice is to add them first and then sync them in the Jekyll GH pages, to avoid build errors.\n",
+      "content" : "[//]: # (<!-- markdownlint-disable MD041 -->)\n[//]: # (<!-- markdownlint-disable MD022 -->)\n\n## Contribute\n\n### Documentation\n\nTo preview GitHub Pages locally:\n\n1. Run `mise install`\n2. Run `mise run docs:dev`. This will start a Jekyll live reload server\n3. Navigate to `http://localhost:4000`\n4. Documentation source code is located in `docs` folder.\n\n### Remote include\n\nIn order to avoid duplicated documentation, Github Pages docs are generated from Architecture docs. Assuming a variable located in `docs/_data/settings.yml` named `content_url`, the way include docs into Jekyll pages is as follows:\n\n```liquid\n{% if site.data.settings.content_url %}\n    {% capture data_url %}{{ site.data.settings.content_url }}architecture/docs/path/to/file.md{% endcapture %}\n    {% remote_include {{ data_url }} %}\n{% endif %}\n```\n\nThese files need to be already located in the repository's `main` branch, therefore a best practice is to add them first and then sync them in the Jekyll GH pages, to avoid build errors.\n",
       "filename" : "05-contribute.md",
       "format" : "Markdown",
       "order" : 5,
@@ -35,7 +35,7 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2024-03-12T15:56:02Z",
+  "lastModifiedDate" : "2024-03-12T16:26:50Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -50,7 +50,7 @@
         "destinationId" : "1",
         "id" : "7",
         "properties" : {
-          "structurizr.dsl.identifier" : "79bcca47-0526-454d-b62f-45ce7c19b3ad"
+          "structurizr.dsl.identifier" : "d29c814c-7b43-47b2-98f6-1f3514934409"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -60,7 +60,7 @@
         "destinationId" : "4",
         "id" : "10",
         "properties" : {
-          "structurizr.dsl.identifier" : "819e856b-4b82-4ce8-b983-08bf7cfbd3c6"
+          "structurizr.dsl.identifier" : "73aa0970-b3dc-46be-917f-e05528e0308e"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -99,7 +99,7 @@
         "destinationId" : "1",
         "id" : "9",
         "properties" : {
-          "structurizr.dsl.identifier" : "193ae0cf-647d-484e-ba28-c775481fa06f"
+          "structurizr.dsl.identifier" : "723d41a9-fd1d-48c3-8f4e-a83f2e666f7e"
         },
         "sourceId" : "2",
         "tags" : "Relationship",
@@ -120,7 +120,7 @@
           "destinationId" : "2",
           "id" : "12",
           "properties" : {
-            "structurizr.dsl.identifier" : "1063c8e4-653b-4ee3-86a4-5ae03330fb35"
+            "structurizr.dsl.identifier" : "70f1afe7-f30d-44ea-82a2-5d3c5486fac9"
           },
           "sourceId" : "4",
           "tags" : "Relationship",
@@ -142,7 +142,7 @@
         "destinationId" : "1",
         "id" : "6",
         "properties" : {
-          "structurizr.dsl.identifier" : "73c2e245-5ede-4884-8c8e-e08c659ed711"
+          "structurizr.dsl.identifier" : "fba3f4c4-bfbf-4ae9-9dd6-3be861cd3526"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -152,7 +152,7 @@
         "destinationId" : "2",
         "id" : "8",
         "properties" : {
-          "structurizr.dsl.identifier" : "86db3f29-4555-4db1-b62b-6fce8d3df37b"
+          "structurizr.dsl.identifier" : "8c06f9b2-1e60-45c8-b3ff-a6ff8cbc3797"
         },
         "sourceId" : "3",
         "tags" : "Relationship",

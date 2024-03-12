@@ -1,7 +1,9 @@
-[//]: # (<!-- markdownlint-disable MD041 -->)
-[//]: # (<!-- markdownlint-disable MD022 -->)
+[//]: <> (<!-- {% comment %} -->)
+[//]: <> (<!-- markdownlint-disable MD041 -->)
+[//]: <> (<!-- markdownlint-disable MD022 -->)
+[//]: <> (<!-- {% endcomment %} -->)
 
-## Getting Started
+## Installation
 
 Run in your terminal:
 
