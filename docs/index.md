@@ -3,7 +3,7 @@ layout: default
 permalink: /
 ---
 
-{% comment %}<!-- markdownlint-disable MD041 -->{% endcomment %}
+<!-- markdownlint-disable MD041 -->
 
 {% if site.data.settings.content_url %}
     {% capture data_url %}{{ site.data.settings.content_url }}architecture/docs/01-motivation.md{% endcapture %}

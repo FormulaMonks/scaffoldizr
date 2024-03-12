@@ -1,0 +1,6 @@
+{
+    // Default state for all rules
+    "default": true,
+    "extends": "../.markdownlint.jsonc",
+    "first-line-h1": false
+}

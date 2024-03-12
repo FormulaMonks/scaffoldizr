@@ -26,4 +26,4 @@ scfz --dest {docs_folder}
 
 where `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.
 
-Full documentation [here](architecture/docs/01-usage.md).
+Full documentation [here](https://arch-formula.github.io/scaffoldizr/).

@@ -1,8 +1,3 @@
-[//]: <> (<!-- {% comment %} -->)
-[//]: # (<!-- markdownlint-disable MD041 -->)
-[//]: # (<!-- markdownlint-disable MD022 -->)
-[//]: <> (<!-- {% endcomment %} -->)
-
 ## Motivation
 
 [Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a feeling of not knowing where to start.
