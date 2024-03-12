@@ -1,6 +1,7 @@
-# Scaffoldizr
+<!-- markdownlint-disable MD041 -->
+<!-- markdownlint-disable MD022 -->
 
-## Installation
+## Getting Started
 
 Run in your terminal:
 
@@ -15,6 +16,8 @@ scfz --version
 ```
 
 ## Usage
+
+Once installed, run in your terminal:
 
 ```bash
 scfz --dest {docs_folder}
