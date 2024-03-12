@@ -9,7 +9,7 @@
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Getting Started\n\nRun in your terminal:\n\n```bash\ncurl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
+      "content" : "[//]: # (<!-- markdownlint-disable MD041 -->)\n[//]: # (<!-- markdownlint-disable MD022 -->)\n\n## Getting Started\n\nRun in your terminal:\n\n```bash\ncurl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
       "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
@@ -27,7 +27,7 @@
       "order" : 4,
       "title" : ""
     }, {
-      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Contribute\n\n### Documentation\n\n1. Run `mise install`\n2. Run `mise run docs:dev`. This will start a Jekyll live reload server\n3. Navigate to `http://localhost:4000`\n4. Documentation source code is located in `docs` folder.\n\n### Remote include\n\nIn order to avoid duplicated documentation, Github Pages docs are generated from Architecture docs. Assuming a variable located in `docs/_data/settings.yml` named `content_url`, the way include docs into Jekyll pages is as follows:\n\n```liquid\n{% if site.data.settings.content_url %}\n    {% capture data_url %}{{ site.data.settings.content_url }}architecture/docs/path/to/file.md{% endcapture %}\n    {% remote_include {{ data_url }} %}\n{% endif %}\n```\n\nThese files need to be already located in the repository's `main` branch, therefore a best practice is to add them first and then sync them in the Jekyll GH pages, to avoid build errors.\n",
+      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Contribute\n\n### Documentation\n\nTo preview GitHub Pages locally:\n\n1. Run `mise install`\n2. Run `mise run docs:dev`. This will start a Jekyll live reload server\n3. Navigate to `http://localhost:4000`\n4. Documentation source code is located in `docs` folder.\n\n### Remote include\n\nIn order to avoid duplicated documentation, Github Pages docs are generated from Architecture docs. Assuming a variable located in `docs/_data/settings.yml` named `content_url`, the way include docs into Jekyll pages is as follows:\n\n```liquid\n{% if site.data.settings.content_url %}\n    {% capture data_url %}{{ site.data.settings.content_url }}architecture/docs/path/to/file.md{% endcapture %}\n    {% remote_include {{ data_url }} %}\n{% endif %}\n```\n\nThese files need to be already located in the repository's `main` branch, therefore a best practice is to add them first and then sync them in the Jekyll GH pages, to avoid build errors.\n",
       "filename" : "05-contribute.md",
       "format" : "Markdown",
       "order" : 5,
@@ -35,7 +35,7 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2024-03-12T15:24:00Z",
+  "lastModifiedDate" : "2024-03-12T15:56:02Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -50,7 +50,7 @@
         "destinationId" : "1",
         "id" : "7",
         "properties" : {
-          "structurizr.dsl.identifier" : "fde6d8cf-9da3-4833-bba9-096d958d3bad"
+          "structurizr.dsl.identifier" : "79bcca47-0526-454d-b62f-45ce7c19b3ad"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -60,7 +60,7 @@
         "destinationId" : "4",
         "id" : "10",
         "properties" : {
-          "structurizr.dsl.identifier" : "41e18b01-3904-4d52-aba8-824decd1528e"
+          "structurizr.dsl.identifier" : "819e856b-4b82-4ce8-b983-08bf7cfbd3c6"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -99,7 +99,7 @@
         "destinationId" : "1",
         "id" : "9",
         "properties" : {
-          "structurizr.dsl.identifier" : "7a5a2f3c-ec03-4bc8-b228-6a37522c7047"
+          "structurizr.dsl.identifier" : "193ae0cf-647d-484e-ba28-c775481fa06f"
         },
         "sourceId" : "2",
         "tags" : "Relationship",
@@ -120,7 +120,7 @@
           "destinationId" : "2",
           "id" : "12",
           "properties" : {
-            "structurizr.dsl.identifier" : "da1d43b8-e207-4bd5-8f78-5aef2ac380d5"
+            "structurizr.dsl.identifier" : "1063c8e4-653b-4ee3-86a4-5ae03330fb35"
           },
           "sourceId" : "4",
           "tags" : "Relationship",
@@ -142,7 +142,7 @@
         "destinationId" : "1",
         "id" : "6",
         "properties" : {
-          "structurizr.dsl.identifier" : "e861d5bb-7846-4716-927c-d4d120ad9880"
+          "structurizr.dsl.identifier" : "73c2e245-5ede-4884-8c8e-e08c659ed711"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -152,7 +152,7 @@
         "destinationId" : "2",
         "id" : "8",
         "properties" : {
-          "structurizr.dsl.identifier" : "5547686a-724d-496c-bbd1-969ffd26d4ef"
+          "structurizr.dsl.identifier" : "86db3f29-4555-4db1-b62b-6fce8d3df37b"
         },
         "sourceId" : "3",
         "tags" : "Relationship",

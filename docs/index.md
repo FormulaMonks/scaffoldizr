@@ -10,7 +10,7 @@ This is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.
 
 ## Contents
 
-- [Getting Started](/getting-started)
-- [Usage](/usage)
-- [Workspace](/workspace)
-- [Contribute](/contribute)
+- [Getting Started]({{ site.baseurl }}getting-started)
+- [Usage]({{ site.baseurl }}usage)
+- [Workspace]({{ site.baseurl }}workspace)
+- [Contribute]({{ site.baseurl }}contribute)
