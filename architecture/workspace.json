@@ -3,22 +3,39 @@
   "description" : "Opinionated Scaffolding Tool for Structurizr DSL",
   "documentation" : {
     "sections" : [ {
-      "content" : "# Scaffoldizr\n\n## Supported Elements\n\n|        Elements        | Description                                                                                                                                   |\n| :--------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |\n|      `Workspace`       | Creates a new workspace, with the proper scaffolding. Created only when architecture folder not found.                                        |\n|      `🟦 System`       | Something that delivers value. E.g. application, product, service. [See this for more information](https://arc.net/l/quote/vcentqxx).         |\n| `⬜️ External System`   | An external system is a system not owned by the development team. E.g. third party dependencies.                                              |\n|      `👤 Person`       | Actor or user interacting with the system.                                                                                                    |\n|     `🔸 Constant`      | To reuse within other diagrams. Useful for relationships.                                                                                     |\n|    `🔹 Container`      | A Software Element within the system that is needed for the system to run. [See this for more information](https://arc.net/l/quote/adfwciig). |\n|   `⇢  Relationship`    | A relationship represents a unidirectional connection between two software systems, elements or people.                                       |\n|       `🔳 View`        | Creates a Structurizr view. [See below](#supported-view-types).                                                                               |\n\n## Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
-      "filename" : "01-usage.md",
+      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Motivation\n\n[Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a feeling of not knowing where to start.\n\nThis is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.sh/) that attempts to create the building blocks of a solid system architecture documentation, that eases up the entry barrier for newcomers as well as allowing architects experienced in Structurizr to follow a convention while setting them up for success.\n",
+      "filename" : "01-motivation.md",
       "format" : "Markdown",
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "# Scaffoldizr\n\n## Workspace preview\n\nOnce a Structurizr Workspace is created, you can preview it using [Structurizr/lite](https://docs.structurizr.com/lite) in your local machine, as long as you have [Docker](https://www.docker.com/products/docker-desktop/) running. To run your created Workspace, you can find a generated bash shell script under `/your-path/to/docs/architecture/scripts/run.sh`. It will run an ephemeral container that will close once you end the process.\n\nDefault port is `8080`. You can change it by setting a different port at the beginning of the command:\n\n```bash\n/your-path/to/docs/architecture/scripts/run.sh 7311\n```\n\n## Workspace sync\n\n> TODO\n",
-      "filename" : "02-workspace.md",
+      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Getting Started\n\nRun in your terminal:\n\n```bash\ncurl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
+      "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
+      "title" : ""
+    }, {
+      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Supported Elements\n\n|        Elements        | Description                                                                                                                                   |\n| :--------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |\n|      `Workspace`       | Creates a new workspace, with the proper scaffolding. Created only when architecture folder not found.                                        |\n|      `🟦 System`       | Something that delivers value. E.g. application, product, service. [See this for more information](https://arc.net/l/quote/vcentqxx).         |\n| `⬜️ External System`   | An external system is a system not owned by the development team. E.g. third party dependencies.                                              |\n|      `👤 Person`       | Actor or user interacting with the system.                                                                                                    |\n|     `🔸 Constant`      | To reuse within other diagrams. Useful for relationships.                                                                                     |\n|    `🔹 Container`      | A Software Element within the system that is needed for the system to run. [See this for more information](https://arc.net/l/quote/adfwciig). |\n|   `⇢  Relationship`    | A relationship represents a unidirectional connection between two software systems, elements or people.                                       |\n|       `🔳 View`        | Creates a Structurizr view. [See below](#supported-view-types).                                                                               |\n\n## Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
+      "filename" : "03-usage.md",
+      "format" : "Markdown",
+      "order" : 3,
+      "title" : ""
+    }, {
+      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Workspace preview\n\nOnce a Structurizr Workspace is created, you can preview it using [Structurizr/lite](https://docs.structurizr.com/lite) in your local machine, as long as you have [Docker](https://www.docker.com/products/docker-desktop/) running. To run your created Workspace, you can find a generated bash shell script under `/your-path/to/docs/architecture/scripts/run.sh`. It will run an ephemeral container that will close once you end the process.\n\nDefault port is `8080`. You can change it by setting a different port at the beginning of the command:\n\n```bash\n/your-path/to/docs/architecture/scripts/run.sh 7311\n```\n\n## Workspace sync\n\n> TODO\n",
+      "filename" : "04-workspace.md",
+      "format" : "Markdown",
+      "order" : 4,
+      "title" : ""
+    }, {
+      "content" : "<!-- markdownlint-disable MD041 -->\n<!-- markdownlint-disable MD022 -->\n\n## Contribute\n\n### Documentation\n\n1. Run `mise install`\n2. Run `mise run docs:dev`. This will start a Jekyll live reload server\n3. Navigate to `http://localhost:4000`\n4. Documentation source code is located in `docs` folder.\n\n### Remote include\n\nIn order to avoid duplicated documentation, Github Pages docs are generated from Architecture docs. Assuming a variable located in `docs/_data/settings.yml` named `content_url`, the way include docs into Jekyll pages is as follows:\n\n```liquid\n{% if site.data.settings.content_url %}\n    {% capture data_url %}{{ site.data.settings.content_url }}architecture/docs/path/to/file.md{% endcapture %}\n    {% remote_include {{ data_url }} %}\n{% endif %}\n```\n\nThese files need to be already located in the repository's `main` branch, therefore a best practice is to add them first and then sync them in the Jekyll GH pages, to avoid build errors.\n",
+      "filename" : "05-contribute.md",
+      "format" : "Markdown",
+      "order" : 5,
       "title" : ""
     } ]
   },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr-javascript",
-  "lastModifiedDate" : "2024-03-04T22:09:04Z",
+  "lastModifiedDate" : "2024-03-12T15:24:00Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -33,7 +50,7 @@
         "destinationId" : "1",
         "id" : "7",
         "properties" : {
-          "structurizr.dsl.identifier" : "2ae6a86a-3126-4606-a9a9-b1589523e922"
+          "structurizr.dsl.identifier" : "fde6d8cf-9da3-4833-bba9-096d958d3bad"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -43,7 +60,7 @@
         "destinationId" : "4",
         "id" : "10",
         "properties" : {
-          "structurizr.dsl.identifier" : "08ea81dd-4d24-4d26-b56d-2fbfb80d7aad"
+          "structurizr.dsl.identifier" : "41e18b01-3904-4d52-aba8-824decd1528e"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -82,7 +99,7 @@
         "destinationId" : "1",
         "id" : "9",
         "properties" : {
-          "structurizr.dsl.identifier" : "ec1e44ca-0600-460d-9be2-bd12935aa2bd"
+          "structurizr.dsl.identifier" : "7a5a2f3c-ec03-4bc8-b228-6a37522c7047"
         },
         "sourceId" : "2",
         "tags" : "Relationship",
@@ -103,7 +120,7 @@
           "destinationId" : "2",
           "id" : "12",
           "properties" : {
-            "structurizr.dsl.identifier" : "c2861f78-1ba8-49fa-98dc-159d693292e0"
+            "structurizr.dsl.identifier" : "da1d43b8-e207-4bd5-8f78-5aef2ac380d5"
           },
           "sourceId" : "4",
           "tags" : "Relationship",
@@ -125,7 +142,7 @@
         "destinationId" : "1",
         "id" : "6",
         "properties" : {
-          "structurizr.dsl.identifier" : "8e5ffda3-7de3-4a7f-ba05-c536e05ca693"
+          "structurizr.dsl.identifier" : "e861d5bb-7846-4716-927c-d4d120ad9880"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -135,7 +152,7 @@
         "destinationId" : "2",
         "id" : "8",
         "properties" : {
-          "structurizr.dsl.identifier" : "21a1a977-2806-443f-8527-c07aadfca219"
+          "structurizr.dsl.identifier" : "5547686a-724d-496c-bbd1-969ffd26d4ef"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -152,14 +169,13 @@
     "configuration" : {
       "branding" : { },
       "lastSavedView" : "Scaffoldizr",
-      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
       "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
+        "applied" : false,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
@@ -168,22 +184,18 @@
         "vertices" : false
       },
       "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
-      "dimensions" : {
-        "height" : 841,
-        "width" : 2300
-      },
       "elements" : [ {
         "id" : "2",
-        "x" : 1650,
-        "y" : 249
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "4",
-        "x" : 900,
-        "y" : 249
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "5",
-        "x" : 200,
-        "y" : 199
+        "x" : 0,
+        "y" : 0
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "generatedKey" : true,

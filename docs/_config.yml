@@ -1,1 +1,8 @@
+plugins:
+  - jekyll-remote-include
+
 theme: jekyll-theme-hacker
+
+# Theme variables
+title: "Scaffoldizr: Scaffolding to create Structurizr Workspaces"
+description: Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations

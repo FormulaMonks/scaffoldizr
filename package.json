@@ -1,7 +1,7 @@
 {
     "name": "scaffoldizr",
     "version": "0.2.3",
-    "description": "Opinionated Scaffolding Tool for Structurizr",
+    "description": "Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations",
     "module": "src/main.mjs",
     "bin": {
         "scfz": "lib/main.ts"
