@@ -2,4 +2,5 @@
 .jekyll-metadata
 .sass-cache
 _site
-_adrs
+_adrs/*
+!_adrs/.gitkeep
