@@ -1,6 +1,10 @@
 plugins:
   - jekyll-remote-include
 
+collections:
+  adrs:
+    output: true
+
 theme: jekyll-theme-hacker
 
 # Theme variables
