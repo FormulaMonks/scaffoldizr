@@ -9,5 +9,4 @@ permalink: /adrs
 
 {% for adr in site.adrs %}
   [{{ adr.name }}]({{ site.baseurl }}/adrs/{{ adr.name }})
-
 {% endfor %}

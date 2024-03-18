@@ -5,6 +5,9 @@ collections:
   adrs:
     output: true
 
+exclude:
+  - _adrs
+
 theme: jekyll-theme-hacker
 
 # Theme variables

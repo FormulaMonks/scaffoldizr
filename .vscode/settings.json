@@ -1,5 +1,4 @@
 {
-    "editor.defaultFormatter": "biomejs.biome",
     "editor.formatOnSave": true,
     "files.associations": {
         "*.hbs": "structurizr"
@@ -13,9 +12,5 @@
     "[json]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
-    "cSpell.words": [
-        "scaffoldizr",
-        "scfz",
-        "structurizr"
-    ]
+    "cSpell.words": ["scaffoldizr", "scfz", "structurizr"]
 }
