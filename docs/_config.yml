@@ -13,3 +13,7 @@ theme: jekyll-theme-hacker
 # Theme variables
 title: "Scaffoldizr: Scaffolding to create Structurizr Workspaces"
 description: Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations
+show_downloads: true
+github:
+  tar_url: https://github.com/arch-formula/scaffoldizr/releases
+  repository_url: https://github.com/FormulaMonks/scaffoldizr
