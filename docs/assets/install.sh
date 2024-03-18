@@ -57,7 +57,7 @@ download_file() {
 install_tool() {
 	# download the tarball
 	version="v0.2.4"
-    repo="arch-formula/scaffoldizr"
+    repo="FormulaMonks/scaffoldizr"
 	os="$(get_os)"
 	arch="$(get_arch)"
 	install_path="${SCFZ_INSTALL_PATH:-$HOME/.local/bin/scfz}"

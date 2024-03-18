@@ -17,7 +17,7 @@
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
+      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
       "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
@@ -43,7 +43,7 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2024-03-14T14:41:26Z",
+  "lastModifiedDate" : "2024-03-18T21:31:04Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -58,7 +58,7 @@
         "destinationId" : "1",
         "id" : "7",
         "properties" : {
-          "structurizr.dsl.identifier" : "1375f86f-9f56-42db-b951-a051602e3087"
+          "structurizr.dsl.identifier" : "b1a0b14a-2558-4af2-b9b4-0ea6b607fe44"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -68,7 +68,7 @@
         "destinationId" : "4",
         "id" : "10",
         "properties" : {
-          "structurizr.dsl.identifier" : "1bc1da39-4db9-4005-b03e-c74a30bb4c94"
+          "structurizr.dsl.identifier" : "4ca9d221-462b-40f8-84e6-2961c3e5c406"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -107,7 +107,7 @@
         "destinationId" : "1",
         "id" : "9",
         "properties" : {
-          "structurizr.dsl.identifier" : "dcabb545-0354-4149-b9a0-7c12a5a0b5be"
+          "structurizr.dsl.identifier" : "d339a508-1f97-408d-9e66-8dabde1d921e"
         },
         "sourceId" : "2",
         "tags" : "Relationship",
@@ -128,7 +128,7 @@
           "destinationId" : "2",
           "id" : "12",
           "properties" : {
-            "structurizr.dsl.identifier" : "4dea621e-579a-4b51-9efb-623224eaf9a8"
+            "structurizr.dsl.identifier" : "03b46530-59f2-453b-9253-0182428b2c36"
           },
           "sourceId" : "4",
           "tags" : "Relationship",
@@ -150,7 +150,7 @@
         "destinationId" : "1",
         "id" : "6",
         "properties" : {
-          "structurizr.dsl.identifier" : "1c3b1de2-2e46-48e2-82b2-f34b266b3a93"
+          "structurizr.dsl.identifier" : "439e5c1c-3864-46bf-b162-faf67019a54f"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -160,7 +160,7 @@
         "destinationId" : "2",
         "id" : "8",
         "properties" : {
-          "structurizr.dsl.identifier" : "ce522cff-45b3-4f25-8085-69fcd0050d8a"
+          "structurizr.dsl.identifier" : "83bbcae7-3353-4780-85b3-9a368459c5f3"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -176,7 +176,7 @@
   "views" : {
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Scaffoldizr",
+      "lastSavedView" : "Container-001",
       "styles" : { },
       "terminology" : { },
       "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ]

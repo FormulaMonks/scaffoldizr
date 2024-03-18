@@ -15,5 +15,6 @@ title: "Scaffoldizr: Scaffolding to create Structurizr Workspaces"
 description: Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations
 show_downloads: true
 github:
-  tar_url: https://github.com/arch-formula/scaffoldizr/releases
+  zip_url: https://github.com/FormulaMonks/scaffoldizr/releases
+  tar_url: https://github.com/FormulaMonks/scaffoldizr/releases
   repository_url: https://github.com/FormulaMonks/scaffoldizr

@@ -4,7 +4,7 @@
 Run in your terminal:
 
 ```bash
-curl -s https://arch-formula.github.io/scaffoldizr/assets/install.sh | sh
+curl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh
 ```
 
 Then, verify the tool is correctly installed:
