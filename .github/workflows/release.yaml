@@ -117,6 +117,6 @@ jobs:
           push_options: '--force'
           skip_dirty_check: true    
           skip_fetch: true    
-          skip_checkout: true
+          skip_checkout: false
           disable_globbing: true
           create_branch: false
