@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
 import type { PromptModule } from "inquirer";
 import inquirer from "inquirer";
-import { StructurizrWorkspace } from "../workspace";
+import type { StructurizrWorkspace } from "../workspace";
 import { getRelationships } from "./relationships";
 
 describe("relationships", () => {

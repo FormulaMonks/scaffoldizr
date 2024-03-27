@@ -1,8 +1,9 @@
 import { describe, expect, mock, test } from "bun:test";
 import type { PromptModule } from "inquirer";
 import templates from "../templates/bundle";
-import { AddAction } from "./actions";
-import { Generator, createGenerator } from "./generator";
+import type { AddAction } from "./actions";
+import type { Generator } from "./generator";
+import { createGenerator } from "./generator";
 
 describe("generator", () => {
     describe("createGenerator", () => {

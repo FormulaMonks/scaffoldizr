@@ -3,7 +3,7 @@ import { join, relative, resolve } from "node:path";
 import { $, file, write } from "bun";
 import chalk from "chalk";
 import type { Answers } from "inquirer";
-import { ActionTypes, BaseAction, ExtendedAction } from ".";
+import type { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
 
 export type AppendAction = BaseAction & {

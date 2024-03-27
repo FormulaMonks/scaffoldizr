@@ -1,7 +1,7 @@
 import { $ } from "bun";
 import type { Answers } from "inquirer";
-import { AddAction, AddManyAction } from "../utils/actions";
-import { GeneratorDefinition } from "../utils/generator";
+import type { AddAction, AddManyAction } from "../utils/actions";
+import type { GeneratorDefinition } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
 const globalUserName = await $`git config --global user.name`.text();

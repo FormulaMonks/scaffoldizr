@@ -2,7 +2,8 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { kebabCase } from "change-case";
 import type { Answers, AsyncDynamicQuestionProperty, Question } from "inquirer";
-import { StructurizrWorkspace, getWorkspacePath } from "../workspace";
+import { getWorkspacePath } from "../workspace";
+import type { StructurizrWorkspace } from "../workspace";
 
 type GetSystemQuestionOptions = {
     when?: AsyncDynamicQuestionProperty<boolean, Answers>;

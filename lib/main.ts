@@ -1,18 +1,19 @@
 import { relative, resolve } from "node:path";
 import chalk from "chalk";
 import { capitalCase } from "change-case";
-import inquirer, { Answers } from "inquirer";
+import type { Answers } from "inquirer";
+import inquirer from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
 import * as generators from "./generators";
 import templates from "./templates/bundle";
-import {
+import type {
     Generator,
     GeneratorDefinition,
     GetAnswers,
-    createGenerator,
 } from "./utils/generator";
+import { createGenerator } from "./utils/generator";
 import { labelElementByName } from "./utils/labels";
 import { getWorkspacePath } from "./utils/workspace";
 

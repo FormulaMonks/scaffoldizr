@@ -1,6 +1,6 @@
 {
     "name": "scaffoldizr",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations",
     "module": "src/main.mjs",
     "bin": {
@@ -37,9 +37,6 @@
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog"
         }
-    },
-    "resolutions": {
-        "signal-exit": "3.x"
     },
     "lint-staged": {
         "*.{json,ts,js,mjs,mts}": ["bun biome ci"],

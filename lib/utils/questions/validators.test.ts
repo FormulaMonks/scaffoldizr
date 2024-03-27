@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { StructurizrWorkspace } from "../workspace";
+import type { StructurizrWorkspace } from "../workspace";
 import {
     chainValidators,
     duplicatedSystemName,
