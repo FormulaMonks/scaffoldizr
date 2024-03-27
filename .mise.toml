@@ -1,7 +1,7 @@
 [tools]
-bun = "latest"
+bun = "1.0"
 jq = "1.7.1"
-ruby = "3.3.0"
+ruby = "3.3"
 
 [tasks."docs:install"]
 run = "cd docs && bundle"
