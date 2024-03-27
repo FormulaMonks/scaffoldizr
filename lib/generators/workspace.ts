@@ -102,7 +102,6 @@ const generator: GeneratorDefinition<Answers> = {
             path: "architecture/views/{{kebabCase systemName}}.dsl",
             templateFile: "templates/views/system.hbs",
         } as AddAction,
-        // TODO: Add ".structurizr" path to gitignore file
     ],
 };
 

@@ -11,8 +11,6 @@ import {
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 // TODO: Other types of views
-// - Container
-// - Component
 // - Dynamic
 // - Filtered
 // // - System landscape
@@ -31,11 +29,9 @@ const generator: GeneratorDefinition<Answers> = {
                 name: "viewType",
                 message: "View type:",
                 choices: [
-                    // "container",
-                    // "component",
                     // "dynamic",
+                    // "filtered",
                     "deployment",
-                    // "system",
                     "landscape",
                 ],
             },
@@ -57,6 +53,13 @@ const generator: GeneratorDefinition<Answers> = {
                 name: "viewDescription",
                 message: "View description:",
                 default: "Untitled view",
+            },
+            {
+                type: "input",
+                name: "instanceDescription",
+                message: "System Instance description:",
+                default: "System instance",
+                when: (answers) => answers.viewType === "deployment",
             },
         ];
         return prompt(questions);
