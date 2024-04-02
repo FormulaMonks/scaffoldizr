@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
 # $2 contains the source of the commit message.
 # It can be message, template, merge, squash, or commit (for git commit --amend)
