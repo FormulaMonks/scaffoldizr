@@ -1,11 +1,18 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
 # $2 contains the source of the commit message.
 # It can be message, template, merge, squash, or commit (for git commit --amend)
 if [ "$2" = "commit" ]; then
   echo "Skipping prepare-commit-msg hook due to amend."
   exit 0
+fi
+
+# Testing if message already present
+if [ "$2" = "message" ]; then
+  if [ -n "$1" ]; then
+    echo "Skipping prepare-commit-msg: message set to \"$(cat "$1")\" "
+    exit 0
+  fi
 fi
 
 # If we're in the middle of an interactive rebase, GIT_SEQUENCE_EDITOR will be set.
