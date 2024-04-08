@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "github.vscode-github-actions",
-        "gruntfuggly.todo-tree"
+        "gruntfuggly.todo-tree",
+        "biomejs.biome"
     ]
 }
