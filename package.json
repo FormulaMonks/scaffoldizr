@@ -23,7 +23,7 @@
         "yargs": "^17.7.2"
     },
     "devDependencies": {
-        "@biomejs/biome": "^1.6.3",
+        "@biomejs/biome": "^1.6.4",
         "@types/bun": "^1.0.12",
         "@types/yargs": "^17.0.32",
         "branch-name-lint": "^2.1.1",
