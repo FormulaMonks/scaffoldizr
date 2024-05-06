@@ -27,7 +27,7 @@
         "@commitlint/cli": "^19.3.0",
         "@commitlint/config-conventional": "^19.1.0",
         "@commitlint/cz-commitlint": "^19.2.0",
-        "@types/bun": "^1.1.0",
+        "@types/bun": "^1.1.1",
         "@types/yargs": "^17.0.32",
         "branch-name-lint": "^2.1.1",
         "commitizen": "^4.3.0",
