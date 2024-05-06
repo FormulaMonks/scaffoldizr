@@ -2,6 +2,7 @@
     "recommendations": [
         "github.vscode-github-actions",
         "gruntfuggly.todo-tree",
-        "biomejs.biome"
+        "biomejs.biome",
+        "streetsidesoftware.code-spell-checker"
     ]
 }

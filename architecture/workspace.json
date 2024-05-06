@@ -43,7 +43,8 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2024-03-18T21:31:04Z",
+  "lastModifiedAgent" : "structurizr-javascript",
+  "lastModifiedDate" : "2024-05-06T21:18:50Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -58,7 +59,7 @@
         "destinationId" : "1",
         "id" : "7",
         "properties" : {
-          "structurizr.dsl.identifier" : "b1a0b14a-2558-4af2-b9b4-0ea6b607fe44"
+          "structurizr.dsl.identifier" : "eb7d1b40-9293-44b6-a662-e58bef5abb01"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -68,7 +69,7 @@
         "destinationId" : "4",
         "id" : "10",
         "properties" : {
-          "structurizr.dsl.identifier" : "4ca9d221-462b-40f8-84e6-2961c3e5c406"
+          "structurizr.dsl.identifier" : "94feb38d-3dba-45c2-a126-fa48c808d4a4"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -107,7 +108,7 @@
         "destinationId" : "1",
         "id" : "9",
         "properties" : {
-          "structurizr.dsl.identifier" : "d339a508-1f97-408d-9e66-8dabde1d921e"
+          "structurizr.dsl.identifier" : "d27441a0-7130-4660-8d26-1941098681ba"
         },
         "sourceId" : "2",
         "tags" : "Relationship",
@@ -128,7 +129,7 @@
           "destinationId" : "2",
           "id" : "12",
           "properties" : {
-            "structurizr.dsl.identifier" : "03b46530-59f2-453b-9253-0182428b2c36"
+            "structurizr.dsl.identifier" : "91e8dc86-99b5-4971-a292-1ac802de1251"
           },
           "sourceId" : "4",
           "tags" : "Relationship",
@@ -150,7 +151,7 @@
         "destinationId" : "1",
         "id" : "6",
         "properties" : {
-          "structurizr.dsl.identifier" : "439e5c1c-3864-46bf-b162-faf67019a54f"
+          "structurizr.dsl.identifier" : "0ddcc401-1df0-4a9d-b323-201d82f759f2"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -160,7 +161,7 @@
         "destinationId" : "2",
         "id" : "8",
         "properties" : {
-          "structurizr.dsl.identifier" : "83bbcae7-3353-4780-85b3-9a368459c5f3"
+          "structurizr.dsl.identifier" : "556dbc0b-610f-484b-8a8a-60802709d6eb"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -176,14 +177,15 @@
   "views" : {
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Container-001",
+      "lastSavedView" : "Scaffoldizr",
+      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
       "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : false,
+        "applied" : true,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
@@ -192,18 +194,22 @@
         "vertices" : false
       },
       "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "dimensions" : {
+        "height" : 841,
+        "width" : 2300
+      },
       "elements" : [ {
         "id" : "2",
-        "x" : 0,
-        "y" : 0
+        "x" : 1649,
+        "y" : 249
       }, {
         "id" : "4",
-        "x" : 0,
-        "y" : 0
+        "x" : 899,
+        "y" : 249
       }, {
         "id" : "5",
-        "x" : 0,
-        "y" : 0
+        "x" : 199,
+        "y" : 199
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "generatedKey" : true,

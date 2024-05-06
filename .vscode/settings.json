@@ -3,6 +3,7 @@
     "files.associations": {
         "*.hbs": "structurizr"
     },
+    "editor.defaultFormatter": "biomejs.biome",
     "editor.codeActionsOnSave": {
         "source.organizeImports.biome": "explicit"
     },

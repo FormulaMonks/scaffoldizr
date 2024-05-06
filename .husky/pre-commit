@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# If explicitly disabled, skip the hook
+if [ "$(git config --get custom.hooks.pre-commit)" == "false" ]; then
+  echo "pre-commit: hook disabled by user"
+  exit 0
+fi
+
+bun lint-staged

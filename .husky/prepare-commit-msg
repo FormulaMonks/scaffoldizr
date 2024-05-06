@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-
+#!/bin/bash
 # $2 contains the source of the commit message.
 # It can be message, template, merge, squash, or commit (for git commit --amend)
 if [ "$2" = "commit" ]; then
@@ -22,4 +21,10 @@ if [ -n "$GIT_SEQUENCE_EDITOR" ]; then
   exit 0
 fi
 
-exec < /dev/tty && bun cz --hook || true
+# If explicitly disabled, skip the hook
+if [ "$(git config --get custom.hooks.prepare-commit-msg)" == "false" ]; then
+  echo "prepare-commit-msg: hook disabled by user"
+  exit 0
+fi
+
+exec < /dev/tty && bun czg --hook || true

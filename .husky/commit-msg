@@ -1,3 +1,9 @@
-#!/usr/bin/env sh
+#!/bin/bash
+
+# If explicitly disabled, skip the hook
+if [ "$(git config --get custom.hooks.commit-msg)" == "false" ]; then
+  echo "commit-msg: hook disabled by user"
+  exit 0
+fi
 
 bun commitlint --edit "$1"

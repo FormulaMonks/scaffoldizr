@@ -1,0 +1,4 @@
+{
+    "*.{json,ts,js,cjs,mjs,mts,css}": ["bun biome ci"],
+    "*.{ts,mjs}": ["bun test:ci"]
+}
