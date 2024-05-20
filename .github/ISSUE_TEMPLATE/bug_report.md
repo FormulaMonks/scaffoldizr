@@ -8,10 +8,11 @@ assignees: ''
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A brief description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -20,12 +21,16 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Actual behavior**
+A clear and concise description of what is actually happening.
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. macOS]
- - Version [use `scfz --version`]
+**Details (please complete the following information):**
+
+- OS: [e.g. macOS]
+- Tool Version: [use `scfz --version`]
 
 **Additional context**
 Add any other context about the problem here.
