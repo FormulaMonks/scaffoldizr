@@ -6,10 +6,10 @@ workspace "Scaffoldizr" {
 
     model {
         # Constants
-        !const CLI "CLI/Terminal"
+        !constant CLI "CLI/Terminal"
 
         !include systems
-        !include environments
+        # !include environments (Enable when environments ready)
 
         # Relationships
         !include relationships/_external.dsl
@@ -18,7 +18,7 @@ workspace "Scaffoldizr" {
 
     views {
         themes "https://structurizr.test.zemoga-client.com/share/1/theme"
-        !const AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
+        !constant AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
 
         !include views
     }
