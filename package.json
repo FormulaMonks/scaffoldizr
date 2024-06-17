@@ -33,7 +33,7 @@
         "czg": "^1.9.3",
         "generate-changelog": "^1.8.0",
         "husky": "^9.0.11",
-        "lint-staged": "^15.2.5"
+        "lint-staged": "^15.2.7"
     },
     "branchNameLinter": {
         "prefixes": ["feature", "bugfix", "hotfix", "release"],
