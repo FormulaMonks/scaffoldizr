@@ -246,12 +246,12 @@
   dependencies:
     call-bind "^1.0.7"
 
-"@types/bun@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.4.tgz#fa5cb47e55cad937d2454e487c4577d9e0816796"
-  integrity sha512-ejSuv/3s0hTHj/nkkLzBlHxm4JxOPygbLNi0kzM6ooq8rOiQvIUCv7RRErTaWSfb+QVnKz6x7qlp8N86bGDiIg==
+"@types/bun@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.6.tgz#90ea30fbbc0391484448acdf84928ab9f1e3f423"
+  integrity sha512-uJgKjTdX0GkWEHZzQzFsJkWp5+43ZS7HC8sZPFnOwnSo1AsNl2q9o2bFeS23disNDqbggEgyFkKCHl/w8iZsMA==
   dependencies:
-    bun-types "1.1.13"
+    bun-types "1.1.17"
 
 "@types/conventional-commits-parser@^5.0.0":
   version "5.0.0"
@@ -419,10 +419,10 @@ buffer@^5.5.0:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
 
-bun-types@1.1.13:
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.13.tgz#23ea8f46228975293d449c134926fb1e6775fac1"
-  integrity sha512-G/TqF0SsMQGLr4g7K3B2BK8BrPEA1EqCNwxZbyRdj5M4t54zvwyaqvRJOW34kuPqc2IvNNalRU3swc8B4oc4FA==
+bun-types@1.1.17:
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.17.tgz#5a9e1ba32ab0f156db3b4db2bb22187bfd0090e6"
+  integrity sha512-Z4+OplcSd/YZq7ZsrfD00DKJeCwuNY96a1IDJyR73+cTBaFIS7SC6LhpY/W3AMEXO9iYq5NJ58WAwnwL1p5vKg==
   dependencies:
     "@types/node" "~20.12.8"
     "@types/ws" "~8.5.10"
