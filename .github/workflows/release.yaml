@@ -70,3 +70,7 @@ jobs:
           create_branch: false
   docs:
     uses: ./.github/workflows/docs.yaml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
