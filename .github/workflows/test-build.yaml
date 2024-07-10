@@ -65,7 +65,7 @@ jobs:
         run: |
           jq -r '.version' package.json
           mkdir -p ./dist/${{ matrix.name }}
-          bun build ./lib/main.ts --compile --minify --target=bun-${{ matrix.name }} --outfile ./dist/${{ matrix.name }}/scfz
+          bun build ./lib/main.ts --compile --minify --target=bun-${{ matrix.name }}-baseline --outfile ./dist/${{ matrix.name }}/scfz
           ls -lah ./dist/${{ matrix.name }}/scfz
           ./dist/${{ matrix.name }}/scfz --version
           cd ./dist
