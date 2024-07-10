@@ -71,7 +71,7 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
-          version: 2024.3.1
+          version: 2024.5.14
           install: true
           cache: true
           experimental: true
@@ -116,3 +116,5 @@ jobs:
           skip_checkout: false
           disable_globbing: true
           create_branch: false
+  docs:
+    uses: ./.github/workflows/docs.yaml
