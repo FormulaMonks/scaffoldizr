@@ -6,12 +6,10 @@ on:
       - 'v*'
 
 jobs:
-  test:
-    uses: ./.github/workflows/test-build.yaml
-  build:
+  test-build:
     uses: ./.github/workflows/test-build.yaml
   release:
-    needs: build
+    needs: test-build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -69,6 +67,7 @@ jobs:
           disable_globbing: true
           create_branch: false
   docs:
+    needs: release
     uses: ./.github/workflows/docs.yaml
     permissions:
       contents: read
