@@ -1,8 +1,8 @@
 import { relative, resolve } from "node:path";
 import chalk from "chalk";
 import { capitalCase } from "change-case";
-import type { Answers } from "inquirer";
 import inquirer from "inquirer";
+import type { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
