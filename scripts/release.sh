@@ -24,8 +24,8 @@ find dist -name 'tarball-*' -exec sh -c '
 platforms=(
   linux-x64
   linux-arm64
-  macos-x64
-  macos-arm64
+  darwin-x64
+  darwin-arm64
 )
 for platform in "${platforms[@]}"; do
   mv "$RELEASE_DIR/$SCFZ_VERSION/scfz-$platform.tar.gz" "$RELEASE_DIR/$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform.tar.gz"
