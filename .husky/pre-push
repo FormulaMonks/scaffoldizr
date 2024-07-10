@@ -6,9 +6,10 @@ do
     case $rref in
         refs/tags/*)
             if echo "$rref"; then
-                echo "New tag found. Updating package.json..."
                 version=$(echo "$rref" | sed s/.*v//)
                 tmp_pkg=$(mktemp)
+                echo "New tag found. Updating package.json to $version..."
+                echo "Current version: $(jq -r .version ./package.json)"
                 jq --indent 4 --arg version "$version" '.version = $version' ./package.json > "$tmp_pkg" && mv "$tmp_pkg" ./package.json
                 bun biome format --write package.json
                 git add package.json
