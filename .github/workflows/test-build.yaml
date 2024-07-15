@@ -76,6 +76,7 @@ jobs:
           tag: v${{ steps.bump.outputs.version }}
           tag_exists_error: false
           force_push_tag: true
+          no_verify_tag: true
           message: "Tag version"
   build:
     needs: bump-version
