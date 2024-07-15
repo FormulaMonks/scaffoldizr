@@ -74,7 +74,7 @@ jobs:
       - uses: rickstaa/action-create-tag@v1
         id: "tag_create"
         with:
-          tag: v${{ steps.get_version.outputs.version }}
+          tag: ${{ steps.get_version.outputs.version }}
           tag_exists_error: false
           force_push_tag: true
           no_verify_tag: true
