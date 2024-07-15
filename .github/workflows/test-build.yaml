@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
@@ -28,6 +31,7 @@ jobs:
           bun install
           bun test:ci
   bump-version:
+    needs: test
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
@@ -47,7 +51,7 @@ jobs:
           jq --indent 4 --arg version "$version" '.version = $version' package.json > package.json.tmp
           mv package.json.tmp package.json
           bun biome format --write package.json
-      - name: Update Install Script
+      - name: Update package.json version
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "[skip ci]: Bump version"
@@ -60,12 +64,13 @@ jobs:
           # add_options: '-u'
           push_options: '--force'
           skip_dirty_check: true    
-          skip_fetch: true    
+          skip_fetch: false    
           skip_checkout: false
           disable_globbing: true
           create_branch: false
   build:
-    needs: test
+    needs: bump-version
+    if: always()
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     permissions:
