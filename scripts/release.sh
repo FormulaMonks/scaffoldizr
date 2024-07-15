@@ -14,10 +14,10 @@ rm -rf "${BIN_DIR:?}"
 mkdir -p "$RELEASE_DIR/v$SCFZ_VERSION"
 mkdir -p "$BIN_DIR"
 
-# Find dounloaded tarballs and change directory name/location
+# Find downloaded tarballs and change directory name/location
 find dist -name 'tarball-*' -exec sh -c '
     target=${1#dist/tarball-}
-    cp "dist/tarball-$target/"*.tar.gz "$RELEASE_DIR/$SCFZ_VERSION"
+    cp "dist/tarball-$target/"*.tar.gz "$RELEASE_DIR/v$SCFZ_VERSION"
   ' sh {} \;
 
 # Compress targets to new tarballs which include the correct folder structure
@@ -40,6 +40,8 @@ if [ ! "$(ls -A "$RELEASE_DIR/v$SCFZ_VERSION")" ] ; then
   echo "Release folder is empty!"
   exit 1
 fi
+
+ls -lah "$RELEASE_DIR/v$SCFZ_VERSION"
 
 # Renders and updates install script to reflect latest version
 ./scripts/render-install.sh >"$RELEASE_DIR"/install.sh
