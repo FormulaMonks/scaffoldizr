@@ -13,7 +13,7 @@ error() {
 get_os() {
 	os="$(uname -s)"
 	if [ "$os" = Darwin ]; then
-		echo "macos"
+		echo "darwin"
 	elif [ "$os" = Linux ]; then
 		echo "linux"
 	else
