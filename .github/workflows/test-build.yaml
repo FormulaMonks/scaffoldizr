@@ -97,6 +97,8 @@ jobs:
             runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
