@@ -8,6 +8,8 @@ on:
 jobs:
   test-build:
     uses: ./.github/workflows/test-build.yaml
+    permissions:
+      contents: write
   release:
     needs: test-build
     runs-on: ubuntu-latest
