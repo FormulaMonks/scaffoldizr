@@ -69,6 +69,11 @@ jobs:
           skip_checkout: false
           disable_globbing: true
           create_branch: false
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          fetch-tags: true
+          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
       - id: get_version
         run: echo "version=v$(jq -r '.version' package.json)" >> "$GITHUB_OUTPUT"
       - uses: rickstaa/action-create-tag@v1
