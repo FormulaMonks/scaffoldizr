@@ -69,21 +69,6 @@ jobs:
           skip_checkout: false
           disable_globbing: true
           create_branch: false
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          fetch-tags: true
-          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
-      - id: get_version
-        run: echo "version=v$(jq -r '.version' package.json)" >> "$GITHUB_OUTPUT"
-      - uses: rickstaa/action-create-tag@v1
-        id: "tag_create"
-        with:
-          tag: ${{ steps.get_version.outputs.version }}
-          tag_exists_error: false
-          force_push_tag: true
-          no_verify_tag: true
-          message: "Tag version"
   docs:
     needs: release
     uses: ./.github/workflows/docs.yaml
