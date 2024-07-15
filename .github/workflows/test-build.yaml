@@ -1,4 +1,4 @@
-name: Test
+name: Test and build
 
 on:
   workflow_call:
@@ -31,6 +31,8 @@ jobs:
     needs: test
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -61,6 +63,16 @@ jobs:
           cache: true
           experimental: true
       - run: bun install
+      - name: Bump version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version=$(echo ${{ github.ref }} | sed -e s%refs/tags/%%)
+          echo "New tag found. Updating package.json to $version..."
+          jq --indent 4 '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          bun biome format --write package.json
+          git add package.json
+          git commit -m "[skip ci]: Bump version $version"
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json

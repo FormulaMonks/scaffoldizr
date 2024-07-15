@@ -45,6 +45,6 @@
             "releases": "release"
         },
         "banned": ["wip"],
-        "skip": ["skip-ci"]
+        "skip": ["skip ci", "main", "develop"]
     }
 }

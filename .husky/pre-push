@@ -1,26 +1,3 @@
 #!/usr/bin/env sh
 
-# shellcheck disable=SC2034
-while read lref new rref old
-do
-    case $rref in
-        refs/tags/*)
-            if echo "$rref"; then
-                version=$(echo "$rref" | sed s/.*v//)
-                tmp_pkg=$(mktemp)
-                echo "New tag found. Updating package.json to $version..."
-                echo "Current version: $(jq -r .version ./package.json)"
-                jq --indent 4 --arg version "$version" '.version = $version' ./package.json > "$tmp_pkg" && mv "$tmp_pkg" ./package.json
-                bun biome format --write package.json
-                git add package.json
-                git commit -m "[skip-ci]: Bump version $version"
-                exit 0
-            else
-                bun branch-name-lint package.json
-            fi;;
-        *)
-            ;;
-    esac
-done
-
-
+bun branch-name-lint package.json
