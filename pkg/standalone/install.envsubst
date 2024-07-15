@@ -62,7 +62,7 @@ install_tool() {
 	arch="$(get_arch)"
 	install_path="${SCFZ_INSTALL_PATH:-$HOME/.local/bin/scfz}"
 	install_dir="$(dirname "$install_path")"
-	tarball_url="https://github.com/${repo}/releases/download/${version}/scfz-${version}-${os}-${arch}.tar.gz"
+	tarball_url="https://github.com/${repo}/releases/download/v${version}/scfz-${version}-${os}-${arch}.tar.gz"
 
 	cache_file=$(download_file "$tarball_url")
 
