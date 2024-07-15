@@ -50,10 +50,11 @@ jobs:
       - name: Update Install Script
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "[skip ci]: Bump version $(echo ${{ github.ref }} | sed -e s%refs/tags/v%%)"
+          commit_message: "[skip ci]: Bump version"
           commit_options: '--no-verify --signoff'
           file_pattern: 'package.json'
           repository: .
+          branch: main
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
           status_options: '--untracked-files=no'
           # add_options: '-u'
