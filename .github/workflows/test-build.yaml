@@ -70,14 +70,6 @@ jobs:
           skip_checkout: false
           disable_globbing: true
           create_branch: false
-      - uses: rickstaa/action-create-tag@v1
-        id: "tag_create"
-        with:
-          tag: v${{ steps.bump.outputs.version }}
-          tag_exists_error: false
-          force_push_tag: true
-          no_verify_tag: true
-          message: "Tag version"
   build:
     needs: bump-version
     if: always()
@@ -107,6 +99,8 @@ jobs:
             runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:

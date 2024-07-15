@@ -20,6 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
@@ -54,7 +55,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          commit_message: "[skip-ci]: Updated install script"
+          commit_message: "[skip ci]: Updated install script"
           commit_options: '--no-verify --signoff'
           branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
           file_pattern: 'docs/**'
@@ -68,6 +69,16 @@ jobs:
           skip_checkout: false
           disable_globbing: true
           create_branch: false
+      - id: get_version
+        run: echo "version=v$(jq -r '.version' package.json)" >> "$GITHUB_OUTPUT"
+      - uses: rickstaa/action-create-tag@v1
+        id: "tag_create"
+        with:
+          tag: v${{ steps.get_version.outputs.version }}
+          tag_exists_error: false
+          force_push_tag: true
+          no_verify_tag: true
+          message: "Tag version"
   docs:
     needs: release
     uses: ./.github/workflows/docs.yaml
