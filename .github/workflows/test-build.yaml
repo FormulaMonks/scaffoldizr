@@ -27,6 +27,42 @@ jobs:
         run: |
           bun install
           bun test:ci
+  bump-version:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mise Tools install
+        uses: jdx/mise-action@v2
+        with:
+          version: 2024.5.14
+          install: true
+          cache: true
+          experimental: true
+      - run: bun install
+      - name: Bump version
+        run: |
+          version=$(echo "${{ github.ref }}" | sed -e s%refs/tags/v%%)
+          echo "New tag found. Updating package.json to $version..."
+          jq --indent 4 --arg version "$version" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          bun biome format --write package.json
+      - name: Update Install Script
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "[skip ci]: Bump version $(echo ${{ github.ref }} | sed -e s%refs/tags/v%%)"
+          commit_options: '--no-verify --signoff'
+          file_pattern: 'package.json'
+          repository: .
+          commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
+          status_options: '--untracked-files=no'
+          # add_options: '-u'
+          push_options: '--force'
+          skip_dirty_check: true    
+          skip_fetch: true    
+          skip_checkout: false
+          disable_globbing: true
+          create_branch: false
   build:
     needs: test
     name: build-${{matrix.name}}
@@ -63,31 +99,6 @@ jobs:
           cache: true
           experimental: true
       - run: bun install
-      - name: Bump version
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          version=$(echo "${{ github.ref }}" | sed -e s%refs/tags/v%%)
-          echo "New tag found. Updating package.json to $version..."
-          jq --indent 4 --arg version "$version" '.version = $version' package.json > package.json.tmp
-          mv package.json.tmp package.json
-          bun biome format --write package.json
-      - name: Update Install Script
-        uses: stefanzweifel/git-auto-commit-action@v5
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          commit_message: "[skip ci]: Bump version $(echo ${{ github.ref }} | sed -e s%refs/tags/v%%)"
-          commit_options: '--no-verify --signoff'
-          file_pattern: 'package.json'
-          repository: .
-          commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
-          status_options: '--untracked-files=no'
-          # add_options: '-u'
-          push_options: '--force'
-          skip_dirty_check: true    
-          skip_fetch: true    
-          skip_checkout: false
-          disable_globbing: true
-          create_branch: false
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json
