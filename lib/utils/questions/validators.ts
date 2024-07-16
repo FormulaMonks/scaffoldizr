@@ -6,7 +6,7 @@ import { getAllSystemElements } from "./system";
 
 type Validator = Question["validate"];
 
-export const stringEmpty = (input: string) => input.length > 0;
+export const stringEmpty = (input: string) => input?.length > 0;
 
 export const duplicatedSystemName = (input: string, answers: Answers) => {
     if (kebabCase(input) === kebabCase(answers?.systemName)) {

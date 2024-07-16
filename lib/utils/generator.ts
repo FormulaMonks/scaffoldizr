@@ -1,5 +1,6 @@
+import type { CancelablePromise } from "@inquirer/type";
 import chalk from "chalk";
-import type { Answers, PromptModule, QuestionCollection } from "inquirer";
+import type { PromptModule, QuestionCollection } from "inquirer";
 import type {
     AddAction,
     AddManyAction,
@@ -8,25 +9,36 @@ import type {
 } from "./actions";
 import { ActionTypes, add, addMany, append } from "./actions";
 
-export type GeneratorDefinition<A extends Answers> = {
+/**
+ * Added support for latest inquirer API
+ */
+export type QuestionsObject = {
+    [key: string]: () => CancelablePromise<string | boolean>;
+};
+
+export type GeneratorDefinition<
+    A extends Record<string, unknown> = Record<string, unknown>,
+> = {
     name: string;
     description: string;
     questions:
         | QuestionCollection<A>
-        | ((prompt: PromptModule, generator: Generator<A>) => Promise<A>);
+        | ((prompt: PromptModule, generator: Generator<A>) => Promise<A>)
+        | QuestionsObject;
     actions: (AddAction | AddManyAction | AppendAction)[];
 };
 
-export type Generator<A extends Answers> = GeneratorDefinition<A> & {
-    destPath: string;
-    templates: Map<string, string>;
-};
+export type Generator<A extends Record<string, unknown>> =
+    GeneratorDefinition<A> & {
+        destPath: string;
+        templates: Map<string, string>;
+    };
 
 export type GetAnswers<Type> = Type extends GeneratorDefinition<infer X>
     ? X
     : null;
 
-async function executeAction<A extends Answers>(
+async function executeAction<A extends Record<string, unknown>>(
     action: ExtendedAction & (AddAction | AddManyAction | AppendAction),
     answers: A,
 ): Promise<boolean> {
@@ -46,16 +58,33 @@ async function executeAction<A extends Answers>(
     }
 }
 
-export async function createGenerator<A extends Answers>(
+export async function createGenerator<A extends Record<string, unknown>>(
     prompt: PromptModule,
     generator: Generator<A>,
     execute = executeAction,
 ): Promise<void> {
     console.log(chalk.bold(chalk.gray(generator.description)));
+    // const sleep = (n: number) => new Promise((res) => setTimeout(res, n));
     const answers =
         generator.questions instanceof Function
             ? await generator.questions(prompt, generator)
-            : await prompt(generator.questions);
+            : Array.isArray(generator.questions)
+              ? await prompt(generator.questions)
+              : await Object.entries(
+                    generator.questions as QuestionsObject,
+                ).reduce(
+                    async (answers, [name, prompt]) => {
+                        const acc = await answers;
+
+                        const answer = await prompt?.();
+
+                        return {
+                            ...acc,
+                            [name]: answer,
+                        };
+                    },
+                    Promise.resolve({} as Record<string, unknown>),
+                );
 
     for await (const action of generator.actions) {
         await execute(

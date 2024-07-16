@@ -1,59 +1,54 @@
+import { confirm, input } from "@inquirer/prompts";
 import { $ } from "bun";
-import type { Answers } from "inquirer";
 import type { AddAction, AddManyAction } from "../utils/actions";
-import type { GeneratorDefinition } from "../utils/generator";
+import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
 
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "Workspace",
     description: "Create a new workspace",
-    questions: [
-        {
-            type: "input",
-            name: "workspaceName",
-            message: "Workspace name:",
-            validate: stringEmpty,
-        },
-        {
-            type: "input",
-            name: "workspaceDescription",
-            message: "Workspace description:",
-            default: "Untitled Workspace",
-        },
-        {
-            type: "input",
-            name: "systemName",
-            message: "System name:",
-            validate: stringEmpty,
-        },
-        {
-            type: "input",
-            name: "systemDescription",
-            message: "System description:",
-            default: "Untitled System",
-        },
-        {
-            type: "input",
-            name: "authorName",
-            message: "Author Name:",
-            default: globalUserName.trim(),
-        },
-        {
-            type: "input",
-            name: "authorEmail",
-            message: "Author email:",
-            default: globalUserEmail.trim(),
-        },
-        {
-            type: "confirm",
-            name: "shouldIncludeTheme",
-            message: "Include default theme?",
-            default: true,
-        },
-    ],
+    questions: {
+        workspaceName: () =>
+            input({
+                message: "Workspace name:",
+                required: true,
+                validate: stringEmpty,
+            }),
+        workspaceDescription: () =>
+            input({
+                message: "Workspace description:",
+                default: "Untitled Workspace",
+            }),
+        systemName: () =>
+            input({
+                message: "System name:",
+                required: true,
+                validate: stringEmpty,
+            }),
+        systemDescription: () =>
+            input({
+                message: "System description:",
+                default: "Untitled System",
+            }),
+        authorName: () =>
+            input({
+                message: "Author Name:",
+                default: globalUserName.trim(),
+            }),
+        authorEmail: () =>
+            input({
+                message: "Author email:",
+                default: globalUserEmail.trim(),
+            }),
+        shouldIncludeTheme: () =>
+            confirm({
+                message: "Include default theme?",
+                default: true,
+            }),
+    } as QuestionsObject,
     actions: [
         {
             type: "add",
