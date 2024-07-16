@@ -1,26 +1,26 @@
-import type { Answers } from "inquirer";
+import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
-import type { GeneratorDefinition } from "../utils/generator";
+import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "Constant",
     description: "Create a new workspace constant",
-    questions: [
-        {
-            type: "input",
-            name: "constantName",
-            message: "Constant:",
-            validate: stringEmpty,
-        },
-        {
-            type: "input",
-            name: "constantValue",
-            message: "Value:",
-            default: "New Value",
-            validate: stringEmpty,
-        },
-    ],
+    questions: {
+        constantName: () =>
+            input({
+                message: "Constant:",
+                required: true,
+                validate: stringEmpty,
+            }),
+        constantValue: () =>
+            input({
+                message: "Value:",
+                default: "New Value",
+                required: true,
+                validate: stringEmpty,
+            }),
+    } as QuestionsObject,
     actions: [
         {
             type: "append",
