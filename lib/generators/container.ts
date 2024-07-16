@@ -1,8 +1,8 @@
 import { resolve } from "node:path";
+import { Separator } from "@inquirer/prompts";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
 import type { Answers, QuestionCollection } from "inquirer";
-import inquirer from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
@@ -82,7 +82,7 @@ const generator: GeneratorDefinition<Answers> = {
             prompt,
             {
                 filterChoices: (elm) =>
-                    elm instanceof inquirer.Separator ||
+                    elm instanceof Separator ||
                     elm.value !== partialAnswers.systemName,
                 ...relationshipDefaults,
                 includeContainers: partialAnswers.systemName,

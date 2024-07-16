@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
+import { Separator } from "@inquirer/prompts";
 import type { PromptModule } from "inquirer";
-import inquirer from "inquirer";
 import type { StructurizrWorkspace } from "../workspace";
 import { getRelationships } from "./relationships";
 
@@ -81,12 +81,12 @@ describe("relationships", () => {
                 name: "relationships",
                 message: expect.any(String),
                 choices: [
-                    expect.any(inquirer.Separator),
+                    expect.any(Separator),
                     {
                         name: "🟦 SomeSystem",
                         value: "SomeSystem",
                     },
-                    expect.any(inquirer.Separator),
+                    expect.any(Separator),
                     {
                         name: "👤 SomePerson",
                         value: "SomePerson",

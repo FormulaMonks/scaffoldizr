@@ -12,8 +12,8 @@ import { ActionTypes, add, addMany, append } from "./actions";
 /**
  * Added support for latest inquirer API
  */
-export type QuestionsObject = {
-    [key: string]: () => CancelablePromise<string | boolean>;
+export type QuestionsObject<T = string | boolean> = {
+    [key: string]: () => CancelablePromise<T>;
 };
 
 export type GeneratorDefinition<
@@ -64,10 +64,11 @@ export async function createGenerator<A extends Record<string, unknown>>(
     execute = executeAction,
 ): Promise<void> {
     console.log(chalk.bold(chalk.gray(generator.description)));
-    // const sleep = (n: number) => new Promise((res) => setTimeout(res, n));
+
     const answers =
         generator.questions instanceof Function
-            ? await generator.questions(prompt, generator)
+            ? // TODO: Remove "prompt" argument from generator.questions
+              await generator.questions(prompt, generator)
             : Array.isArray(generator.questions)
               ? await prompt(generator.questions)
               : await Object.entries(

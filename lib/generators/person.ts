@@ -1,5 +1,5 @@
+import { Separator } from "@inquirer/prompts";
 import type { Answers, QuestionCollection } from "inquirer";
-import inquirer from "inquirer";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
@@ -64,7 +64,7 @@ const generator: GeneratorDefinition<Answers> = {
             prompt,
             {
                 filterChoices: (elm) =>
-                    elm instanceof inquirer.Separator ||
+                    elm instanceof Separator ||
                     elm.value !== partialAnswers.systemName,
                 ...relationshipDefaults,
             },

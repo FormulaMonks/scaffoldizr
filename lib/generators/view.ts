@@ -1,8 +1,8 @@
-import type { Answers, QuestionCollection } from "inquirer";
+import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import { skipUnlessViewType, whenViewType } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
-import { getSystemQuestion } from "../utils/questions/system";
+import { getSystemQuestionAsPromise } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -15,54 +15,59 @@ import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 // - Filtered
 // // - System landscape
 // // - Deployment
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "View",
     description: "Create a new view",
-    questions: async (prompt, generator) => {
+    questions: async (_, generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
 
-        const questions: QuestionCollection<Answers> = [
-            {
-                type: "list",
-                name: "viewType",
-                message: "View type:",
-                choices: [
-                    // "dynamic",
-                    // "filtered",
-                    "deployment",
-                    "landscape",
-                ],
-            },
-            await getSystemQuestion(workspaceInfo ?? generator.destPath, {
-                message: "System (to create view for):",
-                when: (answers) => answers.viewType !== "landscape",
-            }),
-            {
-                type: "input",
-                name: "viewName",
-                message: "View name:",
-                validate: chainValidators(
-                    stringEmpty,
-                    validateDuplicatedViews(workspaceInfo),
-                ),
-            },
-            {
-                type: "input",
-                name: "viewDescription",
-                message: "View description:",
-                default: "Untitled view",
-            },
-            {
-                type: "input",
-                name: "instanceDescription",
-                message: "System Instance description:",
-                default: "System instance",
-                when: (answers) => answers.viewType === "deployment",
-            },
-        ];
-        return prompt(questions);
+        const viewType = await select<string>({
+            message: "View type:",
+            choices: [
+                // "dynamic",
+                // "filtered",
+                { name: "Deployment", value: "deployment" },
+                { name: "Landscape", value: "landscape" },
+            ],
+        });
+
+        const systemName =
+            viewType !== "landscape"
+                ? await getSystemQuestionAsPromise(
+                      workspaceInfo ?? generator.destPath,
+                  )
+                : undefined;
+
+        const viewName = await input({
+            message: "View name:",
+            validate: chainValidators(
+                stringEmpty,
+                validateDuplicatedViews(workspaceInfo),
+            ),
+        });
+
+        const viewDescription = await input({
+            message: "View description:",
+            default: "Untitled view",
+        });
+
+        const instanceDescription =
+            viewType === "deployment"
+                ? await input({
+                      message: "System Instance description:",
+                      default: "System instance",
+                  })
+                : undefined;
+
+        return {
+            viewType,
+            viewName,
+            viewDescription,
+            systemName,
+            instanceDescription,
+        };
     },
     actions: [
         {

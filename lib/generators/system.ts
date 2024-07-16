@@ -1,7 +1,7 @@
-import type { Answers, QuestionCollection } from "inquirer";
+import { input } from "@inquirer/prompts";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
-import { getRelationships } from "../utils/questions/relationships";
+import { getRelationshipsForElement } from "../utils/questions/relationships";
 import {
     chainValidators,
     stringEmpty,
@@ -9,49 +9,45 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "System",
     description: "Create a new software system",
-    questions: async (prompt, generator) => {
+    questions: async (_, generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
-        const questions: QuestionCollection<Answers> = [
-            {
-                type: "input",
-                name: "systemName",
-                message: "System Name:",
-                validate: chainValidators(
-                    stringEmpty,
-                    validateDuplicatedElements(workspaceInfo),
-                ),
-            },
-            {
-                type: "input",
-                name: "systemDescription",
-                message: "System Description:",
-                default: "Untitled System",
-                validate: stringEmpty,
-            },
-        ];
+
+        const systemName = await input({
+            message: "System Name:",
+            validate: chainValidators(
+                stringEmpty,
+                validateDuplicatedElements(workspaceInfo),
+            ),
+        });
+
+        const systemDescription = await input({
+            message: "System Description:",
+            default: "Untitled System",
+            validate: stringEmpty,
+        });
+
         const relationshipDefaults = {
             defaultRelationship: "Uses",
             defaultRelationshipType: "incoming",
         };
 
-        const partialAnswers = await prompt(questions);
-        const relationships = await getRelationships(
-            partialAnswers.systemName,
+        const relationships = await getRelationshipsForElement(
+            systemName,
             workspaceInfo,
-            prompt,
             {
                 ...relationshipDefaults,
             },
         );
 
         const compiledAnswers = {
-            ...partialAnswers,
-            elementName: partialAnswers.systemName,
+            systemName,
+            systemDescription,
+            elementName: systemName,
             relationships,
         };
 
