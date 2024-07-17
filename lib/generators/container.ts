@@ -1,13 +1,12 @@
 import { resolve } from "node:path";
-import { Separator } from "@inquirer/prompts";
+import { Separator, input, select } from "@inquirer/prompts";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
-import type { Answers, QuestionCollection } from "inquirer";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
-import { getRelationships } from "../utils/questions/relationships";
-import { getSystemQuestion } from "../utils/questions/system";
+import { addRelationshipsToElement } from "../utils/questions/relationships";
+import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     duplicatedSystemName,
@@ -16,84 +15,77 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "Container",
     description: "Create a new system container",
-    questions: async (prompt, generator) => {
+    questions: async (_, generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
-        const systemQuestion = await getSystemQuestion(
+
+        const systemName = await resolveSystemQuestion(
             workspaceInfo ?? generator.destPath,
-            {
-                message: "Parent system:",
-            },
+            { message: "Parent system:" },
         );
 
-        const questions: QuestionCollection<Answers> = [
-            systemQuestion,
-            {
-                type: "input",
-                name: "elementName",
-                message: "Container Name:",
-                // FIXME: broken
-                validate: chainValidators(
-                    stringEmpty,
-                    duplicatedSystemName,
-                    validateDuplicatedElements(workspaceInfo),
-                ),
-            },
-            {
-                type: "input",
-                name: "containerDescription",
-                message: "Container Description:",
-                default: "Untitled Container",
-                validate: stringEmpty,
-            },
-            {
-                type: "list",
-                name: "containerType",
-                message: "Container type:",
-                choices: [
-                    "EventBus",
-                    "MessageBroker",
-                    "Function",
-                    "Database",
-                    "WebApp",
-                    "MobileApp",
-                    "None of the above",
-                ],
-            },
-            {
-                type: "input",
-                name: "containerTechnology",
-                message: "Container technology:",
-            },
-        ];
+        const elementName = await input({
+            message: "Container Name:",
+            required: true,
+            validate: chainValidators(
+                stringEmpty,
+                duplicatedSystemName,
+                validateDuplicatedElements(workspaceInfo),
+            )({ systemName }),
+        });
+
+        const containerDescription = await input({
+            message: "Container Description:",
+            default: "Untitled Container",
+            validate: stringEmpty,
+        });
+
+        const containerType = await select({
+            message: "Container type:",
+            default: "None of the above",
+            choices: [
+                { name: "EventBus", value: "EventBus" },
+                { name: "MessageBroker", value: "MessageBroker" },
+                { name: "Function", value: "Function" },
+                { name: "Database", value: "Database" },
+                { name: "WebApp", value: "WebApp" },
+                { name: "MobileApp", value: "MobileApp" },
+                { name: "None of the above", value: "None of the above" },
+            ],
+        });
+
+        const containerTechnology = await input({
+            message: "Container technology:",
+        });
 
         const relationshipDefaults = {
             defaultRelationship: "Uses",
             defaultRelationshipType: "incoming",
         };
 
-        const partialAnswers = await prompt(questions);
-        const relationships = await getRelationships(
-            partialAnswers.elementName,
+        const relationships = await addRelationshipsToElement(
+            elementName,
             workspaceInfo,
-            prompt,
             {
                 filterChoices: (elm) =>
-                    elm instanceof Separator ||
-                    elm.value !== partialAnswers.systemName,
+                    elm instanceof Separator || elm.value !== systemName,
                 ...relationshipDefaults,
-                includeContainers: partialAnswers.systemName,
+                includeContainers: systemName,
             },
         );
 
         const compiledAnswers = {
-            ...partialAnswers,
+            systemName,
+            elementName,
+            containerDescription,
+            containerType,
+            containerTechnology,
             includeTabs: "",
-            includeSource: `${kebabCase(partialAnswers.systemName)}.dsl`,
+            includeSource: `${kebabCase(systemName)}.dsl`,
             relationships,
         };
 
