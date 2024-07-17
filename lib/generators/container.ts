@@ -36,6 +36,7 @@ const generator: GeneratorDefinition<Answers> = {
                 type: "input",
                 name: "elementName",
                 message: "Container Name:",
+                // FIXME: broken
                 validate: chainValidators(
                     stringEmpty,
                     duplicatedSystemName,

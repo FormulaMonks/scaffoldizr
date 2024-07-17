@@ -61,13 +61,16 @@ export const validateDuplicatedViews =
         return true;
     };
 
-export function chainValidators(...validators: Validator[]): Validator {
-    return async (input: unknown, answers?: Answers | undefined) => {
-        for await (const validator of validators) {
-            const validation = await validator?.(input, answers);
-            if (validation !== true) return validation ?? false;
-        }
+export function chainValidators<T = string>(
+    ...validators: Validator[]
+): (answers?: Record<string, T>) => Validator {
+    return (answers = {}) =>
+        async (input: unknown) => {
+            for await (const validator of validators) {
+                const validation = await validator?.(input, answers);
+                if (validation !== true) return validation ?? false;
+            }
 
-        return true;
-    };
+            return true;
+        };
 }

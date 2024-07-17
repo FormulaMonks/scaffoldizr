@@ -14,32 +14,44 @@ describe("validators", () => {
                 (input) => input.size > 0,
                 async (input) => input.weight > 0 || "Error message",
                 (input) => input.height > 0,
-            );
+                (input, answers) => answers?.test === input.test,
+            )({ test: "test" });
 
             const response1 = await validate?.({
                 size: 1,
                 weight: 1,
                 height: 1,
+                test: "test",
             });
             expect(response1).toBeTrue();
             const response2 = await validate?.({
                 size: 1,
                 weight: 1,
                 height: 0,
+                test: "test",
             });
             expect(response2).toBeFalse();
             const response3 = await validate?.({
                 size: 1,
                 weight: 0,
                 height: 1,
+                test: "test",
             });
             expect(response3).toEqual("Error message");
             const response4 = await validate?.({
                 size: 0,
                 weight: 1,
                 height: 1,
+                test: "test",
             });
             expect(response4).toBeFalse();
+            const response5 = await validate?.({
+                size: 1,
+                weight: 1,
+                height: 1,
+                test: "another value",
+            });
+            expect(response5).toBeFalse();
         });
     });
     describe("duplicatedSystemName", () => {

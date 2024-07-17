@@ -7,7 +7,7 @@ import {
     defaultParser,
     resolveRelationshipForElement,
 } from "../utils/questions/relationships";
-import { getSystemQuestionAsPromise } from "../utils/questions/system";
+import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -23,16 +23,17 @@ const generator: GeneratorDefinition = {
             getWorkspacePath(generator.destPath),
         );
 
-        const systemName = await getSystemQuestionAsPromise(
+        const systemName = await resolveSystemQuestion(
             workspaceInfo ?? generator.destPath,
         );
 
         const elementName = await input({
             message: "Person name:",
+            required: true,
             validate: chainValidators(
                 stringEmpty,
                 validateDuplicatedElements(workspaceInfo),
-            ),
+            )(),
         });
 
         const personDescription = await input({

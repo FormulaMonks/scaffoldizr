@@ -44,7 +44,7 @@ export function getAllSystemElements(
     return systemElements;
 }
 
-// TODO: Remove in favor of getSystemQuestionAsPromise
+// TODO: Remove in favor of resolveSystemQuestion
 export async function getSystemQuestion(
     workspace: string | StructurizrWorkspace,
     {
@@ -102,7 +102,7 @@ export async function getSystemQuestion(
     return systemQuestion;
 }
 
-export function getSystemQuestionAsPromise(
+export function resolveSystemQuestion(
     workspace: string | StructurizrWorkspace,
     options: { message: string } = {
         message: "Relates to system:",

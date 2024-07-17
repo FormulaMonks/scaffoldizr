@@ -22,7 +22,7 @@ const generator: GeneratorDefinition = {
             validate: chainValidators(
                 stringEmpty,
                 validateDuplicatedElements(workspaceInfo),
-            ),
+            )(),
         });
 
         const systemDescription = await input({

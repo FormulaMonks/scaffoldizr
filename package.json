@@ -8,7 +8,7 @@
     },
     "scripts": {
         "build:dev": "bun build ./lib/main.ts --compile --watch --outfile ./dist/scfz",
-        "test:dev": "bun test --watch",
+        "test:dev": "bun test --watch --coverage",
         "test": "bun test",
         "test:ci": "bun test --coverage",
         "postinstall": "scripts/install-git-hooks.sh",

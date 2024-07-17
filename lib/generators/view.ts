@@ -2,7 +2,7 @@ import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import { skipUnlessViewType, whenViewType } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
-import { getSystemQuestionAsPromise } from "../utils/questions/system";
+import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -35,7 +35,7 @@ const generator: GeneratorDefinition = {
 
         const systemName =
             viewType !== "landscape"
-                ? await getSystemQuestionAsPromise(
+                ? await resolveSystemQuestion(
                       workspaceInfo ?? generator.destPath,
                   )
                 : undefined;
@@ -45,7 +45,7 @@ const generator: GeneratorDefinition = {
             validate: chainValidators(
                 stringEmpty,
                 validateDuplicatedViews(workspaceInfo),
-            ),
+            )(),
         });
 
         const viewDescription = await input({
