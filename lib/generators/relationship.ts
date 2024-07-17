@@ -1,21 +1,22 @@
-import type { Answers } from "inquirer";
+import { select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { elementTypeByTags, labelElementByTags } from "../utils/labels";
-import { getRelationships } from "../utils/questions/relationships";
+import { addRelationshipsToElement } from "../utils/questions/relationships";
 import { getAllSystemElements } from "../utils/questions/system";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "Relationship",
     description: "Create a new relationship between elements",
-    questions: async (prompt, generator) => {
+    questions: async (_, generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
 
         const systemElements = getAllSystemElements(workspaceInfo, {
             includeContainers: true,
+            includeDeploymentNodes: false,
         }).map((elm) => ({
             name: `${labelElementByTags(elm.tags)} ${
                 elm.systemName ? `${elm.systemName}/` : ""
@@ -27,26 +28,18 @@ const generator: GeneratorDefinition<Answers> = {
             },
         }));
 
-        const { element } = await prompt({
-            type: "list",
-            name: "element",
+        const element = await select({
             message: "Element:",
             choices: systemElements,
         });
 
-        const relationships = await getRelationships(
+        const relationships = await addRelationshipsToElement(
             element.elementName,
             workspaceInfo,
-            prompt,
             {
                 includeContainers: element.systemName
                     ? element.systemName
-                    : false,
-                validate: (input) => {
-                    console.log("🦊", "input", input);
-
-                    return true;
-                },
+                    : undefined,
             },
         );
 

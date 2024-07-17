@@ -14,18 +14,29 @@ type GetSystemQuestionOptions = {
 
 type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
+type DeploymentNode = StructurizrWorkspace["model"]["deploymentNodes"][number];
 
 type GetAllSystemElementsOptions = {
     includeContainers?: boolean;
+    includeDeploymentNodes?: boolean;
 };
 
+// TODO: Test filtering logic
 export function getAllSystemElements(
     workspaceInfo: StructurizrWorkspace | undefined,
-    { includeContainers = true }: GetAllSystemElementsOptions = {},
-): (SoftwareElement & { systemName?: string })[] {
+    {
+        includeContainers = true,
+        includeDeploymentNodes = false,
+    }: GetAllSystemElementsOptions = {},
+): ((SoftwareElement | DeploymentNode) & { systemName?: string })[] {
     if (!workspaceInfo) return [];
     const systemElements = Object.values(workspaceInfo.model)
         .flat()
+        .filter((elm) =>
+            !includeDeploymentNodes
+                ? !elm.tags.split(",").includes("Deployment Node")
+                : true,
+        )
         .flatMap((elm) => {
             const sysElm = elm as SoftwareSystem;
             if (includeContainers && sysElm.containers) {
