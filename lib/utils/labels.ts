@@ -4,6 +4,7 @@ export enum Labels {
     External = "⬜️",
     Person = "👤",
     System = "🟦",
+    DeploymentNode = "🟧",
     Relationship = "⇢ ",
     View = "🔳",
 }
@@ -13,6 +14,7 @@ export const labelElementByTags = (tags: string): string => {
         if (tag === "Person") return Labels.Person;
         if (tag === "External") return Labels.External;
         if (tag === "Container") return Labels.Container;
+        if (tag === "Deployment Node") return Labels.DeploymentNode;
     }
 
     return Labels.System;
@@ -23,6 +25,7 @@ export const elementTypeByTags = (tags: string): string => {
         if (tag === "Person") return "Person";
         if (tag === "External") return "External";
         if (tag === "Container") return "Container";
+        if (tag === "Deployment Node") return "DeploymentNode";
     }
 
     return "System";

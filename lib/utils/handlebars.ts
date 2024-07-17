@@ -4,6 +4,7 @@ import { kebabCase, pascalCase } from "change-case";
 import Handlebars from "handlebars";
 
 export const removeSpaces = (txt = "") => txt.replace(/\s/g, "");
+export const underscoreSpaces = (txt = "") => txt.replace(/\s/g, "_");
 
 Handlebars.registerHelper("kebabCase", (target) => kebabCase(target));
 Handlebars.registerHelper("properCase", (target) => pascalCase(target));
@@ -12,6 +13,9 @@ Handlebars.registerHelper("upperCase", (target = "") => target.toUpperCase());
 Handlebars.registerHelper("lowerCase", (target = "") => target.toLowerCase());
 Handlebars.registerHelper("eq", (arg1, arg2) => arg1 === arg2);
 Handlebars.registerHelper("removeSpaces", (txt = "") => removeSpaces(txt));
+Handlebars.registerHelper("underscoreSpaces", (txt = "") =>
+    underscoreSpaces(txt),
+);
 
 export function compileSource<T extends Record<string, unknown>>(
     sourceObject: Record<string, unknown>,

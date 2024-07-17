@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import type { PromptModule } from "inquirer";
+import { CancelablePromise } from "@inquirer/type";
 import templates from "../templates/bundle";
 import type { AddAction } from "./actions";
 import type { Generator } from "./generator";
@@ -8,10 +8,15 @@ import { createGenerator } from "./generator";
 describe("generator", () => {
     describe("createGenerator", () => {
         test("should create generator and execute actions", async () => {
-            const prompt = mock(() => Promise.resolve({ answer: 123 }));
+            const prompt = mock(
+                () =>
+                    new CancelablePromise<string>((resolve) => resolve("123")),
+            );
             const execute = mock();
-            const questions = [{ type: "input", name: "question" }];
-            const actions = [{ type: "add" } as AddAction];
+            const questions = {
+                answer: prompt,
+            };
+            const actions = [{ type: "add" } as AddAction<{ answer: string }>];
 
             const definition: Generator<{ answer: string }> = {
                 name: "Test",
@@ -23,38 +28,34 @@ describe("generator", () => {
             };
 
             expect(
-                async () =>
-                    await createGenerator(
-                        prompt as unknown as PromptModule,
-                        definition,
-                        execute,
-                    ),
+                async () => await createGenerator(definition, execute),
             ).not.toThrow();
 
-            expect(prompt).toHaveBeenCalledWith(questions);
             expect(execute).toHaveBeenCalled();
             expect(execute.mock.lastCall).toEqual([
                 expect.objectContaining({
                     ...actions[0],
                 }),
-                { answer: 123 },
+                { answer: "123" },
             ]);
         });
 
         test("should create generator from function questions", async () => {
-            const prompt = mock(() => Promise.resolve({ answer: 123 }));
+            const prompt = mock(
+                () =>
+                    new CancelablePromise<string>((resolve) => resolve("123")),
+            );
             const execute = mock();
-            const questionsArr = [{ type: "input", name: "question" }];
-            const questions = (
-                promptMock: (
-                    questions: unknown[],
-                ) => Promise<{ answer: string }>,
-            ) => {
-                return promptMock(questionsArr);
+            const questions = async () => {
+                return {
+                    question: await prompt(),
+                };
             };
-            const actions = [{ type: "add" } as AddAction];
+            const actions = [
+                { type: "add" } as AddAction<{ question: string }>,
+            ];
 
-            const definition: Generator<{ answer: string }> = {
+            const definition: Generator<{ question: string }> = {
                 name: "Test",
                 description: "Test Generator",
                 destPath: `${import.meta.dirname}/workspace.dsl`,
@@ -64,21 +65,16 @@ describe("generator", () => {
             };
 
             expect(
-                async () =>
-                    await createGenerator(
-                        prompt as unknown as PromptModule,
-                        definition,
-                        execute,
-                    ),
+                async () => await createGenerator(definition, execute),
             ).not.toThrow();
 
-            expect(prompt).toHaveBeenCalledWith(questionsArr);
+            expect(prompt).toHaveBeenCalled();
             expect(execute).toHaveBeenCalled();
             expect(execute.mock.lastCall).toEqual([
                 expect.objectContaining({
                     ...actions[0],
                 }),
-                { answer: 123 },
+                { question: "123" },
             ]);
         });
 
@@ -93,38 +89,33 @@ describe("generator", () => {
                         setTimeout(() => done(true), randomTime);
                     }),
             );
-            const questionsArr = [{ type: "input", name: "question" }];
-            const questions = (
-                promptMock: (
-                    questions: unknown[],
-                ) => Promise<{ answer: string }>,
-            ) => {
-                return promptMock(questionsArr);
+            const questions = async () => {
+                return await prompt();
             };
             const actions = [
                 {
                     type: "add",
                     path: "path1",
                     templateFile: "templateFile",
-                } as AddAction,
+                } as AddAction<{ answer: number }>,
                 {
                     type: "add",
                     path: "path2",
                     templateFile: "templateFile",
-                } as AddAction,
+                } as AddAction<{ answer: number }>,
                 {
                     type: "add",
                     path: "path3",
                     templateFile: "templateFile",
-                } as AddAction,
+                } as AddAction<{ answer: number }>,
                 {
                     type: "add",
                     path: "path4",
                     templateFile: "templateFile",
-                } as AddAction,
+                } as AddAction<{ answer: number }>,
             ];
 
-            const definition: Generator<{ answer: string }> = {
+            const definition: Generator<{ answer: number }> = {
                 name: "Test",
                 description: "Test Generator",
                 destPath: `${import.meta.dirname}/workspace.dsl`,
@@ -134,15 +125,10 @@ describe("generator", () => {
             };
 
             expect(
-                async () =>
-                    await createGenerator(
-                        prompt as unknown as PromptModule,
-                        definition,
-                        execute,
-                    ),
+                async () => await createGenerator(definition, execute),
             ).not.toThrow();
 
-            expect(prompt).toHaveBeenCalledWith(questionsArr);
+            expect(prompt).toHaveBeenCalled();
             expect(execute).toHaveBeenCalled();
             expect(execute.mock.calls.map(([args]) => args.path)).toEqual([
                 "path1",

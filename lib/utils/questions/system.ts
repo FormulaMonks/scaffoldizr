@@ -1,29 +1,36 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { input, select } from "@inquirer/prompts";
+import { CancelablePromise } from "@inquirer/type";
 import { kebabCase } from "change-case";
-import type { Answers, AsyncDynamicQuestionProperty, Question } from "inquirer";
 import { getWorkspacePath } from "../workspace";
 import type { StructurizrWorkspace } from "../workspace";
 
-type GetSystemQuestionOptions = {
-    when?: AsyncDynamicQuestionProperty<boolean, Answers>;
-    message?: string;
-};
-
 type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
+type DeploymentNode = StructurizrWorkspace["model"]["deploymentNodes"][number];
 
 type GetAllSystemElementsOptions = {
     includeContainers?: boolean;
+    includeDeploymentNodes?: boolean;
 };
 
+// TODO: Test filtering logic
 export function getAllSystemElements(
     workspaceInfo: StructurizrWorkspace | undefined,
-    { includeContainers = true }: GetAllSystemElementsOptions = {},
-): (SoftwareElement & { systemName?: string })[] {
+    {
+        includeContainers = true,
+        includeDeploymentNodes = false,
+    }: GetAllSystemElementsOptions = {},
+): ((SoftwareElement | DeploymentNode) & { systemName?: string })[] {
     if (!workspaceInfo) return [];
     const systemElements = Object.values(workspaceInfo.model)
         .flat()
+        .filter((elm) =>
+            !includeDeploymentNodes
+                ? !elm.tags.split(",").includes("Deployment Node")
+                : true,
+        )
         .flatMap((elm) => {
             const sysElm = elm as SoftwareSystem;
             if (includeContainers && sysElm.containers) {
@@ -42,46 +49,38 @@ export function getAllSystemElements(
     return systemElements;
 }
 
-export async function getSystemQuestion(
+export function resolveSystemQuestion(
     workspace: string | StructurizrWorkspace,
-    {
-        when = () => true,
-        message = "Relates to system:",
-    }: GetSystemQuestionOptions = {},
-): Promise<Question> {
+    options: { message: string } = {
+        message: "Relates to system:",
+    },
+): CancelablePromise<string> {
+    const voidPromise: CancelablePromise<string> = new CancelablePromise(
+        (resolve) => resolve(""),
+    );
     const workspaceInfo = typeof workspace !== "string" && workspace;
 
     if (workspaceInfo) {
         const systems = (workspaceInfo.model?.softwareSystems ?? [])
             .filter((system) => !system.tags.split(",").includes("External"))
-            .map((system) => system.name);
+            .map((system) => ({ name: system.name, value: system.name }));
 
-        const systemQuestion = {
-            type: "list",
-            name: "systemName",
-            message,
+        const systemQuestion = select({
+            message: options.message,
             choices: systems,
-            when,
-        };
+        });
 
         return systemQuestion;
     }
 
     const workspacePath = typeof workspace === "string" && workspace;
-    if (!workspacePath) return {};
+    if (!workspacePath) return voidPromise;
 
     const workspaceFolder = getWorkspacePath(workspacePath);
 
-    const systemQuestion: Question = {
-        type: "input",
-        name: "systemName",
-        message,
-        when,
-        validate: (input, answers) => {
-            if (!answers) return true;
-
-            answers.systemName = input;
-
+    return input({
+        message: options.message,
+        validate: async (input) => {
             if (workspaceFolder) {
                 const systemPath = resolve(
                     workspaceFolder,
@@ -94,7 +93,5 @@ export async function getSystemQuestion(
                 `System "${input}" does not exist in the workspace.`,
             );
         },
-    };
-
-    return systemQuestion;
+    });
 }

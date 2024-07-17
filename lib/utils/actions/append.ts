@@ -2,11 +2,10 @@ import { access } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { $, file, write } from "bun";
 import chalk from "chalk";
-import type { Answers } from "inquirer";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
 
-export type AppendAction = BaseAction & {
+export type AppendAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Append;
     templateFile: string;
     path: string;
@@ -15,8 +14,8 @@ export type AppendAction = BaseAction & {
     pattern?: RegExp;
 };
 
-export async function append<A extends Answers>(
-    options: ExtendedAction & AppendAction,
+export async function append<A extends Record<string, unknown>>(
+    options: ExtendedAction & AppendAction<A>,
     answers: A,
 ): Promise<boolean> {
     const {
@@ -47,7 +46,7 @@ export async function append<A extends Answers>(
         return false;
     }
 
-    const compiledOpts = compileSource<AppendAction>(opts, answers);
+    const compiledOpts = compileSource<AppendAction<A>>(opts, answers);
     const targetFilePath = resolve(rootPath, compiledOpts.path);
     const relativePath = relative(process.cwd(), targetFilePath);
     const targetFile = file(targetFilePath);

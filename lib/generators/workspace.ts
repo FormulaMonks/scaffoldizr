@@ -1,107 +1,112 @@
+import { confirm, input } from "@inquirer/prompts";
 import { $ } from "bun";
-import type { Answers } from "inquirer";
 import type { AddAction, AddManyAction } from "../utils/actions";
-import type { GeneratorDefinition } from "../utils/generator";
+import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
 
-const generator: GeneratorDefinition<Answers> = {
+type WorkspaceAnswers = {
+    workspaceName: string;
+    workspaceDescription: string;
+    systemName: string;
+    systemDescription: string;
+    authorName: string;
+    authorEmail: string;
+    shouldIncludeTheme: boolean;
+};
+
+const generator: GeneratorDefinition<WorkspaceAnswers> = {
     name: "Workspace",
     description: "Create a new workspace",
-    questions: [
-        {
-            type: "input",
-            name: "workspaceName",
-            message: "Workspace name:",
-            validate: stringEmpty,
-        },
-        {
-            type: "input",
-            name: "workspaceDescription",
-            message: "Workspace description:",
-            default: "Untitled Workspace",
-        },
-        {
-            type: "input",
-            name: "systemName",
-            message: "System name:",
-            validate: stringEmpty,
-        },
-        {
-            type: "input",
-            name: "systemDescription",
-            message: "System description:",
-            default: "Untitled System",
-        },
-        {
-            type: "input",
-            name: "authorName",
-            message: "Author Name:",
-            default: globalUserName.trim(),
-        },
-        {
-            type: "input",
-            name: "authorEmail",
-            message: "Author email:",
-            default: globalUserEmail.trim(),
-        },
-        {
-            type: "confirm",
-            name: "shouldIncludeTheme",
-            message: "Include default theme?",
-            default: true,
-        },
-    ],
+    questions: {
+        workspaceName: () =>
+            input({
+                message: "Workspace name:",
+                required: true,
+                validate: stringEmpty,
+            }),
+        workspaceDescription: () =>
+            input({
+                message: "Workspace description:",
+                default: "Untitled Workspace",
+            }),
+        systemName: () =>
+            input({
+                message: "System name:",
+                required: true,
+                validate: stringEmpty,
+            }),
+        systemDescription: () =>
+            input({
+                message: "System description:",
+                default: "Untitled System",
+            }),
+        authorName: () =>
+            input({
+                message: "Author Name:",
+                default: globalUserName.trim(),
+            }),
+        authorEmail: () =>
+            input({
+                message: "Author email:",
+                default: globalUserEmail.trim(),
+            }),
+        shouldIncludeTheme: () =>
+            confirm({
+                message: "Include default theme?",
+                default: true,
+            }),
+    } as QuestionsObject,
     actions: [
         {
             type: "add",
             path: "architecture/workspace.dsl",
             templateFile: "templates/workspace.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/systems/_system.dsl",
             templateFile: "templates/system/system.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/containers/{{kebabCase systemName}}/.gitkeep",
             templateFile: "templates/empty.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/relationships/_system.dsl",
             templateFile: "templates/empty.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/.gitignore",
             templateFile: "templates/.gitignore",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/.env-arch",
             templateFile: "templates/.env-arch",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "addMany",
             destination: "architecture",
             templateFiles: "templates/scripts/**/*.sh",
             skipIfExists: true,
             filePermissions: "744",
-        } as AddManyAction,
+        } as AddManyAction<WorkspaceAnswers>,
         {
             type: "addMany",
             destination: "architecture",
             templateFiles: "templates/**/.gitkeep",
-        } as AddManyAction,
+        } as AddManyAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
             templateFile: "templates/views/system.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
     ],
 };
 

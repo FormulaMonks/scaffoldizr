@@ -1,14 +1,14 @@
-import type { Answers, QuestionCollection } from "inquirer";
-import inquirer from "inquirer";
+import { Separator, input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
+    type Relationship,
+    addRelationshipsToElement,
     defaultParser,
-    getRelationships,
-    relationshipsForElement,
+    resolveRelationshipForElement,
 } from "../utils/questions/relationships";
-import { getSystemQuestion } from "../utils/questions/system";
+import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     duplicatedSystemName,
@@ -17,66 +17,68 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition<Answers> = {
+type ExternalSystemAnswers = {
+    systemName: string;
+    elementName: string;
+    extSystemDescription: string;
+    includeSource: string;
+    includeTabs: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<ExternalSystemAnswers> = {
     name: "External System",
     description: "Create a new external system",
-    questions: async (prompt, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
-        const systemQuestion = await getSystemQuestion(
+
+        const systemName = await resolveSystemQuestion(
             workspaceInfo ?? generator.destPath,
         );
 
-        const questions: QuestionCollection<Answers> = [
-            systemQuestion,
-            {
-                type: "input",
-                name: "elementName",
-                message: "External system name:",
-                validate: chainValidators(
-                    stringEmpty,
-                    duplicatedSystemName,
-                    validateDuplicatedElements(workspaceInfo),
-                ),
-            },
-            {
-                type: "input",
-                name: "extSystemDescription",
-                message: "System description:",
-                default: "Untitled System",
-            },
-        ];
+        const elementName = await input({
+            message: "External system name:",
+            required: true,
+            validate: chainValidators<{ systemName: string }>(
+                stringEmpty,
+                duplicatedSystemName,
+                validateDuplicatedElements(workspaceInfo),
+            )({ systemName }),
+        });
 
-        const partialAnswers = await prompt(questions);
+        const extSystemDescription = await input({
+            message: "System description:",
+            default: "Untitled System",
+        });
+
         const relationshipDefaults = {
             defaultRelationship: "Interacts with",
             defaultRelationshipType: "incoming",
         };
 
-        const relationshipWithSystem = await prompt(
-            relationshipsForElement(
-                partialAnswers.systemName,
-                partialAnswers.elementName,
-                relationshipDefaults,
-            ),
+        const relationshipWithSystem = await resolveRelationshipForElement(
+            systemName,
+            elementName,
+            relationshipDefaults,
         );
 
         const mainRelationship = defaultParser(relationshipWithSystem);
-        const relationships = await getRelationships(
-            partialAnswers.elementName,
+        const relationships = await addRelationshipsToElement(
+            elementName,
             workspaceInfo,
-            prompt,
             {
                 filterChoices: (elm) =>
-                    elm instanceof inquirer.Separator ||
-                    elm.value !== partialAnswers.systemName,
+                    elm instanceof Separator || elm.value !== systemName,
                 ...relationshipDefaults,
             },
         );
 
         const compiledAnswers = {
-            ...partialAnswers,
+            systemName,
+            elementName,
+            extSystemDescription,
             includeSource: "relationships/_external.dsl",
             includeTabs: "        ",
             relationships: { ...mainRelationship, ...relationships },
@@ -95,19 +97,19 @@ const generator: GeneratorDefinition<Answers> = {
             path: "architecture/workspace.dsl",
             pattern: /# Relationships/,
             templateFile: "templates/include.hbs",
-        } as AppendAction,
+        } as AppendAction<ExternalSystemAnswers>,
         {
             createIfNotExists: true,
             type: "append",
             path: "architecture/systems/_external.dsl",
             templateFile: "templates/system/external.hbs",
-        } as AppendAction,
+        } as AppendAction<ExternalSystemAnswers>,
         {
             createIfNotExists: true,
             type: "append",
             path: "architecture/relationships/_external.dsl",
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<ExternalSystemAnswers>,
     ],
 };
 

@@ -1,12 +1,11 @@
 import { join } from "node:path";
 import { Glob } from "bun";
 import chalk from "chalk";
-import type { Answers } from "inquirer";
 import type { BaseAction, ExtendedAction } from ".";
 import { ActionTypes, add } from ".";
 import { compileSource } from "../handlebars";
 
-export type AddManyAction = BaseAction & {
+export type AddManyAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.AddMany;
     destination: string;
     templateFiles: string;
@@ -14,8 +13,8 @@ export type AddManyAction = BaseAction & {
     skipIfExists?: boolean;
 };
 
-export async function addMany<A extends Answers>(
-    options: ExtendedAction & AddManyAction,
+export async function addMany<A extends Record<string, unknown>>(
+    options: ExtendedAction & AddManyAction<A>,
     answers: A,
 ): Promise<boolean> {
     const {
@@ -44,7 +43,7 @@ export async function addMany<A extends Answers>(
 
         return false;
     }
-    const compiledOpts = compileSource<AddManyAction>(opts, answers);
+    const compiledOpts = compileSource<AddManyAction<A>>(opts, answers);
     const pattern = new Glob(compiledOpts.templateFiles);
 
     const filesToCreate = [];

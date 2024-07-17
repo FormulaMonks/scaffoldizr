@@ -1,14 +1,14 @@
-import type { Answers, QuestionCollection } from "inquirer";
-import inquirer from "inquirer";
+import { Separator, input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
+    type Relationship,
+    addRelationshipsToElement,
     defaultParser,
-    getRelationships,
-    relationshipsForElement,
+    resolveRelationshipForElement,
 } from "../utils/questions/relationships";
-import { getSystemQuestion } from "../utils/questions/system";
+import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -16,62 +16,66 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition<Answers> = {
+type PersonAnswers = {
+    systemName: string;
+    personDescription: string;
+    elementName: string;
+    includeSource: string;
+    includeTabs: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<PersonAnswers> = {
     name: "Person",
     description: "Create a new person (customer, user, etc)",
-    questions: async (prompt, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
 
-        const questions: QuestionCollection<Answers> = [
-            await getSystemQuestion(workspaceInfo ?? generator.destPath),
-            {
-                type: "input",
-                name: "elementName",
-                message: "Person name:",
-                validate: chainValidators(
-                    stringEmpty,
-                    validateDuplicatedElements(workspaceInfo),
-                ),
-            },
-            {
-                type: "input",
-                name: "personDescription",
-                message: "Person description:",
-                default: "Default user",
-            },
-        ];
+        const systemName = await resolveSystemQuestion(
+            workspaceInfo ?? generator.destPath,
+        );
 
-        const partialAnswers = await prompt(questions);
-        const relationshipDefaults = {
-            defaultRelationship: "Consumes",
-            defaultRelationshipType: "outgoing",
-        };
+        const elementName = await input({
+            message: "Person name:",
+            required: true,
+            validate: chainValidators(
+                stringEmpty,
+                validateDuplicatedElements(workspaceInfo),
+            )(),
+        });
 
-        const relationshipWithSystem = await prompt(
-            relationshipsForElement(
-                partialAnswers.systemName,
-                partialAnswers.elementName,
-                relationshipDefaults,
-            ),
+        const personDescription = await input({
+            message: "Person description:",
+            default: "Default user",
+        });
+
+        const relationshipWithSystem = await resolveRelationshipForElement(
+            systemName,
+            elementName,
+            {
+                defaultRelationship: "Consumes",
+                defaultRelationshipType: "outgoing",
+            },
         );
 
         const mainRelationship = defaultParser(relationshipWithSystem);
-        const relationships = await getRelationships(
-            partialAnswers.elementName,
+        const relationships = await addRelationshipsToElement(
+            elementName,
             workspaceInfo,
-            prompt,
             {
                 filterChoices: (elm) =>
-                    elm instanceof inquirer.Separator ||
-                    elm.value !== partialAnswers.systemName,
-                ...relationshipDefaults,
+                    elm instanceof Separator || elm.value !== systemName,
+                defaultRelationship: "Interacts with",
+                defaultRelationshipType: "outgoing",
             },
         );
 
         const compiledAnswers = {
-            ...partialAnswers,
+            systemName,
+            personDescription,
+            elementName,
             includeSource: "relationships/_people.dsl",
             includeTabs: "        ",
             relationships: { ...mainRelationship, ...relationships },
@@ -90,19 +94,19 @@ const generator: GeneratorDefinition<Answers> = {
             path: "architecture/workspace.dsl",
             pattern: /# Relationships/,
             templateFile: "templates/include.hbs",
-        } as AppendAction,
+        } as AppendAction<PersonAnswers>,
         {
             type: "append",
             createIfNotExists: true,
             path: "architecture/systems/_people.dsl",
             templateFile: "templates/system/person.hbs",
-        } as AppendAction,
+        } as AppendAction<PersonAnswers>,
         {
             createIfNotExists: true,
             type: "append",
             path: "architecture/relationships/_people.dsl",
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<PersonAnswers>,
     ],
 };
 

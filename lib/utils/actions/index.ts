@@ -1,19 +1,17 @@
-import type { Answers } from "inquirer";
-
 export enum ActionTypes {
     Add = "add",
     AddMany = "addMany",
     Append = "append",
 }
 
-declare function whenOrSkip<A extends Answers>(
+declare function whenOrSkip<A extends Record<string, unknown>>(
     answers: A,
     rootPath: string,
 ): boolean | string | Promise<boolean | string>;
 
-export type BaseAction = {
-    when?: typeof whenOrSkip;
-    skip?: typeof whenOrSkip;
+export type BaseAction<A extends Record<string, unknown>> = {
+    when?: typeof whenOrSkip<A>;
+    skip?: typeof whenOrSkip<A>;
 };
 
 export type ExtendedAction = {
