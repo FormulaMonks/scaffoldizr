@@ -1,4 +1,5 @@
 import { relative, resolve } from "node:path";
+import { $ } from "bun";
 import chalk from "chalk";
 import { capitalCase } from "change-case";
 import inquirer from "inquirer";
@@ -27,6 +28,12 @@ const args = await yargs(hideBin(process.argv))
     .option("dest", {
         default: ".",
         desc: "Target architecture folder",
+    })
+    .option("export", {
+        alias: "e",
+        type: "boolean",
+        default: false,
+        desc: "Use structurizr-cli to export the workspace to JSON",
     }).argv;
 
 console.log(
@@ -36,9 +43,18 @@ Create a Structurizr DSL scaffolding in seconds!
     `),
 );
 
+// TODO: Remove
 const prompt = inquirer.createPromptModule();
 const destPath = resolve(process.cwd(), args.dest);
 const workspacePath = getWorkspacePath(destPath);
+
+const exportWorkspace = async (path: string) => {
+    if (!args.export) return;
+    const workspacePath = getWorkspacePath(path);
+    if (!workspacePath) return;
+
+    return $`structurizr-cli export -w ${workspacePath}/workspace.dsl -f json -o ${workspacePath} || true`;
+};
 
 const { workspaceGenerator, ...otherGenerators } = generators;
 
@@ -59,6 +75,9 @@ Let's create a new one by answering the questions below.
         };
 
         await createGenerator(prompt, generator);
+        await exportWorkspace(
+            relative(process.cwd(), destPath) || process.cwd(),
+        );
         process.exit(0);
     } catch (err) {
         console.error(err);
@@ -96,6 +115,7 @@ try {
     };
 
     await createGenerator(prompt, generator);
+    await exportWorkspace(relative(process.cwd(), workspacePath));
     process.exit(0);
 } catch (err) {
     console.error(err);
