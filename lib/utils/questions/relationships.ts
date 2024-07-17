@@ -49,7 +49,7 @@ export const defaultParser = (rawRelationshipMap: Record<string, string>) => {
     );
 };
 
-// TODO: Remove in favor of relationshipsForElementAsPromises
+// TODO: Remove in favor of resolveRelationshipForElement
 export const relationshipsForElement = (
     relationshipName: string,
     elementName: string,
@@ -93,7 +93,28 @@ export const relationshipsForElement = (
     ];
 };
 
-export const relationshipsForElementAsPromises = (
+const resolveRelationshipPromises = async (
+    relationshipPromises: QuestionsObject<string>,
+): Promise<Record<string, string>> => {
+    const relationshipMap = await Object.entries(relationshipPromises).reduce(
+        async (answers, [name, prompt]) => {
+            const acc = await answers;
+            const answer = await prompt?.();
+
+            if (!answer) return acc;
+
+            return {
+                ...acc,
+                [name]: answer,
+            };
+        },
+        Promise.resolve({} as { [key: string]: string }),
+    );
+
+    return relationshipMap;
+};
+
+export const resolveRelationshipForElement = async (
     relationshipName: string,
     elementName: string,
     {
@@ -101,10 +122,10 @@ export const relationshipsForElementAsPromises = (
         defaultRelationshipType = "incoming",
         defaultTechnology = "Web/HTTP",
     }: RelationshipForElementOptions = {},
-): Record<string, () => CancelablePromise<string>> => {
+): Promise<Record<string, string>> => {
     const elementNamePascalCase = pascalCase(removeSpaces(relationshipName));
 
-    return {
+    const relationshipPromises = {
         [`${elementNamePascalCase}_relationshipType`]: () =>
             select({
                 message: `Relationship type for ${relationshipName}`,
@@ -131,6 +152,8 @@ export const relationshipsForElementAsPromises = (
                 default: defaultTechnology,
             }),
     };
+
+    return resolveRelationshipPromises(relationshipPromises);
 };
 
 const findSystemContainers = (
@@ -154,7 +177,7 @@ const separator = (
     return maybeSeparator;
 };
 
-// TODO: Remove in favor of getRelationshipsForElement
+// TODO: Remove in favor of addRelationshipsToElement
 export async function getRelationships(
     elementName: string,
     workspaceInfo: StructurizrWorkspace | undefined,
@@ -230,7 +253,7 @@ export async function getRelationships(
     return parse(relationshipMap);
 }
 
-export async function getRelationshipsForElement(
+export async function addRelationshipsToElement(
     elementName: string,
     workspaceInfo: StructurizrWorkspace | undefined,
     {
@@ -290,27 +313,10 @@ export async function getRelationshipsForElement(
     const relationshipsMap: Record<string, Relationship> = {};
 
     for await (const relationshipName of relationshipNames) {
-        const relationshipQuestions = relationshipsForElementAsPromises(
+        const relationship = await resolveRelationshipForElement(
             relationshipName,
             elementName,
             { defaultRelationship, defaultRelationshipType, defaultTechnology },
-        );
-
-        const relationship = await Object.entries(
-            relationshipQuestions as QuestionsObject<string>,
-        ).reduce(
-            async (answers, [name, prompt]) => {
-                const acc = await answers;
-                const answer = await prompt?.();
-
-                if (!answer) return acc;
-
-                return {
-                    ...acc,
-                    [name]: answer,
-                };
-            },
-            Promise.resolve({} as { [key: string]: string }),
         );
 
         const elementNamePascalCase = pascalCase(
@@ -318,7 +324,7 @@ export async function getRelationshipsForElement(
         );
 
         relationshipsMap[elementNamePascalCase] =
-            parse(relationship)[relationshipName];
+            parse(relationship)[elementNamePascalCase];
     }
 
     return relationshipsMap;

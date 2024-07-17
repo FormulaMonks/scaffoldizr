@@ -1,14 +1,13 @@
-import { Separator } from "@inquirer/prompts";
-import type { Answers, QuestionCollection } from "inquirer";
+import { Separator, input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
+    addRelationshipsToElement,
     defaultParser,
-    getRelationships,
-    relationshipsForElement,
+    resolveRelationshipForElement,
 } from "../utils/questions/relationships";
-import { getSystemQuestion } from "../utils/questions/system";
+import { getSystemQuestionAsPromise } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -16,62 +15,56 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition<Answers> = {
+const generator: GeneratorDefinition = {
     name: "Person",
     description: "Create a new person (customer, user, etc)",
-    questions: async (prompt, generator) => {
+    questions: async (_, generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
 
-        const questions: QuestionCollection<Answers> = [
-            await getSystemQuestion(workspaceInfo ?? generator.destPath),
-            {
-                type: "input",
-                name: "elementName",
-                message: "Person name:",
-                validate: chainValidators(
-                    stringEmpty,
-                    validateDuplicatedElements(workspaceInfo),
-                ),
-            },
-            {
-                type: "input",
-                name: "personDescription",
-                message: "Person description:",
-                default: "Default user",
-            },
-        ];
+        const systemName = await getSystemQuestionAsPromise(
+            workspaceInfo ?? generator.destPath,
+        );
 
-        const partialAnswers = await prompt(questions);
-        const relationshipDefaults = {
-            defaultRelationship: "Consumes",
-            defaultRelationshipType: "outgoing",
-        };
-
-        const relationshipWithSystem = await prompt(
-            relationshipsForElement(
-                partialAnswers.systemName,
-                partialAnswers.elementName,
-                relationshipDefaults,
+        const elementName = await input({
+            message: "Person name:",
+            validate: chainValidators(
+                stringEmpty,
+                validateDuplicatedElements(workspaceInfo),
             ),
+        });
+
+        const personDescription = await input({
+            message: "Person description:",
+            default: "Default user",
+        });
+
+        const relationshipWithSystem = await resolveRelationshipForElement(
+            systemName,
+            elementName,
+            {
+                defaultRelationship: "Consumes",
+                defaultRelationshipType: "outgoing",
+            },
         );
 
         const mainRelationship = defaultParser(relationshipWithSystem);
-        const relationships = await getRelationships(
-            partialAnswers.elementName,
+        const relationships = await addRelationshipsToElement(
+            elementName,
             workspaceInfo,
-            prompt,
             {
                 filterChoices: (elm) =>
-                    elm instanceof Separator ||
-                    elm.value !== partialAnswers.systemName,
-                ...relationshipDefaults,
+                    elm instanceof Separator || elm.value !== systemName,
+                defaultRelationship: "Interacts with",
+                defaultRelationshipType: "outgoing",
             },
         );
 
         const compiledAnswers = {
-            ...partialAnswers,
+            systemName,
+            personDescription,
+            elementName,
             includeSource: "relationships/_people.dsl",
             includeTabs: "        ",
             relationships: { ...mainRelationship, ...relationships },

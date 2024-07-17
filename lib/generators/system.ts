@@ -1,7 +1,7 @@
 import { input } from "@inquirer/prompts";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
-import { getRelationshipsForElement } from "../utils/questions/relationships";
+import { addRelationshipsToElement } from "../utils/questions/relationships";
 import {
     chainValidators,
     stringEmpty,
@@ -36,12 +36,10 @@ const generator: GeneratorDefinition = {
             defaultRelationshipType: "incoming",
         };
 
-        const relationships = await getRelationshipsForElement(
+        const relationships = await addRelationshipsToElement(
             systemName,
             workspaceInfo,
-            {
-                ...relationshipDefaults,
-            },
+            relationshipDefaults,
         );
 
         const compiledAnswers = {
