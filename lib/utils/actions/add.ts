@@ -1,11 +1,10 @@
 import { join, relative, resolve } from "node:path";
 import { $, file, write } from "bun";
 import chalk from "chalk";
-import type { Answers } from "inquirer";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
 
-export type AddAction = BaseAction & {
+export type AddAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Add;
     templateFile: string;
     path: string;
@@ -13,8 +12,8 @@ export type AddAction = BaseAction & {
     skipIfExists?: boolean;
 };
 
-export async function add<A extends Answers>(
-    options: ExtendedAction & AddAction,
+export async function add<A extends Record<string, unknown>>(
+    options: ExtendedAction & AddAction<A>,
     answers: A,
 ): Promise<boolean> {
     const {
@@ -43,7 +42,7 @@ export async function add<A extends Answers>(
         return false;
     }
 
-    const compiledOpts = compileSource<AddAction>(opts, answers);
+    const compiledOpts = compileSource<AddAction<A>>(opts, answers);
     const targetFile = file(resolve(rootPath, compiledOpts.path));
 
     const relativePath = relative(

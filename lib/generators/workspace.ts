@@ -7,7 +7,17 @@ import { stringEmpty } from "../utils/questions/validators";
 const globalUserName = await $`git config --global user.name`.text();
 const globalUserEmail = await $`git config --global user.email`.text();
 
-const generator: GeneratorDefinition = {
+type WorkspaceAnswers = {
+    workspaceName: string;
+    workspaceDescription: string;
+    systemName: string;
+    systemDescription: string;
+    authorName: string;
+    authorEmail: string;
+    shouldIncludeTheme: boolean;
+};
+
+const generator: GeneratorDefinition<WorkspaceAnswers> = {
     name: "Workspace",
     description: "Create a new workspace",
     questions: {
@@ -54,49 +64,49 @@ const generator: GeneratorDefinition = {
             type: "add",
             path: "architecture/workspace.dsl",
             templateFile: "templates/workspace.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/systems/_system.dsl",
             templateFile: "templates/system/system.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/containers/{{kebabCase systemName}}/.gitkeep",
             templateFile: "templates/empty.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/relationships/_system.dsl",
             templateFile: "templates/empty.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/.gitignore",
             templateFile: "templates/.gitignore",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/.env-arch",
             templateFile: "templates/.env-arch",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
         {
             type: "addMany",
             destination: "architecture",
             templateFiles: "templates/scripts/**/*.sh",
             skipIfExists: true,
             filePermissions: "744",
-        } as AddManyAction,
+        } as AddManyAction<WorkspaceAnswers>,
         {
             type: "addMany",
             destination: "architecture",
             templateFiles: "templates/**/.gitkeep",
-        } as AddManyAction,
+        } as AddManyAction<WorkspaceAnswers>,
         {
             type: "add",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
             templateFile: "templates/views/system.hbs",
-        } as AddAction,
+        } as AddAction<WorkspaceAnswers>,
     ],
 };
 

@@ -1,13 +1,11 @@
 import { Separator, checkbox, input, select } from "@inquirer/prompts";
-import type { CancelablePromise } from "@inquirer/type";
 import { pascalCase } from "change-case";
-import type { Answers, PromptModule, Question } from "inquirer";
 import type { QuestionsObject } from "../generator";
 import { removeSpaces } from "../handlebars";
 import { labelElementByTags } from "../labels";
 import type { StructurizrWorkspace } from "../workspace";
 
-type Relationship = {
+export type Relationship = {
     relationship: string;
     relationshipType: string;
     technology: string;
@@ -23,9 +21,8 @@ type Model = StructurizrWorkspace["model"];
 type SoftwareElement = Model["people"][number];
 type SoftwareSystem = Model["softwareSystems"][number];
 
-type GetRelationshipsOptions = {
-    when?: Question<Answers>["when"];
-    validate?: Question<Answers>["validate"];
+type AddRelationshipOptions = {
+    validate?: Parameters<typeof checkbox>[0]["validate"];
     filterChoices?: (
         elm: Separator | { name: string; value: string },
         pos: number,
@@ -47,50 +44,6 @@ export const defaultParser = (rawRelationshipMap: Record<string, string>) => {
         },
         {},
     );
-};
-
-// TODO: Remove in favor of resolveRelationshipForElement
-export const relationshipsForElement = (
-    relationshipName: string,
-    elementName: string,
-    {
-        defaultRelationship = "Interacts with",
-        defaultRelationshipType = "incoming",
-        defaultTechnology = "Web/HTTP",
-    }: RelationshipForElementOptions = {},
-) => {
-    const elementNamePascalCase = pascalCase(removeSpaces(relationshipName));
-
-    return [
-        {
-            type: "list",
-            name: `${elementNamePascalCase}_relationshipType`,
-            message: `Relationship type for ${relationshipName}`,
-            choices: [
-                {
-                    name: `outgoing (${elementName} → ${relationshipName})`,
-                    value: "outgoing",
-                },
-                {
-                    name: `incoming (${relationshipName} → ${elementName})`,
-                    value: "incoming",
-                },
-            ],
-            default: defaultRelationshipType,
-        },
-        {
-            type: "input",
-            name: `${elementNamePascalCase}_relationship`,
-            message: `Relationship with ${relationshipName}:`,
-            default: defaultRelationship,
-        },
-        {
-            type: "input",
-            name: `${elementNamePascalCase}_technology`,
-            message: "Technology:",
-            default: defaultTechnology,
-        },
-    ];
 };
 
 const resolveRelationshipPromises = async (
@@ -177,82 +130,6 @@ const separator = (
     return maybeSeparator;
 };
 
-// TODO: Remove in favor of addRelationshipsToElement
-export async function getRelationships(
-    elementName: string,
-    workspaceInfo: StructurizrWorkspace | undefined,
-    prompt: PromptModule,
-    {
-        when = () => true,
-        validate = () => true,
-        filterChoices = () => true,
-        parse = defaultParser,
-        message = "Relates to elements:",
-        defaultRelationship = "Interacts with",
-        defaultRelationshipType = "outgoing",
-        defaultTechnology = "Web/HTTP",
-        includeContainers,
-    }: GetRelationshipsOptions = {},
-): Promise<Record<string, Relationship>> {
-    if (!workspaceInfo) return {};
-
-    const softwareSystems = workspaceInfo.model?.softwareSystems ?? [];
-    const people = workspaceInfo.model?.people ?? [];
-    const containers = includeContainers
-        ? findSystemContainers(
-              includeContainers,
-              workspaceInfo.model?.softwareSystems,
-          )
-        : [];
-
-    const systemElements = (
-        [
-            separator(`Containers (${includeContainers})`, containers),
-            ...containers,
-            separator("Systems", softwareSystems),
-            ...softwareSystems,
-            separator("People", people),
-            ...people,
-        ] as (SoftwareElement | Separator)[]
-    )
-        .flat()
-        .map((elm) =>
-            elm instanceof Separator
-                ? elm
-                : {
-                      name: `${labelElementByTags(elm.tags)} ${elm.name}`,
-                      value: elm.name,
-                  },
-        )
-        .filter(filterChoices);
-
-    if (!systemElements.filter((elm) => !(elm instanceof Separator)).length)
-        return {};
-
-    const { relationships } = await prompt({
-        type: "checkbox",
-        name: "relationships",
-        message,
-        choices: systemElements,
-        when,
-        validate,
-    });
-
-    if (!relationships.length) return {};
-
-    const relationshipQuestions = relationships.flatMap((name: string) => {
-        return relationshipsForElement(name, elementName, {
-            defaultRelationship,
-            defaultRelationshipType,
-            defaultTechnology,
-        });
-    });
-
-    const relationshipMap = await prompt(relationshipQuestions);
-
-    return parse(relationshipMap);
-}
-
 export async function addRelationshipsToElement(
     elementName: string,
     workspaceInfo: StructurizrWorkspace | undefined,
@@ -265,7 +142,7 @@ export async function addRelationshipsToElement(
         defaultRelationshipType = "outgoing",
         defaultTechnology = "Web/HTTP",
         includeContainers,
-    }: GetRelationshipsOptions = {},
+    }: AddRelationshipOptions = {},
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
 

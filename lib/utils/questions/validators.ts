@@ -1,15 +1,23 @@
 import { kebabCase, pascalCase } from "change-case";
-import type { Answers, Question } from "inquirer";
 import { removeSpaces } from "../handlebars";
 import type { StructurizrWorkspace } from "../workspace";
 import { getAllSystemElements } from "./system";
 
-type Validator = Question["validate"];
+type Validator<A extends Record<string, unknown> = Record<string, unknown>> = (
+    input: string,
+    answers?: A,
+) => string | boolean | Promise<string | boolean>;
 
 export const stringEmpty = (input: string) => input?.length > 0;
 
-export const duplicatedSystemName = (input: string, answers: Answers) => {
-    if (kebabCase(input) === kebabCase(answers?.systemName)) {
+export const duplicatedSystemName = <A extends { systemName: string }>(
+    input: string,
+    answers: A | undefined,
+) => {
+    if (
+        answers?.systemName &&
+        kebabCase(input) === kebabCase(answers?.systemName)
+    ) {
         return `System name "${input}" already exists`;
     }
 
@@ -21,9 +29,9 @@ export const validateDuplicatedElements =
     (input: string) => {
         if (!workspaceInfo) return true;
 
-        const systemElements = getAllSystemElements(workspaceInfo).map((elm) =>
-            pascalCase(removeSpaces(elm.name)),
-        );
+        const systemElements = getAllSystemElements(workspaceInfo, {
+            includeDeploymentNodes: true,
+        }).map((elm) => pascalCase(removeSpaces(elm.name)));
         const elementName = pascalCase(removeSpaces(input));
         if (systemElements.includes(elementName)) {
             return `Element with name "${elementName}" already exists.`;
@@ -61,11 +69,11 @@ export const validateDuplicatedViews =
         return true;
     };
 
-export function chainValidators<T = string>(
-    ...validators: Validator[]
-): (answers?: Record<string, T>) => Validator {
-    return (answers = {}) =>
-        async (input: unknown) => {
+export function chainValidators<
+    A extends Record<string, unknown> = Record<string, unknown>,
+>(...validators: Validator<A>[]): (answers?: A) => Validator<A> {
+    return (answers = {} as A) =>
+        async (input: string) => {
             for await (const validator of validators) {
                 const validation = await validator?.(input, answers);
                 if (validation !== true) return validation ?? false;

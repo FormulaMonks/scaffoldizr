@@ -3,7 +3,12 @@ import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
-const generator: GeneratorDefinition = {
+type ConstantAnswers = {
+    constantName: string;
+    constantValue: string;
+};
+
+const generator: GeneratorDefinition<ConstantAnswers> = {
     name: "Constant",
     description: "Create a new workspace constant",
     questions: {
@@ -27,7 +32,7 @@ const generator: GeneratorDefinition = {
             path: "architecture/workspace.dsl",
             pattern: /# Constants/,
             templateFile: "templates/constant.hbs",
-        } as AppendAction,
+        } as AppendAction<ConstantAnswers>,
     ],
 };
 

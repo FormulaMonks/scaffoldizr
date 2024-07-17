@@ -1,9 +1,8 @@
 import { relative, resolve } from "node:path";
+import { select } from "@inquirer/prompts";
 import { $ } from "bun";
 import chalk from "chalk";
 import { capitalCase } from "change-case";
-import inquirer from "inquirer";
-import type { Answers } from "inquirer";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
@@ -43,8 +42,6 @@ Create a Structurizr DSL scaffolding in seconds!
     `),
 );
 
-// TODO: Remove
-const prompt = inquirer.createPromptModule();
 const destPath = resolve(process.cwd(), args.dest);
 const workspacePath = getWorkspacePath(destPath);
 
@@ -74,7 +71,7 @@ Let's create a new one by answering the questions below.
             destPath,
         };
 
-        await createGenerator(prompt, generator);
+        await createGenerator(generator);
         await exportWorkspace(
             relative(process.cwd(), destPath) || process.cwd(),
         );
@@ -91,30 +88,27 @@ console.log(
     )}\n`,
 );
 
-const mainPrompt = inquirer.createPromptModule();
-const generate = await mainPrompt<{ element: GeneratorDefinition<Answers> }>([
-    {
-        name: "element",
-        message: "Create a new element:",
-        type: "list",
-        choices: Object.values(otherGenerators)
-            .map((g) => ({
-                name: `${labelElementByName(g.name)} ${g.name}`,
-                value: g,
-            }))
-            .toReversed()
-            .toSorted(),
-    },
-]);
+const element = await select({
+    message: "Create a new element:",
+    choices: Object.values(otherGenerators)
+        .map((g) => ({
+            name: `${labelElementByName(g.name)} ${g.name}`,
+            value: g,
+        }))
+        .toReversed()
+        .toSorted(),
+});
+
+type GeneratorAnswers = GetAnswers<typeof element>;
 
 try {
-    const generator: Generator<GetAnswers<typeof generate.element>> = {
-        ...generate.element,
+    const generator: Generator<GeneratorAnswers> = {
+        ...(element as GeneratorDefinition<GeneratorAnswers>),
         templates,
         destPath,
     };
 
-    await createGenerator(prompt, generator);
+    await createGenerator(generator);
     await exportWorkspace(relative(process.cwd(), workspacePath));
     process.exit(0);
 } catch (err) {

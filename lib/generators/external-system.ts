@@ -3,6 +3,7 @@ import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
+    type Relationship,
     addRelationshipsToElement,
     defaultParser,
     resolveRelationshipForElement,
@@ -16,10 +17,19 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition = {
+type ExternalSystemAnswers = {
+    systemName: string;
+    elementName: string;
+    extSystemDescription: string;
+    includeSource: string;
+    includeTabs: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<ExternalSystemAnswers> = {
     name: "External System",
     description: "Create a new external system",
-    questions: async (_, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -31,7 +41,7 @@ const generator: GeneratorDefinition = {
         const elementName = await input({
             message: "External system name:",
             required: true,
-            validate: chainValidators(
+            validate: chainValidators<{ systemName: string }>(
                 stringEmpty,
                 duplicatedSystemName,
                 validateDuplicatedElements(workspaceInfo),
@@ -87,19 +97,19 @@ const generator: GeneratorDefinition = {
             path: "architecture/workspace.dsl",
             pattern: /# Relationships/,
             templateFile: "templates/include.hbs",
-        } as AppendAction,
+        } as AppendAction<ExternalSystemAnswers>,
         {
             createIfNotExists: true,
             type: "append",
             path: "architecture/systems/_external.dsl",
             templateFile: "templates/system/external.hbs",
-        } as AppendAction,
+        } as AppendAction<ExternalSystemAnswers>,
         {
             createIfNotExists: true,
             type: "append",
             path: "architecture/relationships/_external.dsl",
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<ExternalSystemAnswers>,
     ],
 };
 

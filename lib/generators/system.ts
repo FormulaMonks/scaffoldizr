@@ -1,7 +1,10 @@
 import { input } from "@inquirer/prompts";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
-import { addRelationshipsToElement } from "../utils/questions/relationships";
+import {
+    type Relationship,
+    addRelationshipsToElement,
+} from "../utils/questions/relationships";
 import {
     chainValidators,
     stringEmpty,
@@ -9,10 +12,17 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition = {
+type SystemAnswers = {
+    systemName: string;
+    systemDescription: string;
+    elementName: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<SystemAnswers> = {
     name: "System",
     description: "Create a new software system",
-    questions: async (_, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -57,24 +67,24 @@ const generator: GeneratorDefinition = {
             skipIfExists: true,
             path: "architecture/systems/{{kebabCase systemName}}.dsl",
             templateFile: "templates/system/system.hbs",
-        } as AddAction,
+        } as AddAction<SystemAnswers>,
         {
             type: "add",
             skipIfExists: true,
             path: "architecture/containers/{{kebabCase systemName}}/.gitkeep",
             templateFile: "templates/empty.hbs",
-        } as AddAction,
+        } as AddAction<SystemAnswers>,
         {
             type: "append",
             path: "architecture/relationships/_system.dsl",
             pattern: /\n.* -> .*\n/,
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<SystemAnswers>,
         {
             type: "add",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
             templateFile: "templates/views/system.hbs",
-        } as AddAction,
+        } as AddAction<SystemAnswers>,
     ],
 };
 

@@ -3,6 +3,7 @@ import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
+    type Relationship,
     addRelationshipsToElement,
     defaultParser,
     resolveRelationshipForElement,
@@ -15,10 +16,19 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition = {
+type PersonAnswers = {
+    systemName: string;
+    personDescription: string;
+    elementName: string;
+    includeSource: string;
+    includeTabs: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<PersonAnswers> = {
     name: "Person",
     description: "Create a new person (customer, user, etc)",
-    questions: async (_, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -84,19 +94,19 @@ const generator: GeneratorDefinition = {
             path: "architecture/workspace.dsl",
             pattern: /# Relationships/,
             templateFile: "templates/include.hbs",
-        } as AppendAction,
+        } as AppendAction<PersonAnswers>,
         {
             type: "append",
             createIfNotExists: true,
             path: "architecture/systems/_people.dsl",
             templateFile: "templates/system/person.hbs",
-        } as AppendAction,
+        } as AppendAction<PersonAnswers>,
         {
             createIfNotExists: true,
             type: "append",
             path: "architecture/relationships/_people.dsl",
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<PersonAnswers>,
     ],
 };
 

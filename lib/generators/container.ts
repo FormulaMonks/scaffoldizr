@@ -5,7 +5,10 @@ import { kebabCase, pascalCase } from "change-case";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
-import { addRelationshipsToElement } from "../utils/questions/relationships";
+import {
+    type Relationship,
+    addRelationshipsToElement,
+} from "../utils/questions/relationships";
 import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
@@ -15,10 +18,21 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition = {
+type ContainerAnswers = {
+    systemName: string;
+    elementName: string;
+    containerDescription: string;
+    containerType: string;
+    containerTechnology: string;
+    includeTabs: string;
+    includeSource: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<ContainerAnswers> = {
     name: "Container",
     description: "Create a new system container",
-    questions: async (_, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -31,7 +45,7 @@ const generator: GeneratorDefinition = {
         const elementName = await input({
             message: "Container Name:",
             required: true,
-            validate: chainValidators(
+            validate: chainValidators<{ systemName: string }>(
                 stringEmpty,
                 duplicatedSystemName,
                 validateDuplicatedElements(workspaceInfo),
@@ -97,7 +111,7 @@ const generator: GeneratorDefinition = {
             path: "architecture/containers/{{kebabCase systemName}}/{{kebabCase elementName}}.dsl",
             skipIfExists: true,
             templateFile: "templates/containers/container.hbs",
-        } as AddAction,
+        } as AddAction<ContainerAnswers>,
         {
             type: "append",
             path: "architecture/relationships/_system.dsl",
@@ -125,7 +139,7 @@ const generator: GeneratorDefinition = {
             },
             pattern: /.*\n!include.*/,
             templateFile: "templates/include.hbs",
-        } as AppendAction,
+        } as AppendAction<ContainerAnswers>,
         {
             type: "append",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
@@ -150,13 +164,13 @@ const generator: GeneratorDefinition = {
                 );
             },
             templateFile: "templates/views/container.hbs",
-        } as AppendAction,
+        } as AppendAction<ContainerAnswers>,
         {
             type: "append",
             createIfNotExists: true,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<ContainerAnswers>,
     ],
 };
 

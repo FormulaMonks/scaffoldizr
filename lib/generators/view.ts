@@ -10,15 +10,23 @@ import {
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
+type ViewAnswers = {
+    viewType: string;
+    viewName: string;
+    viewDescription: string;
+    systemName?: string;
+    instanceDescription?: string;
+};
+
 // TODO: Other types of views
 // - Dynamic
 // - Filtered
 // // - System landscape
 // // - Deployment
-const generator: GeneratorDefinition = {
+const generator: GeneratorDefinition<ViewAnswers> = {
     name: "View",
     description: "Create a new view",
-    questions: async (_, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -75,20 +83,20 @@ const generator: GeneratorDefinition = {
             type: "add",
             path: "architecture/views/{{kebabCase viewName}}.dsl",
             templateFile: "templates/views/deployment.hbs",
-        } as AddAction,
+        } as AddAction<ViewAnswers>,
         {
             skip: skipUnlessViewType("deployment"),
             type: "add",
             path: "architecture/environments/{{kebabCase viewName}}.dsl",
             templateFile: "templates/environments/deployment.hbs",
-        } as AddAction,
+        } as AddAction<ViewAnswers>,
         {
             when: whenViewType("landscape"),
             type: "add",
             skipIfExists: true,
             path: "architecture/views/{{kebabCase viewName}}.dsl",
             templateFile: "templates/views/landscape.hbs",
-        } as AddAction,
+        } as AddAction<ViewAnswers>,
     ],
 };
 

@@ -1,6 +1,5 @@
 import type { CancelablePromise } from "@inquirer/type";
 import chalk from "chalk";
-import type { PromptModule, QuestionCollection } from "inquirer";
 import type {
     AddAction,
     AddManyAction,
@@ -21,11 +20,8 @@ export type GeneratorDefinition<
 > = {
     name: string;
     description: string;
-    questions:
-        | QuestionCollection<A>
-        | ((prompt: PromptModule, generator: Generator<A>) => Promise<A>)
-        | QuestionsObject;
-    actions: (AddAction | AddManyAction | AppendAction)[];
+    questions: ((generator: Generator<A>) => Promise<A>) | QuestionsObject;
+    actions: (AddAction<A> | AddManyAction<A> | AppendAction<A>)[];
 };
 
 export type Generator<A extends Record<string, unknown>> =
@@ -39,7 +35,8 @@ export type GetAnswers<Type> = Type extends GeneratorDefinition<infer X>
     : null;
 
 async function executeAction<A extends Record<string, unknown>>(
-    action: ExtendedAction & (AddAction | AddManyAction | AppendAction),
+    action: ExtendedAction &
+        (AddAction<A> | AddManyAction<A> | AppendAction<A>),
     answers: A,
 ): Promise<boolean> {
     switch (action.type) {
@@ -59,7 +56,6 @@ async function executeAction<A extends Record<string, unknown>>(
 }
 
 export async function createGenerator<A extends Record<string, unknown>>(
-    prompt: PromptModule,
     generator: Generator<A>,
     execute = executeAction,
 ): Promise<void> {
@@ -67,28 +63,25 @@ export async function createGenerator<A extends Record<string, unknown>>(
 
     const answers =
         generator.questions instanceof Function
-            ? // TODO: Remove "prompt" argument from generator.questions
-              await generator.questions(prompt, generator)
-            : Array.isArray(generator.questions)
-              ? await prompt(generator.questions)
-              : await Object.entries(
-                    generator.questions as QuestionsObject,
-                ).reduce(
-                    async (answers, [name, prompt]) => {
-                        const acc = await answers;
+            ? await generator.questions(generator)
+            : ((await Object.entries(
+                  generator.questions as QuestionsObject,
+              ).reduce(
+                  async (answers, [name, prompt]) => {
+                      const acc = await answers;
 
-                        const answer = await prompt?.();
+                      const answer = await prompt?.();
 
-                        return {
-                            ...acc,
-                            [name]: answer,
-                        };
-                    },
-                    Promise.resolve({} as Record<string, unknown>),
-                );
+                      return {
+                          ...acc,
+                          [name]: answer,
+                      };
+                  },
+                  Promise.resolve({} as Record<string, unknown>),
+              )) as A);
 
     for await (const action of generator.actions) {
-        await execute(
+        await execute<A>(
             {
                 ...action,
                 rootPath: generator.destPath,

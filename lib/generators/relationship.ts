@@ -2,14 +2,24 @@ import { select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { elementTypeByTags, labelElementByTags } from "../utils/labels";
-import { addRelationshipsToElement } from "../utils/questions/relationships";
+import {
+    type Relationship,
+    addRelationshipsToElement,
+} from "../utils/questions/relationships";
 import { getAllSystemElements } from "../utils/questions/system";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
-const generator: GeneratorDefinition = {
+type RelationshipAnswers = {
+    elementName: string;
+    systemName?: string;
+    elementType: string;
+    relationships: Record<string, Relationship>;
+};
+
+const generator: GeneratorDefinition<RelationshipAnswers> = {
     name: "Relationship",
     description: "Create a new relationship between elements",
-    questions: async (_, generator) => {
+    questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -64,7 +74,7 @@ const generator: GeneratorDefinition = {
             path: "architecture/relationships/_{{kebabCase elementType}}.dsl",
             pattern: /\n.* -> .*\n/,
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<RelationshipAnswers>,
         {
             when: (answers) => Boolean(answers.systemName),
             skip: (answers) =>
@@ -75,7 +85,7 @@ const generator: GeneratorDefinition = {
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
             pattern: /\n.* -> .*\n/,
             templateFile: "templates/relationships/multiple.hbs",
-        } as AppendAction,
+        } as AppendAction<RelationshipAnswers>,
     ],
 };
 

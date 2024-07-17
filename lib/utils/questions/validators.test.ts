@@ -10,47 +10,27 @@ import {
 describe("validators", () => {
     describe("chainValidators", () => {
         test("should chain validators correctly", async () => {
-            const validate = chainValidators(
-                (input) => input.size > 0,
-                async (input) => input.weight > 0 || "Error message",
-                (input) => input.height > 0,
-                (input, answers) => answers?.test === input.test,
-            )({ test: "test" });
+            const validate = chainValidators<{
+                size?: number;
+                weight?: number;
+                height?: number;
+                test?: string;
+            }>(
+                (input) => input.length > 0,
+                async (input) => input.endsWith("test") || "Error message",
+                (input) => input.startsWith("test"),
+                (input, answers) => answers?.test === input,
+            )({ test: "testtest" });
 
-            const response1 = await validate?.({
-                size: 1,
-                weight: 1,
-                height: 1,
-                test: "test",
-            });
+            const response1 = await validate?.("testtest");
             expect(response1).toBeTrue();
-            const response2 = await validate?.({
-                size: 1,
-                weight: 1,
-                height: 0,
-                test: "test",
-            });
+            const response2 = await validate?.("endsWith_test");
             expect(response2).toBeFalse();
-            const response3 = await validate?.({
-                size: 1,
-                weight: 0,
-                height: 1,
-                test: "test",
-            });
+            const response3 = await validate?.("testable");
             expect(response3).toEqual("Error message");
-            const response4 = await validate?.({
-                size: 0,
-                weight: 1,
-                height: 1,
-                test: "test",
-            });
+            const response4 = await validate?.("");
             expect(response4).toBeFalse();
-            const response5 = await validate?.({
-                size: 1,
-                weight: 1,
-                height: 1,
-                test: "another value",
-            });
+            const response5 = await validate?.("testtosttest");
             expect(response5).toBeFalse();
         });
     });
