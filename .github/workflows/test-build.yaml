@@ -114,9 +114,6 @@ jobs:
           jq -r '.version' package.json
           mkdir -p ./dist/${{ matrix.name }}
           bun build ./lib/main.ts --compile --outfile ./dist/${{ matrix.name }}/scfz
-          # FIXME: Bun issue with bin path
-          ./lib/scfz --version
-          mv ./lib/scfz ./dist/${{ matrix.name }}/scfz
           cd ./dist
           tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}/
           cd ..
