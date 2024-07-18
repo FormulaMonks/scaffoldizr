@@ -28,6 +28,7 @@ jobs:
           experimental: true
       - name: Test
         run: |
+          mise use bun@1.1.20
           bun install
           bun test:ci
   bump-version:
@@ -43,6 +44,7 @@ jobs:
           install: true
           cache: true
           experimental: true
+      - run: mise use bun@1.1.20
       - run: bun install
       - name: Bump version
         id: bump
@@ -108,6 +110,7 @@ jobs:
           install: true
           cache: true
           experimental: true
+      - run: mise use bun@1.1.20
       - run: bun install
       - name: Create binary and release files
         run: |
