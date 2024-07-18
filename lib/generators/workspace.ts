@@ -4,8 +4,10 @@ import type { AddAction, AddManyAction } from "../utils/actions";
 import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
 import { stringEmpty } from "../utils/questions/validators";
 
-const globalUserName = await $`git config --global user.name`.text();
-const globalUserEmail = await $`git config --global user.email`.text();
+const globalUserName =
+    await $`git config --global user.name || echo "(no name)"`.text();
+const globalUserEmail =
+    await $`git config --global user.email || echo "(no email)"`.text();
 
 type WorkspaceAnswers = {
     workspaceName: string;

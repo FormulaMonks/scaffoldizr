@@ -24,10 +24,11 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
-          version: 2024.5.14
+          version: 2024.7.3
           install: true
           cache: true
           experimental: true
+      - run: mise use bun@1.1.20
       - run: bun install
       - name: Create changelog
         run: |

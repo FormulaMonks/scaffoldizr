@@ -22,12 +22,13 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
-          version: 2024.5.14
+          version: 2024.7.3
           install: true
           cache: true
           experimental: true
       - name: Test
         run: |
+          mise use bun@1.1.20
           bun install
           bun test:ci
   bump-version:
@@ -39,10 +40,11 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
-          version: 2024.5.14
+          version: 2024.7.3
           install: true
           cache: true
           experimental: true
+      - run: mise use bun@1.1.20
       - run: bun install
       - name: Bump version
         id: bump
@@ -100,23 +102,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
+          ref: ${{ contains(github.ref, '-beta') && 'develop' || (startsWith(github.ref, 'refs/tags/') && 'main' || github.ref) }}
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         with:
-          version: 2024.5.14
+          version: 2024.7.3
           install: true
           cache: true
           experimental: true
+      - run: mise use bun@1.1.20
       - run: bun install
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json
           mkdir -p ./dist/${{ matrix.name }}
           bun build ./lib/main.ts --compile --outfile ./dist/${{ matrix.name }}/scfz
-          # FIXME: Bun issue with bin path
-          ./lib/scfz --version
-          mv ./lib/scfz ./dist/${{ matrix.name }}/scfz
+          ./dist/${{ matrix.name }}/scfz --version
           cd ./dist
           tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}/
           cd ..
