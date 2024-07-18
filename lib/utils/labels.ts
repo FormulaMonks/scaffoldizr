@@ -1,6 +1,7 @@
 export enum Labels {
-    Constant = "🔸",
-    Container = "🔹",
+    Constant = "🟡",
+    Container = "🔷",
+    Component = "🔹",
     External = "⬜️",
     Person = "👤",
     System = "🟦",
@@ -14,6 +15,7 @@ export const labelElementByTags = (tags: string): string => {
         if (tag === "Person") return Labels.Person;
         if (tag === "External") return Labels.External;
         if (tag === "Container") return Labels.Container;
+        if (tag === "Component") return Labels.Component;
         if (tag === "Deployment Node") return Labels.DeploymentNode;
     }
 
@@ -25,6 +27,7 @@ export const elementTypeByTags = (tags: string): string => {
         if (tag === "Person") return "Person";
         if (tag === "External") return "External";
         if (tag === "Container") return "Container";
+        if (tag === "Component") return "Component";
         if (tag === "Deployment Node") return "DeploymentNode";
     }
 

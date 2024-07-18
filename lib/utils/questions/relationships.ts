@@ -4,6 +4,7 @@ import type { QuestionsObject } from "../generator";
 import { removeSpaces } from "../handlebars";
 import { labelElementByTags } from "../labels";
 import type { StructurizrWorkspace } from "../workspace";
+import { getAllWorkspaceElements } from "./system";
 
 export type Relationship = {
     relationship: string;
@@ -19,7 +20,6 @@ type RelationshipForElementOptions = {
 
 type Model = StructurizrWorkspace["model"];
 type SoftwareElement = Model["people"][number];
-type SoftwareSystem = Model["softwareSystems"][number];
 
 type AddRelationshipOptions = {
     validate?: Parameters<typeof checkbox>[0]["validate"];
@@ -30,6 +30,7 @@ type AddRelationshipOptions = {
     ) => boolean;
     parse?: typeof defaultParser;
     includeContainers?: string;
+    includeComponents?: string;
     message?: string;
 } & RelationshipForElementOptions;
 
@@ -109,16 +110,6 @@ export const resolveRelationshipForElement = async (
     return resolveRelationshipPromises(relationshipPromises);
 };
 
-const findSystemContainers = (
-    systemName: string,
-    systems: SoftwareSystem[],
-): SoftwareSystem["containers"] => {
-    const containers =
-        systems.find(({ name }) => name === systemName)?.containers ?? [];
-
-    return containers;
-};
-
 const separator = (
     name: string,
     elements: unknown[],
@@ -142,21 +133,36 @@ export async function addRelationshipsToElement(
         defaultRelationshipType = "outgoing",
         defaultTechnology = "Web/HTTP",
         includeContainers,
+        includeComponents,
     }: AddRelationshipOptions = {},
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
 
-    const softwareSystems = workspaceInfo.model?.softwareSystems ?? [];
-    const people = workspaceInfo.model?.people ?? [];
-    const containers = includeContainers
-        ? findSystemContainers(
-              includeContainers,
-              workspaceInfo.model?.softwareSystems,
-          )
-        : [];
+    const elements = getAllWorkspaceElements(workspaceInfo, {
+        includeContainers: !!includeContainers,
+        includeComponents: !!includeComponents,
+        includeDeploymentNodes: false,
+    });
+
+    const softwareSystems = elements.filter((elm) =>
+        elm.tags.includes("System"),
+    );
+    const people = elements.filter((elm) => elm.tags.includes("Person"));
+    const containers = elements.filter(
+        (elm) =>
+            elm.tags.includes("Container") &&
+            elm.systemName === includeContainers,
+    );
+    const components = elements.filter(
+        (elm) =>
+            elm.tags.includes("Component") &&
+            elm.containerName === includeComponents,
+    );
 
     const systemElements = (
         [
+            separator(`Components (${includeComponents})`, components),
+            ...components,
             separator(`Containers (${includeContainers})`, containers),
             ...containers,
             separator("Systems", softwareSystems),

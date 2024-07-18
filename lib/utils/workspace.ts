@@ -54,8 +54,11 @@ type SoftwareElement = {
     relationships: Relationship[];
 };
 
+type Component = SoftwareElement & { technology: string };
+
 type Container = SoftwareElement & {
     technology: string;
+    components?: Component[];
 };
 
 type SoftwareSystem = SoftwareElement & {

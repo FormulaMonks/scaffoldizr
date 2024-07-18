@@ -15,7 +15,7 @@ import type {
 } from "./utils/generator";
 import { createGenerator } from "./utils/generator";
 import { labelElementByName } from "./utils/labels";
-import { getWorkspacePath } from "./utils/workspace";
+import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
 
 const args = await yargs(hideBin(process.argv))
     .version("version", "Show current tool version", pkg.version)
@@ -82,11 +82,28 @@ Let's create a new one by answering the questions below.
     }
 }
 
+const workspaceInfo = await getWorkspaceJson(getWorkspacePath(workspacePath));
+
+console.log(chalk.gray(`Workspace name: ${chalk.cyan(workspaceInfo?.name)}`));
 console.log(
-    `Architecture folder: ${chalk.blue(
-        relative(process.cwd(), workspacePath),
-    )}\n`,
+    chalk.gray(
+        `Architecture folder: ${chalk.cyan(
+            relative(process.cwd(), workspacePath),
+        )}\n`,
+    ),
 );
+
+const DEFAULT_GENERATOR_SORTING = [
+    "Workspace",
+    "Constant",
+    "System",
+    "Person",
+    "External System",
+    "Container",
+    "Component",
+    "View",
+    "Relationship",
+];
 
 const element = await select({
     message: "Create a new element:",
@@ -96,7 +113,12 @@ const element = await select({
             value: g,
         }))
         .toReversed()
-        .toSorted(),
+        .toSorted((a, b) => {
+            const aIndex = DEFAULT_GENERATOR_SORTING.indexOf(a.value.name);
+            const bIndex = DEFAULT_GENERATOR_SORTING.indexOf(b.value.name);
+
+            return aIndex - bIndex;
+        }),
 });
 
 type GeneratorAnswers = GetAnswers<typeof element>;

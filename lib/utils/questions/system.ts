@@ -10,20 +10,28 @@ type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
 type DeploymentNode = StructurizrWorkspace["model"]["deploymentNodes"][number];
 
-type GetAllSystemElementsOptions = {
+type getAllWorkspaceElementsOptions = {
     includeContainers?: boolean;
+    includeComponents?: boolean;
     includeDeploymentNodes?: boolean;
 };
 
+type WorkspaceElement = (SoftwareElement | DeploymentNode) & {
+    systemName?: string;
+    containerName?: string;
+};
+
 // TODO: Test filtering logic
-export function getAllSystemElements(
+export function getAllWorkspaceElements(
     workspaceInfo: StructurizrWorkspace | undefined,
     {
         includeContainers = true,
+        includeComponents = false,
         includeDeploymentNodes = false,
-    }: GetAllSystemElementsOptions = {},
-): ((SoftwareElement | DeploymentNode) & { systemName?: string })[] {
+    }: getAllWorkspaceElementsOptions = {},
+): WorkspaceElement[] {
     if (!workspaceInfo) return [];
+
     const systemElements = Object.values(workspaceInfo.model)
         .flat()
         .filter((elm) =>
@@ -33,18 +41,35 @@ export function getAllSystemElements(
         )
         .flatMap((elm) => {
             const sysElm = elm as SoftwareSystem;
+
             if (includeContainers && sysElm.containers) {
                 return [
                     sysElm,
-                    ...sysElm.containers.map((container) => ({
-                        ...container,
-                        systemName: sysElm.name,
-                    })),
-                ];
+                    ...sysElm.containers.map((container) => {
+                        if (includeComponents && container.components) {
+                            return [
+                                { ...container, systemName: sysElm.name },
+                                ...container.components.map((component) => {
+                                    return {
+                                        ...component,
+                                        containerName: container.name,
+                                        systemName: sysElm.name,
+                                    };
+                                }),
+                            ];
+                        }
+
+                        return {
+                            ...container,
+                            systemName: sysElm.name,
+                        };
+                    }),
+                ] as WorkspaceElement[];
             }
 
             return elm;
-        });
+        })
+        .flat();
 
     return systemElements;
 }
