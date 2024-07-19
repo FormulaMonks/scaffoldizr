@@ -10,7 +10,7 @@ type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
 type DeploymentNode = StructurizrWorkspace["model"]["deploymentNodes"][number];
 
-type getAllWorkspaceElementsOptions = {
+type GetAllWorkspaceElementsOptions = {
     includeContainers?: boolean;
     includeComponents?: boolean;
     includeDeploymentNodes?: boolean;
@@ -28,7 +28,7 @@ export function getAllWorkspaceElements(
         includeContainers = true,
         includeComponents = false,
         includeDeploymentNodes = false,
-    }: getAllWorkspaceElementsOptions = {},
+    }: GetAllWorkspaceElementsOptions = {},
 ): WorkspaceElement[] {
     if (!workspaceInfo) return [];
 
