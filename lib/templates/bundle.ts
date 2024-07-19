@@ -7,7 +7,7 @@ import gitkeep from "./docs/.gitkeep";
 import empty from "./empty.hbs";
 import environmentsDeployment from "./environments/deployment.hbs";
 import include from "./include.hbs";
-import relationshipsMultipleUnprocessed from "./relationships/multiple-unprocessed.hbs";
+import relationshipsMultipleComponent from "./relationships/multiple-component.hbs";
 import relationshipsMultiple from "./relationships/multiple.hbs";
 import scriptsRun from "./scripts/run.sh";
 import scriptsUpdate from "./scripts/update.sh";
@@ -38,8 +38,8 @@ const templatesMap = new Map([
     ["templates/relationships/.gitkeep", gitkeep],
     ["templates/relationships/multiple.hbs", relationshipsMultiple],
     [
-        "templates/relationships/multiple-unprocessed.hbs",
-        relationshipsMultipleUnprocessed,
+        "templates/relationships/multiple-component.hbs",
+        relationshipsMultipleComponent,
     ],
     ["templates/scripts/run.sh", scriptsRun],
     ["templates/scripts/update.sh", scriptsUpdate],

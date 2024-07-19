@@ -44,6 +44,24 @@ export const defaultParser = (rawRelationshipMap: Record<string, string>) => {
     );
 };
 
+export const componentParser = (rawRelationshipMap: Record<string, string>) => {
+    return Object.entries(rawRelationshipMap).reduce(
+        (result: Record<string, Relationship>, next) => {
+            const [containerName, elmName, value] = next[0].split("_");
+            const relName = value
+                ? `${containerName}_${elmName}`
+                : containerName;
+
+            result[relName] = result[relName] ?? {};
+            result[relName][(value ? value : elmName) as keyof Relationship] =
+                next[1];
+
+            return result;
+        },
+        {},
+    );
+};
+
 const resolveRelationshipPromises = async (
     relationshipPromises: QuestionsObject<string>,
 ): Promise<Record<string, string>> => {
@@ -184,6 +202,8 @@ export async function addRelationshipsToElement(
                           : elm.name,
                   },
         )
+        // TODO: remove separators whose elements are filtered out
+        // (no elements after filterChoices applied)
         .filter(filterChoices);
 
     if (!systemElements.filter((elm) => !(elm instanceof Separator)).length)

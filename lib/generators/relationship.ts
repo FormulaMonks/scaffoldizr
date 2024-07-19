@@ -1,10 +1,11 @@
-import { select } from "@inquirer/prompts";
+import { Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { elementTypeByTags, labelElementByTags } from "../utils/labels";
 import {
     type Relationship,
     addRelationshipsToElement,
+    componentParser,
 } from "../utils/questions/relationships";
 import { getAllWorkspaceElements } from "../utils/questions/system";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
@@ -32,7 +33,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
         }).map((elm) => ({
             name: `${labelElementByTags(elm.tags)} ${
                 elm.systemName ? `${elm.systemName}/` : ""
-            }${elm.name}`,
+            }${elm.containerName ? `${elm.containerName}/` : ""}${elm.name}`,
             value: {
                 elementName: elm.name,
                 systemName: elm.systemName,
@@ -56,13 +57,39 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
                 includeComponents: element.containerName
                     ? element.containerName
                     : undefined,
+                filterChoices: (elm) => {
+                    if (elm instanceof Separator) return true;
+
+                    // Component
+                    if (element.containerName) {
+                        return (
+                            elm.value !==
+                                `${element.containerName}_${element.elementName}` &&
+                            elm.value !== element.containerName &&
+                            elm.value !== element.systemName
+                        );
+                    }
+
+                    // Container
+                    if (element.systemName) {
+                        // return only those whose value is neither system name nor element name
+                        return (
+                            elm.value !== element.systemName &&
+                            elm.value !== element.elementName
+                        );
+                    }
+
+                    // All other cases
+                    return element.elementName !== elm.value;
+                },
+
+                parse: componentParser,
             },
         );
 
         const compiledAnswers = {
             ...element,
             elementType:
-                // TODO: Implement Component Relationships
                 element.elementType === "Person"
                     ? "people"
                     : element.elementType,
@@ -84,23 +111,27 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
-            when: (answers) => Boolean(answers.systemName),
+            when: (answers) =>
+                Boolean(answers.systemName && !answers.containerName),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No container relationships",
             type: "append",
             createIfNotExists: true,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            pattern: /\n.* -> .*\n/,
+            pattern: /[\s\S]*\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
-            when: (answers) => Boolean(answers.containerName),
-            skip: (_) => true && "TODO: Implement",
+            when: (answers) =>
+                Boolean(answers.systemName && answers.containerName),
+            skip: (answers) =>
+                Object.keys(answers.relationships).length <= 0 &&
+                "No component relationships",
             type: "append",
-            path: "architecture/relationships/_{{kebabCase elementType}}.dsl",
-            pattern: /\n.* -> .*\n/,
-            templateFile: "templates/relationships/multiple.hbs",
+            pattern: /[\s\S]*\n/,
+            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<RelationshipAnswers>,
     ],
 };

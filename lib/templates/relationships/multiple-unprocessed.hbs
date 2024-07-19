@@ -1,2 +1,0 @@
-{{#each relationships}}{{#if (eq relationshipType "incoming")}}{{@key}} -> {{#if ../containerName}}{{pascalCase (removeSpaces ../containerName)}}_{{/if}}{{../elementName}}{{else}}{{#if ../containerName}}{{pascalCase (removeSpaces ../containerName)}}_{{/if}}{{../elementName}} -> {{@key}}{{/if}} "{{relationship}}" "{{technology}}"
-{{/each}}

@@ -9,6 +9,7 @@ import { removeSpaces } from "../utils/handlebars";
 import {
     type Relationship,
     addRelationshipsToElement,
+    componentParser,
 } from "../utils/questions/relationships";
 import { getAllWorkspaceElements } from "../utils/questions/system";
 import {
@@ -95,26 +96,10 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
                 includeContainers: container.systemName,
                 includeComponents: container.name,
                 filterChoices: (elm) =>
-                    elm instanceof Separator || elm.value !== container.name,
-                parse: (rawRelationshipMap) => {
-                    return Object.entries(rawRelationshipMap).reduce(
-                        (result: Record<string, Relationship>, next) => {
-                            const [containerName, elmName, value] =
-                                next[0].split("_");
-                            const relName = value
-                                ? `${containerName}_${elmName}`
-                                : containerName;
-
-                            result[relName] = result[relName] ?? {};
-                            result[relName][
-                                (value ? value : elmName) as keyof Relationship
-                            ] = next[1];
-
-                            return result;
-                        },
-                        {},
-                    );
-                },
+                    elm instanceof Separator ||
+                    (elm.value !== container.name &&
+                        elm.value !== container.systemName),
+                parse: componentParser,
                 ...relationshipDefaults,
             },
         );
@@ -137,6 +122,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             type: "append",
             path: "architecture/components/{{kebabCase systemName}}--{{kebabCase containerName}}.dsl",
             createIfNotExists: true,
+            pattern: /[\s\S]*\n/,
             templateFile: "templates/components/component.hbs",
         } as AppendAction<ComponentAnswers>,
         {
@@ -145,8 +131,9 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             skip: async (answers, rootPath) => {
                 const containerPath = resolve(
                     rootPath,
-                    `architecture/containers/${answers.systemName}/${answers.containerName}.dsl`,
+                    `architecture/containers/${kebabCase(answers.systemName)}/${kebabCase(answers.containerName)}.dsl`,
                 );
+
                 const fileExists = await file(containerPath).exists();
                 if (!fileExists) return false;
 
@@ -193,7 +180,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             type: "append",
             createIfNotExists: true,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            templateFile: "templates/relationships/multiple-unprocessed.hbs",
+            templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<ComponentAnswers>,
     ],
 };
