@@ -19,9 +19,11 @@ import {
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type ComponentAnswers = {
+    systemName: string;
     containerName: string;
     elementName: string;
     componentDescription: string;
+    componentTechnology: string;
     includeTabs: string;
     includeSource: string;
     relationships: Record<string, Relationship>;
@@ -94,6 +96,25 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
                 includeComponents: container.name,
                 filterChoices: (elm) =>
                     elm instanceof Separator || elm.value !== container.name,
+                parse: (rawRelationshipMap) => {
+                    return Object.entries(rawRelationshipMap).reduce(
+                        (result: Record<string, Relationship>, next) => {
+                            const [containerName, elmName, value] =
+                                next[0].split("_");
+                            const relName = value
+                                ? `${containerName}_${elmName}`
+                                : containerName;
+
+                            result[relName] = result[relName] ?? {};
+                            result[relName][
+                                (value ? value : elmName) as keyof Relationship
+                            ] = next[1];
+
+                            return result;
+                        },
+                        {},
+                    );
+                },
                 ...relationshipDefaults,
             },
         );
@@ -105,7 +126,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             componentDescription,
             componentTechnology,
             includeTabs: "    ",
-            includeSource: `../../components/${kebabCase(container.systemName)}--${kebabCase(container.name)}.dsl`,
+            includeSource: `../../components/${kebabCase(container.systemName)}--${kebabCase(container.name)}.dsl\n`,
             relationships,
         };
 
@@ -118,65 +139,62 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             createIfNotExists: true,
             templateFile: "templates/components/component.hbs",
         } as AppendAction<ComponentAnswers>,
-        // {
-        //     type: "append",
-        //     path: "architecture/relationships/_system.dsl",
-        //     skip: async (answers, rootPath) => {
-        //         const systemRelationshipsPath = resolve(
-        //             rootPath,
-        //             "architecture/relationships/_system.dsl",
-        //         );
+        {
+            type: "append",
+            path: "architecture/containers/{{kebabCase systemName}}/{{kebabCase containerName}}.dsl",
+            skip: async (answers, rootPath) => {
+                const containerPath = resolve(
+                    rootPath,
+                    `architecture/containers/${answers.systemName}/${answers.containerName}.dsl`,
+                );
+                const fileExists = await file(containerPath).exists();
+                if (!fileExists) return false;
 
-        //         const fileExists = await file(systemRelationshipsPath).exists();
-        //         if (!fileExists) return false;
-        //         const systemRelationships = await file(
-        //             systemRelationshipsPath,
-        //         ).text();
+                const containerIncludes = await file(containerPath).text();
+                const match = new RegExp(
+                    `include ${answers.includeSource.trim()}`,
+                    "g",
+                ).test(containerIncludes);
 
-        //         const match = new RegExp(
-        //             `include ${kebabCase(answers.systemName)}`,
-        //             "g",
-        //         ).test(systemRelationships);
+                return (
+                    match &&
+                    `Component relationship for "${answers.containerName}" already included`
+                );
+            },
+            pattern: /.*{\n/,
+            templateFile: "templates/include.hbs",
+        } as AppendAction<ComponentAnswers>,
+        {
+            type: "append",
+            path: "architecture/views/{{kebabCase systemName}}.dsl",
+            skip: async (answers, rootPath) => {
+                const systemViewPath = resolve(
+                    rootPath,
+                    `architecture/views/${kebabCase(answers.systemName)}.dsl`,
+                );
 
-        //         return (
-        //             match &&
-        //             `Component relationship for "${answers.systemName}" already included`
-        //         );
-        //     },
-        //     pattern: /.*\n!include.*/,
-        //     templateFile: "templates/include.hbs",
-        // } as AppendAction<ComponentAnswers>,
-        // {
-        //     type: "append",
-        //     path: "architecture/views/{{kebabCase systemName}}.dsl",
-        //     skip: async (answers, rootPath) => {
-        //         const systemViewPath = resolve(
-        //             rootPath,
-        //             `architecture/views/${kebabCase(answers.systemName)}.dsl`,
-        //         );
+                const fileExists = await file(systemViewPath).exists();
+                if (!fileExists) return false;
+                const systemView = await file(systemViewPath).text();
 
-        //         const fileExists = await file(systemViewPath).exists();
-        //         if (!fileExists) return false;
-        //         const systemView = await file(systemViewPath).text();
+                const match = new RegExp(
+                    `component ${pascalCase(removeSpaces(answers.containerName))}`,
+                    "g",
+                ).test(systemView);
 
-        //         const match = new RegExp(
-        //             `component ${pascalCase(removeSpaces(answers.systemName))}`,
-        //             "g",
-        //         ).test(systemView);
-
-        //         return (
-        //             match &&
-        //             `Component view for "${answers.systemName}" already exists`
-        //         );
-        //     },
-        //     templateFile: "templates/views/component.hbs",
-        // } as AppendAction<ComponentAnswers>,
-        // {
-        //     type: "append",
-        //     createIfNotExists: true,
-        //     path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-        //     templateFile: "templates/relationships/multiple.hbs",
-        // } as AppendAction<ComponentAnswers>,
+                return (
+                    match &&
+                    `Component view for "${answers.containerName}" already exists`
+                );
+            },
+            templateFile: "templates/views/component.hbs",
+        } as AppendAction<ComponentAnswers>,
+        {
+            type: "append",
+            createIfNotExists: true,
+            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/relationships/multiple-unprocessed.hbs",
+        } as AppendAction<ComponentAnswers>,
     ],
 };
 

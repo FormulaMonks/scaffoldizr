@@ -18,9 +18,6 @@ type RelationshipForElementOptions = {
     defaultTechnology?: string;
 };
 
-type Model = StructurizrWorkspace["model"];
-type SoftwareElement = Model["people"][number];
-
 type AddRelationshipOptions = {
     validate?: Parameters<typeof checkbox>[0]["validate"];
     filterChoices?: (
@@ -77,19 +74,24 @@ export const resolveRelationshipForElement = async (
         defaultTechnology = "Web/HTTP",
     }: RelationshipForElementOptions = {},
 ): Promise<Record<string, string>> => {
-    const elementNamePascalCase = pascalCase(removeSpaces(relationshipName));
+    const [containerName, maybeRelName] = relationshipName.split("_");
+    const relName = maybeRelName ?? containerName;
+
+    const elementNamePascalCase = maybeRelName
+        ? `${pascalCase(removeSpaces(containerName))}_${pascalCase(removeSpaces(maybeRelName))}`
+        : pascalCase(removeSpaces(containerName));
 
     const relationshipPromises = {
         [`${elementNamePascalCase}_relationshipType`]: () =>
             select({
-                message: `Relationship type for ${relationshipName}`,
+                message: `Relationship type for ${relName}`,
                 choices: [
                     {
-                        name: `outgoing (${elementName} → ${relationshipName})`,
+                        name: `outgoing (${elementName} → ${relName})`,
                         value: "outgoing",
                     },
                     {
-                        name: `incoming (${relationshipName} → ${elementName})`,
+                        name: `incoming (${relName} → ${elementName})`,
                         value: "incoming",
                     },
                 ],
@@ -97,7 +99,7 @@ export const resolveRelationshipForElement = async (
             }),
         [`${elementNamePascalCase}_relationship`]: () =>
             input({
-                message: `Relationship with ${relationshipName}:`,
+                message: `Relationship with ${relName}:`,
                 default: defaultRelationship,
             }),
         [`${elementNamePascalCase}_technology`]: () =>
@@ -169,7 +171,7 @@ export async function addRelationshipsToElement(
             ...softwareSystems,
             separator("People", people),
             ...people,
-        ] as (SoftwareElement | Separator)[]
+        ] as ((typeof elements)[number] | Separator)[]
     )
         .flat()
         .map((elm) =>
@@ -177,7 +179,9 @@ export async function addRelationshipsToElement(
                 ? elm
                 : {
                       name: `${labelElementByTags(elm.tags)} ${elm.name}`,
-                      value: elm.name,
+                      value: elm.containerName
+                          ? `${elm.containerName}_${elm.name}`
+                          : elm.name,
                   },
         )
         .filter(filterChoices);
@@ -193,7 +197,7 @@ export async function addRelationshipsToElement(
 
     if (!relationshipNames.length) return {};
 
-    const relationshipsMap: Record<string, Relationship> = {};
+    let relationshipsMap: Record<string, Relationship> = {};
 
     for await (const relationshipName of relationshipNames) {
         const relationship = await resolveRelationshipForElement(
@@ -202,12 +206,10 @@ export async function addRelationshipsToElement(
             { defaultRelationship, defaultRelationshipType, defaultTechnology },
         );
 
-        const elementNamePascalCase = pascalCase(
-            removeSpaces(relationshipName),
-        );
-
-        relationshipsMap[elementNamePascalCase] =
-            parse(relationship)[elementNamePascalCase];
+        relationshipsMap = {
+            ...relationshipsMap,
+            ...parse(relationship),
+        };
     }
 
     return relationshipsMap;
