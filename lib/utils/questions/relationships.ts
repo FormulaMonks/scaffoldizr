@@ -4,6 +4,7 @@ import type { QuestionsObject } from "../generator";
 import { removeSpaces } from "../handlebars";
 import { labelElementByTags } from "../labels";
 import type { StructurizrWorkspace } from "../workspace";
+import { getAllWorkspaceElements } from "./system";
 
 export type Relationship = {
     relationship: string;
@@ -17,10 +18,6 @@ type RelationshipForElementOptions = {
     defaultTechnology?: string;
 };
 
-type Model = StructurizrWorkspace["model"];
-type SoftwareElement = Model["people"][number];
-type SoftwareSystem = Model["softwareSystems"][number];
-
 type AddRelationshipOptions = {
     validate?: Parameters<typeof checkbox>[0]["validate"];
     filterChoices?: (
@@ -30,6 +27,7 @@ type AddRelationshipOptions = {
     ) => boolean;
     parse?: typeof defaultParser;
     includeContainers?: string;
+    includeComponents?: string;
     message?: string;
 } & RelationshipForElementOptions;
 
@@ -39,6 +37,24 @@ export const defaultParser = (rawRelationshipMap: Record<string, string>) => {
             const [elmName, value] = next[0].split("_");
             result[elmName] = result[elmName] ?? {};
             result[elmName][value as keyof Relationship] = next[1];
+
+            return result;
+        },
+        {},
+    );
+};
+
+export const componentParser = (rawRelationshipMap: Record<string, string>) => {
+    return Object.entries(rawRelationshipMap).reduce(
+        (result: Record<string, Relationship>, next) => {
+            const [containerName, elmName, value] = next[0].split("_");
+            const relName = value
+                ? `${containerName}_${elmName}`
+                : containerName;
+
+            result[relName] = result[relName] ?? {};
+            result[relName][(value ? value : elmName) as keyof Relationship] =
+                next[1];
 
             return result;
         },
@@ -76,19 +92,24 @@ export const resolveRelationshipForElement = async (
         defaultTechnology = "Web/HTTP",
     }: RelationshipForElementOptions = {},
 ): Promise<Record<string, string>> => {
-    const elementNamePascalCase = pascalCase(removeSpaces(relationshipName));
+    const [containerName, maybeRelName] = relationshipName.split("_");
+    const relName = maybeRelName ?? containerName;
+
+    const elementNamePascalCase = maybeRelName
+        ? `${pascalCase(removeSpaces(containerName))}_${pascalCase(removeSpaces(maybeRelName))}`
+        : pascalCase(removeSpaces(containerName));
 
     const relationshipPromises = {
         [`${elementNamePascalCase}_relationshipType`]: () =>
             select({
-                message: `Relationship type for ${relationshipName}`,
+                message: `Relationship type for ${relName}`,
                 choices: [
                     {
-                        name: `outgoing (${elementName} → ${relationshipName})`,
+                        name: `outgoing (${elementName} → ${relName})`,
                         value: "outgoing",
                     },
                     {
-                        name: `incoming (${relationshipName} → ${elementName})`,
+                        name: `incoming (${relName} → ${elementName})`,
                         value: "incoming",
                     },
                 ],
@@ -96,7 +117,7 @@ export const resolveRelationshipForElement = async (
             }),
         [`${elementNamePascalCase}_relationship`]: () =>
             input({
-                message: `Relationship with ${relationshipName}:`,
+                message: `Relationship with ${relName}:`,
                 default: defaultRelationship,
             }),
         [`${elementNamePascalCase}_technology`]: () =>
@@ -107,16 +128,6 @@ export const resolveRelationshipForElement = async (
     };
 
     return resolveRelationshipPromises(relationshipPromises);
-};
-
-const findSystemContainers = (
-    systemName: string,
-    systems: SoftwareSystem[],
-): SoftwareSystem["containers"] => {
-    const containers =
-        systems.find(({ name }) => name === systemName)?.containers ?? [];
-
-    return containers;
 };
 
 const separator = (
@@ -142,28 +153,43 @@ export async function addRelationshipsToElement(
         defaultRelationshipType = "outgoing",
         defaultTechnology = "Web/HTTP",
         includeContainers,
+        includeComponents,
     }: AddRelationshipOptions = {},
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
 
-    const softwareSystems = workspaceInfo.model?.softwareSystems ?? [];
-    const people = workspaceInfo.model?.people ?? [];
-    const containers = includeContainers
-        ? findSystemContainers(
-              includeContainers,
-              workspaceInfo.model?.softwareSystems,
-          )
-        : [];
+    const elements = getAllWorkspaceElements(workspaceInfo, {
+        includeContainers: !!includeContainers,
+        includeComponents: !!includeComponents,
+        includeDeploymentNodes: false,
+    });
+
+    const softwareSystems = elements.filter((elm) =>
+        elm.tags.includes("System"),
+    );
+    const people = elements.filter((elm) => elm.tags.includes("Person"));
+    const containers = elements.filter(
+        (elm) =>
+            elm.tags.includes("Container") &&
+            elm.systemName === includeContainers,
+    );
+    const components = elements.filter(
+        (elm) =>
+            elm.tags.includes("Component") &&
+            elm.containerName === includeComponents,
+    );
 
     const systemElements = (
         [
+            separator(`Components (${includeComponents})`, components),
+            ...components,
             separator(`Containers (${includeContainers})`, containers),
             ...containers,
             separator("Systems", softwareSystems),
             ...softwareSystems,
             separator("People", people),
             ...people,
-        ] as (SoftwareElement | Separator)[]
+        ] as ((typeof elements)[number] | Separator)[]
     )
         .flat()
         .map((elm) =>
@@ -171,9 +197,13 @@ export async function addRelationshipsToElement(
                 ? elm
                 : {
                       name: `${labelElementByTags(elm.tags)} ${elm.name}`,
-                      value: elm.name,
+                      value: elm.containerName
+                          ? `${elm.containerName}_${elm.name}`
+                          : elm.name,
                   },
         )
+        // TODO: remove separators whose elements are filtered out
+        // (no elements after filterChoices applied)
         .filter(filterChoices);
 
     if (!systemElements.filter((elm) => !(elm instanceof Separator)).length)
@@ -187,7 +217,7 @@ export async function addRelationshipsToElement(
 
     if (!relationshipNames.length) return {};
 
-    const relationshipsMap: Record<string, Relationship> = {};
+    let relationshipsMap: Record<string, Relationship> = {};
 
     for await (const relationshipName of relationshipNames) {
         const relationship = await resolveRelationshipForElement(
@@ -196,12 +226,10 @@ export async function addRelationshipsToElement(
             { defaultRelationship, defaultRelationshipType, defaultTechnology },
         );
 
-        const elementNamePascalCase = pascalCase(
-            removeSpaces(relationshipName),
-        );
-
-        relationshipsMap[elementNamePascalCase] =
-            parse(relationship)[elementNamePascalCase];
+        relationshipsMap = {
+            ...relationshipsMap,
+            ...parse(relationship),
+        };
     }
 
     return relationshipsMap;

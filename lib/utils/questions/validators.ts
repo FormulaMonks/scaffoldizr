@@ -1,7 +1,7 @@
 import { kebabCase, pascalCase } from "change-case";
 import { removeSpaces } from "../handlebars";
 import type { StructurizrWorkspace } from "../workspace";
-import { getAllSystemElements } from "./system";
+import { getAllWorkspaceElements } from "./system";
 
 type Validator<A extends Record<string, unknown> = Record<string, unknown>> = (
     input: string,
@@ -29,12 +29,39 @@ export const validateDuplicatedElements =
     (input: string) => {
         if (!workspaceInfo) return true;
 
-        const systemElements = getAllSystemElements(workspaceInfo, {
+        const systemElements = getAllWorkspaceElements(workspaceInfo, {
             includeDeploymentNodes: true,
+            includeComponents: true,
         }).map((elm) => pascalCase(removeSpaces(elm.name)));
         const elementName = pascalCase(removeSpaces(input));
         if (systemElements.includes(elementName)) {
             return `Element with name "${elementName}" already exists.`;
+        }
+
+        return true;
+    };
+
+export const validateDuplicatedComponentName =
+    (
+        workspaceInfo: StructurizrWorkspace | undefined,
+        containerName: string,
+    ): Validator =>
+    (input: string) => {
+        if (!workspaceInfo) return true;
+
+        const systemComponents = getAllWorkspaceElements(workspaceInfo, {
+            includeContainers: true,
+            includeComponents: true,
+        })
+            .filter((elm) => elm.tags.includes("Component"))
+            .map(
+                (elm) =>
+                    `${pascalCase(removeSpaces(elm.containerName))}_${pascalCase(removeSpaces(elm.name))}`,
+            );
+        const componentName = `${pascalCase(removeSpaces(containerName))}_${pascalCase(removeSpaces(input))}`;
+
+        if (systemComponents.includes(componentName)) {
+            return `Component with name "${componentName}" already exists.`;
         }
 
         return true;

@@ -1,17 +1,19 @@
-import { select } from "@inquirer/prompts";
+import { Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { elementTypeByTags, labelElementByTags } from "../utils/labels";
 import {
     type Relationship,
     addRelationshipsToElement,
+    componentParser,
 } from "../utils/questions/relationships";
-import { getAllSystemElements } from "../utils/questions/system";
+import { getAllWorkspaceElements } from "../utils/questions/system";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type RelationshipAnswers = {
     elementName: string;
     systemName?: string;
+    containerName?: string;
     elementType: string;
     relationships: Record<string, Relationship>;
 };
@@ -24,16 +26,18 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             getWorkspacePath(generator.destPath),
         );
 
-        const systemElements = getAllSystemElements(workspaceInfo, {
+        const systemElements = getAllWorkspaceElements(workspaceInfo, {
             includeContainers: true,
+            includeComponents: true,
             includeDeploymentNodes: false,
         }).map((elm) => ({
             name: `${labelElementByTags(elm.tags)} ${
                 elm.systemName ? `${elm.systemName}/` : ""
-            }${elm.name}`,
+            }${elm.containerName ? `${elm.containerName}/` : ""}${elm.name}`,
             value: {
                 elementName: elm.name,
                 systemName: elm.systemName,
+                containerName: elm.containerName,
                 elementType: elementTypeByTags(elm.tags),
             },
         }));
@@ -50,6 +54,36 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
                 includeContainers: element.systemName
                     ? element.systemName
                     : undefined,
+                includeComponents: element.containerName
+                    ? element.containerName
+                    : undefined,
+                filterChoices: (elm) => {
+                    if (elm instanceof Separator) return true;
+
+                    // Component
+                    if (element.containerName) {
+                        return (
+                            elm.value !==
+                                `${element.containerName}_${element.elementName}` &&
+                            elm.value !== element.containerName &&
+                            elm.value !== element.systemName
+                        );
+                    }
+
+                    // Container
+                    if (element.systemName) {
+                        // return only those whose value is neither system name nor element name
+                        return (
+                            elm.value !== element.systemName &&
+                            elm.value !== element.elementName
+                        );
+                    }
+
+                    // All other cases
+                    return element.elementName !== elm.value;
+                },
+
+                parse: componentParser,
             },
         );
 
@@ -66,7 +100,8 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
     },
     actions: [
         {
-            when: (answers) => answers.elementType !== "Container",
+            when: (answers) =>
+                !["Container", "Component"].includes(answers.elementType),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No system relationships",
@@ -76,15 +111,27 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
-            when: (answers) => Boolean(answers.systemName),
+            when: (answers) =>
+                Boolean(answers.systemName && !answers.containerName),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No container relationships",
             type: "append",
             createIfNotExists: true,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            pattern: /\n.* -> .*\n/,
+            pattern: /[\s\S]*\n/,
             templateFile: "templates/relationships/multiple.hbs",
+        } as AppendAction<RelationshipAnswers>,
+        {
+            when: (answers) =>
+                Boolean(answers.systemName && answers.containerName),
+            skip: (answers) =>
+                Object.keys(answers.relationships).length <= 0 &&
+                "No component relationships",
+            type: "append",
+            pattern: /[\s\S]*\n/,
+            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<RelationshipAnswers>,
     ],
 };
