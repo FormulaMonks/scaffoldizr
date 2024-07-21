@@ -1,6 +1,7 @@
 import { access } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
-import { $, file, write } from "bun";
+import { chmod } from "node:fs/promises";
+import { file, write } from "bun";
 import chalk from "chalk";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
@@ -70,7 +71,8 @@ export async function append<A extends Record<string, unknown>>(
         );
 
         await write(targetFilePath, template);
-        await $`chmod ${filePermissions} ${join(rootPath, compiledOpts.path)}`;
+        await chmod(join(rootPath, compiledOpts.path), filePermissions);
+        // await $`chmod ${filePermissions} ${join(rootPath, compiledOpts.path)}`;
 
         console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 
