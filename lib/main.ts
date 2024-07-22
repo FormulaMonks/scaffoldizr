@@ -50,6 +50,7 @@ const exportWorkspace = async (path: string) => {
     const workspacePath = getWorkspacePath(path);
     if (!workspacePath) return;
 
+    // TODO: Make it compatible for Windows
     return $`structurizr-cli export -w ${workspacePath}/workspace.dsl -f json -o ${workspacePath} || true`;
 };
 

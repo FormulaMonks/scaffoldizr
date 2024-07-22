@@ -94,24 +94,35 @@ jobs:
           - os: macos
             name: darwin-x64
             target: x86_64-apple-darwin
-            runs-on: macos-14
+            runs-on: macos-latest
           - os: macos
             name: darwin-arm64
             target: aarch64-apple-darwin
-            runs-on: macos-14
+            runs-on: macos-latest
+          - os: windows
+            name: win-x64
+            target: x86_64-ms-windows
+            runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ contains(github.ref, '-beta') && 'develop' || (startsWith(github.ref, 'refs/tags/') && 'main' || github.ref) }}
       - name: Mise Tools install
         uses: jdx/mise-action@v2
+        if: ${{ matrix.os != 'windows' }}
         with:
           version: 2024.7.3
           install: true
           cache: true
           experimental: true
       - run: mise use bun@1.1.20
-      - run: bun install
+        if: ${{ matrix.os != 'windows' }}
+      - name: Choco Tools Install
+        run: |
+          choco install jq --version 1.7.1
+          choco install bun --version 1.1.20
+        if: ${{ matrix.os == 'windows' }}
+      - run: bun install --ignore-scripts
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json
@@ -119,7 +130,7 @@ jobs:
           bun build ./lib/main.ts --compile --outfile ./dist/${{ matrix.name }}/scfz
           ./dist/${{ matrix.name }}/scfz --version
           cd ./dist
-          tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}/
+          tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}
           cd ..
           # TODO: Checksums
       - uses: actions/upload-artifact@v4
