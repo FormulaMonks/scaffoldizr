@@ -122,7 +122,7 @@ jobs:
           choco install jq --version 1.7.1
           choco install bun --version 1.1.20
         if: ${{ matrix.os == 'windows' }}
-      - run: bun install
+      - run: bun install --ignore-scripts
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json
