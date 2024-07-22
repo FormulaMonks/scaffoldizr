@@ -17,6 +17,7 @@ get_os() {
 	elif [ "$os" = Linux ]; then
 		echo "linux"
 	else
+		# TODO: Add support for Windows to install
 		error "unsupported OS: $os"
 	fi
 }
@@ -56,7 +57,7 @@ download_file() {
 
 install_tool() {
 	# download the tarball
-	version="0.6.0"
+	version="0.6.3"
     repo="FormulaMonks/scaffoldizr"
 	os="$(get_os)"
 	arch="$(get_arch)"
