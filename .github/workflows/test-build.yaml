@@ -130,7 +130,7 @@ jobs:
           bun build ./lib/main.ts --compile --outfile ./dist/${{ matrix.name }}/scfz
           ./dist/${{ matrix.name }}/scfz --version
           cd ./dist
-          tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}/
+          tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}
           cd ..
           # TODO: Checksums
       - uses: actions/upload-artifact@v4
