@@ -32,8 +32,13 @@ for platform in "${platforms[@]}"; do
   mv "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$platform.tar.gz" "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform.tar.gz"
   cp "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform.tar.gz" "$RELEASE_DIR/scfz-latest-$platform.tar.gz"
   tar -xvzf "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform.tar.gz" -C "$BIN_DIR"
-  cp -v "dist/bin/$platform/scfz*" "$RELEASE_DIR/scfz-latest-$platform"
-  cp -v "dist/bin/$platform/scfz*" "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform"
+  cp -v "dist/bin/$platform/scfz" "$RELEASE_DIR/scfz-latest-$platform"
+  cp -v "dist/bin/$platform/scfz" "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform"
+
+  if [ -f "dist/bin/$platform/scfz.exe" ]; then
+    cp -v "dist/bin/$platform/scfz.exe" "$RELEASE_DIR/scfz-latest-$platform.exe"
+    cp -v "dist/bin/$platform/scfz.exe" "$RELEASE_DIR/v$SCFZ_VERSION/scfz-$SCFZ_VERSION-$platform.exe"
+  fi
 done
 
 # Check folder contents and files
