@@ -17,6 +17,7 @@ get_os() {
 	elif [ "$os" = Linux ]; then
 		echo "linux"
 	else
+		# TODO: Add support for Windows to install
 		error "unsupported OS: $os"
 	fi
 }
