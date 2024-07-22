@@ -109,14 +109,14 @@ jobs:
           ref: ${{ contains(github.ref, '-beta') && 'develop' || (startsWith(github.ref, 'refs/tags/') && 'main' || github.ref) }}
       - name: Mise Tools install
         uses: jdx/mise-action@v2
-        if: ${{ matrix.name != 'windows' }}
+        if: ${{ matrix.os != 'windows' }}
         with:
           version: 2024.7.3
           install: true
           cache: true
           experimental: true
       - run: mise use bun@1.1.20
-        if: ${{ matrix.name != 'windows' }}
+        if: ${{ matrix.os != 'windows' }}
       - name: Choco Tools Install
         run: |
           choco install jq --version 1.7.1
