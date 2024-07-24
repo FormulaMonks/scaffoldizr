@@ -53,7 +53,7 @@ export const validateDuplicatedComponentName =
             includeContainers: true,
             includeComponents: true,
         })
-            .filter((elm) => elm.tags.includes("Component"))
+            .filter((elm) => elm.tags?.includes("Component"))
             .map(
                 (elm) =>
                     `${pascalCase(removeSpaces(elm.containerName))}_${pascalCase(removeSpaces(elm.name))}`,

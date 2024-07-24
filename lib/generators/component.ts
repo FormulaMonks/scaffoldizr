@@ -41,7 +41,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
         const containers = getAllWorkspaceElements(workspaceInfo, {
             includeContainers: true,
             includeComponents: true,
-        }).filter((elm) => elm.tags.includes("Container"));
+        }).filter((elm) => elm.tags?.includes("Container"));
 
         if (!containers.length) {
             console.log(

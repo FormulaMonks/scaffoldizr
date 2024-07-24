@@ -36,7 +36,7 @@ export function getAllWorkspaceElements(
         .flat()
         .filter((elm) =>
             !includeDeploymentNodes
-                ? !elm.tags.split(",").includes("Deployment Node")
+                ? !elm.tags?.split(",").includes("Deployment Node")
                 : true,
         )
         .flatMap((elm) => {

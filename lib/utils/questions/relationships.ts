@@ -165,17 +165,17 @@ export async function addRelationshipsToElement(
     });
 
     const softwareSystems = elements.filter((elm) =>
-        elm.tags.includes("System"),
+        elm.tags?.includes("System"),
     );
-    const people = elements.filter((elm) => elm.tags.includes("Person"));
+    const people = elements.filter((elm) => elm.tags?.includes("Person"));
     const containers = elements.filter(
         (elm) =>
-            elm.tags.includes("Container") &&
+            elm.tags?.includes("Container") &&
             elm.systemName === includeContainers,
     );
     const components = elements.filter(
         (elm) =>
-            elm.tags.includes("Component") &&
+            elm.tags?.includes("Component") &&
             elm.containerName === includeComponents,
     );
 
