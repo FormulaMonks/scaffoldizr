@@ -1,3 +1,2 @@
-#!/usr/bin/env sh
 
 bun branch-name-lint package.json
