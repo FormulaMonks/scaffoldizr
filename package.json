@@ -25,7 +25,7 @@
     "devDependencies": {
         "@biomejs/biome": "^1.8.3",
         "@commitlint/cli": "^19.4.0",
-        "@commitlint/config-conventional": "^19.2.2",
+        "@commitlint/config-conventional": "^19.4.1",
         "@inquirer/type": "^1.5.2",
         "@types/bun": "^1.1.8",
         "@types/inquirer": "^9.0.7",
