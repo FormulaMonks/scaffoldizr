@@ -43,8 +43,7 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr-javascript",
-  "lastModifiedDate" : "2024-05-06T21:18:50Z",
+  "lastModifiedDate" : "2024-09-23T21:48:42Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -59,7 +58,7 @@
         "destinationId" : "1",
         "id" : "7",
         "properties" : {
-          "structurizr.dsl.identifier" : "eb7d1b40-9293-44b6-a662-e58bef5abb01"
+          "structurizr.dsl.identifier" : "f5ac81ed-9727-4b6f-9694-b2d23430fca1"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -69,7 +68,7 @@
         "destinationId" : "4",
         "id" : "10",
         "properties" : {
-          "structurizr.dsl.identifier" : "94feb38d-3dba-45c2-a126-fa48c808d4a4"
+          "structurizr.dsl.identifier" : "9593bd15-f3b5-4136-86fe-690975d6ea69"
         },
         "sourceId" : "5",
         "tags" : "Relationship",
@@ -108,7 +107,7 @@
         "destinationId" : "1",
         "id" : "9",
         "properties" : {
-          "structurizr.dsl.identifier" : "d27441a0-7130-4660-8d26-1941098681ba"
+          "structurizr.dsl.identifier" : "7f8adc8c-5b6f-4091-bb85-d04a6b88b51a"
         },
         "sourceId" : "2",
         "tags" : "Relationship",
@@ -129,7 +128,7 @@
           "destinationId" : "2",
           "id" : "12",
           "properties" : {
-            "structurizr.dsl.identifier" : "91e8dc86-99b5-4971-a292-1ac802de1251"
+            "structurizr.dsl.identifier" : "32293d82-2ae2-4ae2-a498-c717254d7728"
           },
           "sourceId" : "4",
           "tags" : "Relationship",
@@ -151,7 +150,7 @@
         "destinationId" : "1",
         "id" : "6",
         "properties" : {
-          "structurizr.dsl.identifier" : "0ddcc401-1df0-4a9d-b323-201d82f759f2"
+          "structurizr.dsl.identifier" : "9336e4df-8c87-4fb5-b09e-72d8af50f789"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -161,7 +160,7 @@
         "destinationId" : "2",
         "id" : "8",
         "properties" : {
-          "structurizr.dsl.identifier" : "556dbc0b-610f-484b-8a8a-60802709d6eb"
+          "structurizr.dsl.identifier" : "5320576c-44ae-4edf-9a4a-531591a752c2"
         },
         "sourceId" : "3",
         "tags" : "Relationship",
@@ -172,20 +171,19 @@
   },
   "name" : "Scaffoldizr",
   "properties" : {
-    "structurizr.dsl" : "d29ya3NwYWNlICJTY2FmZm9sZGl6ciIgewogICAgZGVzY3JpcHRpb24gIk9waW5pb25hdGVkIFNjYWZmb2xkaW5nIFRvb2wgZm9yIFN0cnVjdHVyaXpyIERTTCIKCiAgICAhYWRycyBkZWNpc2lvbnMKICAgICFkb2NzIGRvY3MKCiAgICBtb2RlbCB7CiAgICAgICAgIyBDb25zdGFudHMKICAgICAgICAhY29uc3QgQ0xJICJDTEkvVGVybWluYWwiCgogICAgICAgIFN0cnVjdHVyaXpyTGl0ZSA9IHNvZnR3YXJlU3lzdGVtICJTdHJ1Y3R1cml6ci9MaXRlIiAiTG9jYWwgaW5zdGFuY2UgZm9yIFN0cnVjdHVyaXpyIGRpYWdyYW0gdmlzdWFsaXphdGlvbi4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwiCiAgICAgICAgfQogICAgICAgIAogICAgICAgIEZpbGVTeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiRmlsZSBTeXN0ZW0iICJBcmNoaXRlY3QncyBsb2NhbCBmaWxlIHN5c3RlbSIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCIKICAgICAgICB9CiAgICAgICAgU2NhZmZvbGRpenIgPSBzb2Z0d2FyZVN5c3RlbSAiU2NhZmZvbGRpenIiIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlNjYWZmb2xkaW5nIHRvb2wiCiAgICAgICAgCiAgICAgICAgICAgIFNjZnogPSBjb250YWluZXIgInNjZnoiICJDb21tYW5kIExpbmUgSW50ZXJmYWNlIChiaW5hcnkpIiAiVHlwZVNjcmlwdC9CdW4gKGNvbXBpbGVkKSIKICAgICAgICAKICAgICAgICAgICAgdGFncyAiU3lzdGVtIgogICAgICAgIH0KICAgICAgICBBcmNoaXRlY3QgPSBwZXJzb24gIkFyY2hpdGVjdCIgIkFyY2hpdGVjdCIKCiAgICAgICAgIyBSZWxhdGlvbnNoaXBzCiAgICAgICAgU2NhZmZvbGRpenIgLT4gU3RydWN0dXJpenJMaXRlICJDcmVhdGVzIHNjYWZmb2xkaW5nIHRvIHByZXZpZXciICIke0NMSX0iCiAgICAgICAgQXJjaGl0ZWN0IC0+IFN0cnVjdHVyaXpyTGl0ZSAiUHJldmlld3MgRFNMIGRpYWdyYW1zIiAiV2ViL0hUVFAiCiAgICAgICAgCiAgICAgICAgU2NhZmZvbGRpenIgLT4gRmlsZVN5c3RlbSAiT3V0cHV0cyBnZW5lcmF0ZWQgc2NhZmZvbGRpbmciICIke0NMSX0iCiAgICAgICAgRmlsZVN5c3RlbSAtPiBTdHJ1Y3R1cml6ckxpdGUgIlVzZXMgRFNMIGZpbGVzIHRvIGdlbmVyYXRlIHdvcmtzcGFjZS5qc29uIGZpbGUiICJTdHJ1Y3R1cml6ci9MaXRlIEZpbGUgU3lzdGVtIgogICAgICAgIAogICAgICAgIEFyY2hpdGVjdCAtPiBTY2Z6ICJTZW5kIGNvbW1hbmRzIHRvIiAiJHtDTEl9IgogICAgICAgIAogICAgICAgIFNjZnogLT4gRmlsZVN5c3RlbSAiT3V0cHV0cyBnZW5lcmF0ZWQgc2NhZmZvbGRpbmciICIke0NMSX0iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHRoZW1lcyAiaHR0cHM6Ly9zdHJ1Y3R1cml6ci50ZXN0LnplbW9nYS1jbGllbnQuY29tL3NoYXJlLzEvdGhlbWUiCiAgICAgICAgIWNvbnN0IEFVVEhPUiAiQXV0aG9yOiBGb3JtdWxhLm1vbmtzIDxhbmRyZXMuem9ycm9AbWVkaWFtb25rcy5jb20+IgoKICAgICAgICBzeXN0ZW1Db250ZXh0IFNjYWZmb2xkaXpyICJTY2FmZm9sZGl6ciIgewogICAgICAgICAgICBkZXNjcmlwdGlvbiAiU2NhZmZvbGRpbmcgdG9vbC4gJHtBVVRIT1J9IiAKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQogICAgICAgIAogICAgICAgIGNvbnRhaW5lciBTY2FmZm9sZGl6ciB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJDb21tYW5kIExpbmUgSW50ZXJmYWNlIChiaW5hcnkpLiAke0FVVEhPUn0iIAogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KICAgIH0KfQo="
+    "structurizr.dsl" : "d29ya3NwYWNlICJTY2FmZm9sZGl6ciIgewogICAgZGVzY3JpcHRpb24gIk9waW5pb25hdGVkIFNjYWZmb2xkaW5nIFRvb2wgZm9yIFN0cnVjdHVyaXpyIERTTCIKCiAgICAhYWRycyBkZWNpc2lvbnMKICAgICFkb2NzIGRvY3MKCiAgICBtb2RlbCB7CiAgICAgICAgIyBDb25zdGFudHMKICAgICAgICAhY29uc3RhbnQgQ0xJICJDTEkvVGVybWluYWwiCgogICAgICAgIFN0cnVjdHVyaXpyTGl0ZSA9IHNvZnR3YXJlU3lzdGVtICJTdHJ1Y3R1cml6ci9MaXRlIiAiTG9jYWwgaW5zdGFuY2UgZm9yIFN0cnVjdHVyaXpyIGRpYWdyYW0gdmlzdWFsaXphdGlvbi4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwiCiAgICAgICAgfQogICAgICAgIAogICAgICAgIEZpbGVTeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiRmlsZSBTeXN0ZW0iICJBcmNoaXRlY3QncyBsb2NhbCBmaWxlIHN5c3RlbSIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCIKICAgICAgICB9CiAgICAgICAgU2NhZmZvbGRpenIgPSBzb2Z0d2FyZVN5c3RlbSAiU2NhZmZvbGRpenIiIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlNjYWZmb2xkaW5nIHRvb2wiCiAgICAgICAgCiAgICAgICAgICAgIFNjZnogPSBjb250YWluZXIgInNjZnoiICJDb21tYW5kIExpbmUgSW50ZXJmYWNlIChiaW5hcnkpIiAiVHlwZVNjcmlwdC9CdW4gKGNvbXBpbGVkKSIKICAgICAgICAKICAgICAgICAgICAgdGFncyAiU3lzdGVtIgogICAgICAgIH0KICAgICAgICBBcmNoaXRlY3QgPSBwZXJzb24gIkFyY2hpdGVjdCIgIkFyY2hpdGVjdCIKICAgICAgICAjICFpbmNsdWRlIGVudmlyb25tZW50cyAoRW5hYmxlIHdoZW4gZW52aXJvbm1lbnRzIHJlYWR5KQoKICAgICAgICAjIFJlbGF0aW9uc2hpcHMKICAgICAgICBTY2FmZm9sZGl6ciAtPiBTdHJ1Y3R1cml6ckxpdGUgIkNyZWF0ZXMgc2NhZmZvbGRpbmcgdG8gcHJldmlldyIgIiR7Q0xJfSIKICAgICAgICBBcmNoaXRlY3QgLT4gU3RydWN0dXJpenJMaXRlICJQcmV2aWV3cyBEU0wgZGlhZ3JhbXMiICJXZWIvSFRUUCIKICAgICAgICAKICAgICAgICBTY2FmZm9sZGl6ciAtPiBGaWxlU3lzdGVtICJPdXRwdXRzIGdlbmVyYXRlZCBzY2FmZm9sZGluZyIgIiR7Q0xJfSIKICAgICAgICBGaWxlU3lzdGVtIC0+IFN0cnVjdHVyaXpyTGl0ZSAiVXNlcyBEU0wgZmlsZXMgdG8gZ2VuZXJhdGUgd29ya3NwYWNlLmpzb24gZmlsZSIgIlN0cnVjdHVyaXpyL0xpdGUgRmlsZSBTeXN0ZW0iCiAgICAgICAgCiAgICAgICAgQXJjaGl0ZWN0IC0+IFNjZnogIlNlbmQgY29tbWFuZHMgdG8iICIke0NMSX0iCiAgICAgICAgCiAgICAgICAgU2NmeiAtPiBGaWxlU3lzdGVtICJPdXRwdXRzIGdlbmVyYXRlZCBzY2FmZm9sZGluZyIgIiR7Q0xJfSIKICAgIH0KCiAgICB2aWV3cyB7CiAgICAgICAgdGhlbWVzICJodHRwczovL3N0cnVjdHVyaXpyLnRlc3QuemVtb2dhLWNsaWVudC5jb20vc2hhcmUvMS90aGVtZSIKICAgICAgICAhY29uc3RhbnQgQVVUSE9SICJBdXRob3I6IEZvcm11bGEubW9ua3MgPGFuZHJlcy56b3Jyb0BtZWRpYW1vbmtzLmNvbT4iCgogICAgICAgIHN5c3RlbUNvbnRleHQgU2NhZmZvbGRpenIgIlNjYWZmb2xkaXpyIiB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJTY2FmZm9sZGluZyB0b29sLiAke0FVVEhPUn0iIAogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CiAgICAgICAgCiAgICAgICAgY29udGFpbmVyIFNjYWZmb2xkaXpyIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIkNvbW1hbmQgTGluZSBJbnRlcmZhY2UgKGJpbmFyeSkuICR7QVVUSE9SfSIgCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQogICAgfQp9Cg=="
   },
   "views" : {
     "configuration" : {
       "branding" : { },
       "lastSavedView" : "Scaffoldizr",
-      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
       "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
+        "applied" : false,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
@@ -194,22 +192,18 @@
         "vertices" : false
       },
       "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
-      "dimensions" : {
-        "height" : 841,
-        "width" : 2300
-      },
       "elements" : [ {
         "id" : "2",
-        "x" : 1649,
-        "y" : 249
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "4",
-        "x" : 899,
-        "y" : 249
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "5",
-        "x" : 199,
-        "y" : 199
+        "x" : 0,
+        "y" : 0
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "generatedKey" : true,
