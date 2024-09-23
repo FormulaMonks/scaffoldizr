@@ -7,5 +7,15 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports.biome": "explicit"
     },
-    "cSpell.words": ["scaffoldizr", "scfz", "structurizr"]
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "cSpell.words": ["scaffoldizr", "scfz", "structurizr"],
+    "c4.languageserver.java": "/Users/andreszorro/.local/share/mise/installs/java/17/bin/java"
 }
