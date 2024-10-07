@@ -23,7 +23,7 @@
         "yargs": "^17.7.2"
     },
     "devDependencies": {
-        "@biomejs/biome": "^1.9.2",
+        "@biomejs/biome": "^1.9.3",
         "@commitlint/cli": "^19.5.0",
         "@commitlint/config-conventional": "^19.4.1",
         "@inquirer/type": "^1.5.5",
