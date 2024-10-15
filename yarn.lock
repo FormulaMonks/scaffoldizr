@@ -742,10 +742,10 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-czg@^1.9.4:
-  version "1.9.4"
-  resolved "https://registry.npmjs.org/czg/-/czg-1.9.4.tgz"
-  integrity sha512-x9V/FXA3XUmK6PMvP2WC3WPTA4xAUCcjFcL6HxJSLUAn4gKshMHWLkIfWSCsEqmenn5IIX0/L7NuBJ7/luDqCA==
+czg@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/czg/-/czg-1.10.1.tgz#81b2d1b3e0da8b604f3f8f37331d84f64e3029b3"
+  integrity sha512-melR80u+GA4EWNexwiWkbAPkFkxBqtLMQU4ePmnkF4N9F//8lB9mo1i0PmxphTamhn0N6kRAmnrkFrkRteNW8g==
 
 dargs@^8.0.0:
   version "8.1.0"
