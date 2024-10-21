@@ -27,7 +27,7 @@
         "@commitlint/cli": "^19.5.0",
         "@commitlint/config-conventional": "^19.4.1",
         "@inquirer/type": "^1.5.5",
-        "@types/bun": "^1.1.10",
+        "@types/bun": "^1.1.11",
         "@types/inquirer": "^9.0.7",
         "@types/yargs": "^17.0.33",
         "branch-name-lint": "^2.1.1",

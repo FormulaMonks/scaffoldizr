@@ -378,12 +378,12 @@
   dependencies:
     mute-stream "^1.0.0"
 
-"@types/bun@^1.1.10":
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.10.tgz#beba9dd5e5890928589889ad7166b94bb4673a31"
-  integrity sha512-76KYVSwrHwr9zsnk6oLXOGs9KvyBg3U066GLO4rk6JZk1ypEPGCUDZ5yOiESyIHWs9cx9iC8r01utYN32XdmgA==
+"@types/bun@^1.1.11":
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.11.tgz#21477df74f9034e2a73fbff6365e3aa28d1ed95f"
+  integrity sha512-0N7D/H/8sbf9JMkaG5F3+I/cB4TlhKTkO9EskEWP8XDr8aVcDe4EywSnU4cnyZy6tar1dq70NeFNkqMEUigthw==
   dependencies:
-    bun-types "1.1.29"
+    bun-types "1.1.30"
 
 "@types/conventional-commits-parser@^5.0.0":
   version "5.0.0"
@@ -565,10 +565,10 @@ branch-name-lint@^2.1.1:
     find-up "^5.0.0"
     meow "^9.0.0"
 
-bun-types@1.1.29:
-  version "1.1.29"
-  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.29.tgz#52ab2f4905adafc6a625b715c45be1e25b150609"
-  integrity sha512-En3/TzSPMPyl5UlUB1MHzHpcrZDakTm7mS203eLoX1fBoEa3PW+aSS8GAqVJ7Is/m34Z5ogL+ECniLY0uDaCPw==
+bun-types@1.1.30:
+  version "1.1.30"
+  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.30.tgz#45ca22303aa1ff02b93e45c1d6ba43617497ed43"
+  integrity sha512-mGh7NLisOXskBU62DxLS+/nwmLlCYHYAkCzdo4DZ9+fzrpP41hAdOqaN4DO6tQfenHb4pYb0/shw29k4/6I2yQ==
   dependencies:
     "@types/node" "~20.12.8"
     "@types/ws" "~8.5.10"
