@@ -1,5 +1,4 @@
 import { describe, expect, mock, test } from "bun:test";
-import { CancelablePromise } from "@inquirer/type";
 import templates from "../templates/bundle";
 import type { AddAction } from "./actions";
 import type { Generator } from "./generator";
@@ -9,8 +8,7 @@ describe("generator", () => {
     describe("createGenerator", () => {
         test("should create generator and execute actions", async () => {
             const prompt = mock(
-                () =>
-                    new CancelablePromise<string>((resolve) => resolve("123")),
+                () => new Promise<string>((resolve) => resolve("123")),
             );
             const execute = mock();
             const questions = {
@@ -42,8 +40,7 @@ describe("generator", () => {
 
         test("should create generator from function questions", async () => {
             const prompt = mock(
-                () =>
-                    new CancelablePromise<string>((resolve) => resolve("123")),
+                () => new Promise<string>((resolve) => resolve("123")),
             );
             const execute = mock();
             const questions = async () => {
