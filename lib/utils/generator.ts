@@ -1,4 +1,3 @@
-import type { CancelablePromise } from "@inquirer/type";
 import chalk from "chalk";
 import type {
     AddAction,
@@ -12,7 +11,7 @@ import { ActionTypes, add, addMany, append } from "./actions";
  * Added support for latest inquirer API
  */
 export type QuestionsObject<T = string | boolean> = {
-    [key: string]: () => CancelablePromise<T>;
+    [key: string]: () => Promise<T>;
 };
 
 export type GeneratorDefinition<

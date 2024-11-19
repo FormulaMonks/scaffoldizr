@@ -1,7 +1,6 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { input, select } from "@inquirer/prompts";
-import { CancelablePromise } from "@inquirer/type";
 import { kebabCase } from "change-case";
 import { getWorkspacePath } from "../workspace";
 import type { StructurizrWorkspace } from "../workspace";
@@ -79,10 +78,8 @@ export function resolveSystemQuestion(
     options: { message: string } = {
         message: "Relates to system:",
     },
-): CancelablePromise<string> {
-    const voidPromise: CancelablePromise<string> = new CancelablePromise(
-        (resolve) => resolve(""),
-    );
+): Promise<string> {
+    const voidPromise: Promise<string> = new Promise((resolve) => resolve(""));
     const workspaceInfo = typeof workspace !== "string" && workspace;
 
     if (workspaceInfo) {
