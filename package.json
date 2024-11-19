@@ -38,7 +38,7 @@
         "lint-staged": "^15.2.10"
     },
     "overrides": {
-        "cross-spawn": "7.0.3"
+        "cross-spawn": "7.0.6"
     },
     "branchNameLinter": {
         "prefixes": ["feature", "bugfix", "hotfix", "release", "dependabot"],
