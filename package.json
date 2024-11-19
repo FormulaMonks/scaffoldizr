@@ -8,14 +8,14 @@
     },
     "scripts": {
         "build:dev": "bun build ./lib/main.ts --compile --watch --outfile ./dist/scfz",
-        "test:dev": "bun test --watch --coverage",
+        "test:dev": "bun test --watch",
         "test": "bun test",
         "test:ci": "bun test --coverage",
         "prepare": "husky"
     },
     "trustedDependencies": [".", "@biomejs/biome"],
     "dependencies": {
-        "@inquirer/prompts": "^6.0.1",
+        "@inquirer/prompts": "^7.0.0",
         "chalk": "^5.3.0",
         "change-case": "^5.4.4",
         "handlebars": "^4.7.8",
@@ -26,6 +26,7 @@
         "@biomejs/biome": "^1.9.3",
         "@commitlint/cli": "^19.5.0",
         "@commitlint/config-conventional": "^19.4.1",
+        "@inquirer/testing": "^2.1.37",
         "@inquirer/type": "^1.5.5",
         "@types/bun": "^1.1.10",
         "@types/inquirer": "^9.0.7",
