@@ -10,7 +10,7 @@
         "build:dev": "bun build ./lib/main.ts --compile --watch --outfile ./dist/scfz",
         "test:dev": "bun test --watch",
         "test": "bun test",
-        "test:ci": "bun test -t 'unit:' --coverage",
+        "test:ci": "bun test --coverage",
         "test:e2e:smoke": "bun --config=./e2e/e2e.toml test -t '@smoke'",
         "test:e2e": "bun --config=./e2e/e2e.toml test",
         "prepare": "husky"
