@@ -76,10 +76,9 @@ jobs:
       - name: Download Structurizr CLI
         if: steps.structurizr-cli-cache.outputs.cache-hit != 'true'
         run: |
-          cd dist/structurizr-cli
+          mkdir -p dist/structurizr-cli-bin
           wget https://github.com/structurizr/cli/releases/download/${{ env.STRUCTURIZR_CLI_VERSION }}/structurizr-cli.zip
-          unzip ./structurizr-cli.zip -d ../structurizr-cli-bin/
-          cd ../..
+          unzip ./structurizr-cli.zip -d dist/structurizr-cli-bin/
           ls -la dist/structurizr-cli-bin/ 
       - name: E2E Test (Smoke)
         if: ${{ inputs.smoke }}
