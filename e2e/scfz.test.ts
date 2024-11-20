@@ -11,7 +11,7 @@ const keypress = {
     SPACE: "\x20",
 };
 
-const INPUT_TIMEOUT = 200;
+const INPUT_TIMEOUT = 400;
 
 const loop = (
     process: Subprocess<"pipe", "pipe", "inherit">,
