@@ -66,7 +66,7 @@ export function getAllWorkspaceElements(
                 ] as WorkspaceElement[];
             }
 
-            if (!elm.description) return undefined;
+            if (!elm.id) return undefined;
 
             return elm;
         })
