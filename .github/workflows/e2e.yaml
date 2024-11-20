@@ -103,22 +103,22 @@ jobs:
             Write-Error "An error occurred: $_"
           }
       - name: E2E Test (Smoke)
-        if: inputs.smoke && matrix.os != 'windows'
+        if: ${{ inputs.smoke && matrix.os != 'windows' }}
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
           bun test:e2e:smoke
       - name: E2E Test (Full)
-        if: !inputs.smoke && matrix.os != 'windows'
+        if: ${{ !inputs.smoke && matrix.os != 'windows' }}
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
           bun test:e2e
       - name: E2E Test (Smoke) (Windows)
-        if: inputs.smoke && matrix.os == 'windows'
+        if: ${{ inputs.smoke && matrix.os == 'windows' }}
         run: |
           $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
           bun test:e2e:smoke
       - name: E2E Test (Full) (Windows)
-        if: !inputs.smoke && matrix.os == 'windows'
+        if: ${{ !inputs.smoke && matrix.os == 'windows' }}
         run: |
           $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
           bun test:e2e
