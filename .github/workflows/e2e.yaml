@@ -73,7 +73,7 @@ jobs:
         run: |
           try {
             New-Item -ItemType Directory -Force -Path ./dist
-            Expand-Archive -Path scfz-*.tar.gz -DestinationPath ./dist/
+            tar -xvf scfz-*.tar.gz -C ./dist/
             Move-Item -Path ./dist/*/* -Destination ./dist/
           } catch {
             Write-Error "An error occurred: $_"
