@@ -10,6 +10,10 @@ jobs:
     uses: ./.github/workflows/test-build.yaml
     permissions:
       contents: write
+  e2e:
+    uses: ./.github/workflows/e2e.yaml
+    with:
+      smoke: false
   release:
     needs: test-build
     runs-on: ubuntu-latest

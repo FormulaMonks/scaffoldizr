@@ -2,17 +2,10 @@ name: Test and build
 
 on:
   workflow_call:
-  push:
-    branches:
-      - develop
-      - main
-  pull_request:
-    branches:
-      - develop
-      - main
 
 jobs:
   test:
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

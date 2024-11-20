@@ -1,0 +1,97 @@
+# This workflow requires artifacts to be created and available for download.
+
+name: E2E Test
+
+on:
+  workflow_call:
+    inputs:
+      smoke:
+        type: boolean
+        required: true
+        default: true
+        
+jobs:
+  e2e:
+    name: build-${{matrix.name}}
+    runs-on: ${{matrix.runs-on}}
+    env:
+      STRUCTURIZR_CLI_VERSION: v2024.11.04 
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: ubuntu
+            name: linux-x64
+            target: x86_64-unknown-linux-gnu
+            runs-on: ubuntu-latest
+          - os: ubuntu
+            name: linux-arm64
+            target: aarch64-unknown-linux-gnu
+            runs-on: ubuntu-latest
+          - os: macos
+            name: darwin-x64
+            target: x86_64-apple-darwin
+            runs-on: macos-latest
+          - os: macos
+            name: darwin-arm64
+            target: aarch64-apple-darwin
+            runs-on: macos-latest
+          - os: windows
+            name: win-x64
+            target: x86_64-ms-windows
+            runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mise Tools install
+        uses: jdx/mise-action@v2
+        if: ${{ matrix.os != 'windows' }}
+        with:
+          version: 2024.7.3
+          install: true
+          cache: true
+          experimental: true
+      - run: mise use bun@1.1.20
+        if: ${{ matrix.os != 'windows' }}
+      - name: Choco Tools Install
+        run: |
+          choco install jq --version 1.7.1
+          choco install bun --version 1.1.20
+        if: ${{ matrix.os == 'windows' }}
+      - run: bun install --ignore-scripts
+      - name: Download created artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tarball-${{ matrix.target }}
+      - name: Extract tarball
+        run: |
+          mkdir -p ./dist
+          tar -xvf scfz-*.tar.gz -C ./dist/
+          mv ./dist/*/* ./dist/
+      - name: Cache Structurizr CLI
+        id: structurizr-cli-cache
+        uses: actions/cache@v4
+        with:
+          path: dist/structurizr-cli-bin
+          key: ${{ matrix.os }}-structurizr-cli-${{ env.STRUCTURIZR_CLI_VERSION }}
+      - name: Compile Structurizr CLI from source
+        if: steps.structurizr-cli-cache.outputs.cache-hit != 'true'
+        run: |
+          java -version
+          git clone -b ${{ env.STRUCTURIZR_CLI_VERSION }} --single-branch https://github.com/structurizr/cli.git dist/structurizr-cli
+          cd dist/structurizr-cli
+          ./gradlew
+          unzip build/distributions/structurizr-cli.zip -d ../structurizr-cli-bin/
+          cd ../..
+          ls -la dist/structurizr-cli-bin/ 
+      - name: E2E Test (Smoke)
+        if: ${{ inputs.smoke }}
+        run: |
+          export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
+          $STRUCTURIZR_CLI_PATH help
+          bun test:e2e:smoke
+      - name: E2E Test (Full)
+        if: ${{ !inputs.smoke }}
+        run: |
+          export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
+          $STRUCTURIZR_CLI_PATH help
+          bun test:e2e
