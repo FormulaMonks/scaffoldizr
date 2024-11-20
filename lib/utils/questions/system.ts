@@ -66,11 +66,14 @@ export function getAllWorkspaceElements(
                 ] as WorkspaceElement[];
             }
 
+            if (!elm.description) return undefined;
+
             return elm;
         })
+        .filter(Boolean)
         .flat();
 
-    return systemElements;
+    return systemElements as SoftwareElement[];
 }
 
 export function resolveSystemQuestion(
