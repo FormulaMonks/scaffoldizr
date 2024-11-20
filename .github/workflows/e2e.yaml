@@ -12,7 +12,7 @@ on:
         
 jobs:
   e2e:
-    name: build-${{matrix.name}}
+    name: e2e-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     env:
       STRUCTURIZR_CLI_VERSION: v2024.11.04 
@@ -72,8 +72,9 @@ jobs:
         if: ${{ matrix.os == 'windows' }}
         run: |
           try {
+            ls
             New-Item -ItemType Directory -Force -Path ./dist
-            tar -xvf scfz-*.tar.gz -C ./dist/
+            tar -xvf scfz-${{ matrix.name }}.tar.gz -C ./dist/
             Move-Item -Path ./dist/*/* -Destination ./dist/
           } catch {
             Write-Error "An error occurred: $_"
