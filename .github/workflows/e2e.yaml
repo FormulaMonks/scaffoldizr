@@ -71,9 +71,13 @@ jobs:
       - name: Extract tarball (Windows)
         if: ${{ matrix.os == 'windows' }}
         run: |
-          New-Item -ItemType Directory -Force -Path ./dist
-          Expand-Archive -Path scfz-*.tar.gz -DestinationPath ./dist/
-          Move-Item -Path ./dist/*/* -Destination ./dist/
+          try {
+            New-Item -ItemType Directory -Force -Path ./dist
+            Expand-Archive -Path scfz-*.tar.gz -DestinationPath ./dist/
+            Move-Item -Path ./dist/*/* -Destination ./dist/
+          } catch {
+            Write-Error "An error occurred: $_"
+          }
       - name: Cache Structurizr CLI
         id: structurizr-cli-cache
         uses: actions/cache@v4
@@ -90,10 +94,14 @@ jobs:
       - name: Download Structurizr CLI (Windows)
         if: steps.structurizr-cli-cache.outputs.cache-hit != 'true' && matrix.os == 'windows'
         run: |
-          New-Item -ItemType Directory -Force -Path dist/structurizr-cli-bin
-          Invoke-WebRequest -Uri "https://github.com/structurizr/cli/releases/download/${{ env.STRUCTURIZR_CLI_VERSION }}/structurizr-cli.zip" -OutFile structurizr-cli.zip
-          Expand-Archive -Path structurizr-cli.zip -DestinationPath dist/structurizr-cli-bin/
-          Get-ChildItem -Path dist/structurizr-cli-bin/
+          try {
+            New-Item -ItemType Directory -Force -Path dist/structurizr-cli-bin
+            Invoke-WebRequest -Uri "https://github.com/structurizr/cli/releases/download/${{ env.STRUCTURIZR_CLI_VERSION }}/structurizr-cli.zip" -OutFile structurizr-cli.zip
+            Expand-Archive -Path structurizr-cli.zip -DestinationPath dist/structurizr-cli-bin/
+            Get-ChildItem -Path dist/structurizr-cli-bin/
+          } catch {
+            Write-Error "An error occurred: $_"
+          }
       - name: E2E Test (Smoke)
         if: ${{ inputs.smoke }}
         run: |
