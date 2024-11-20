@@ -72,7 +72,6 @@ jobs:
         if: ${{ matrix.os == 'windows' }}
         run: |
           try {
-            ls
             New-Item -ItemType Directory -Force -Path ./dist
             tar -xvf scfz-${{ matrix.name }}.tar.gz -C ./dist/
             Move-Item -Path ./dist/*/* -Destination ./dist/
@@ -107,11 +106,9 @@ jobs:
         if: ${{ inputs.smoke }}
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/${{ matrix.os == 'windows' && 'structurizr.bat' || 'structurizr.sh' }}
-          $STRUCTURIZR_CLI_PATH help
           bun test:e2e:smoke
       - name: E2E Test (Full)
         if: ${{ !inputs.smoke }}
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/${{ matrix.os == 'windows' && 'structurizr.bat' || 'structurizr.sh' }}
-          $STRUCTURIZR_CLI_PATH help
           bun test:e2e
