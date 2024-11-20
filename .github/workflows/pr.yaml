@@ -35,6 +35,7 @@ jobs:
       contents: write
   e2e:
     needs: test-build
+    if: always()
     uses: ./.github/workflows/e2e.yaml
     with:
       smoke: true
