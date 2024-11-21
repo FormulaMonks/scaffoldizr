@@ -1,5 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { readdir } from "node:fs/promises";
+import { join } from "node:path";
 import { $, type Subprocess, file, spawn } from "bun";
 import stripAnsi from "strip-ansi";
 import pkg from "../package.json";
@@ -35,8 +36,12 @@ const loop = (
     }
 };
 
+const TMP_FOLDER = process.env.TMP_FOLDER ?? '/tmp'
+
 describe("e2e", () => {
-    const folder = `/tmp/test-${(1000 + Math.ceil(Math.random() * 1000)).toString(16)}`;
+    const folder = join(TMP_FOLDER, `test-${
+        (1000 + Math.ceil(Math.random() * 1000)).toString(16)
+    }`);
 
     test("@smoke: should return the correct version", async () => {
         const proc = spawn(["dist/scfz", "--version"]);
