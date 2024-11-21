@@ -25,7 +25,7 @@ type CLIArguments = {
 };
 
 const STRUCTURIZR_CLI_PATH =
-    process.env.STRUCTURIZR_CLI_PATH ?? "structurizr-cli";
+    process.env.STRUCTURIZR_CLI_PATH || "structurizr-cli";
 
 async function main(args: CLIArguments = { dest: "." }) {
     console.log(
@@ -72,7 +72,7 @@ Let's create a new one by answering the questions below.
             process.exit(0);
         } catch (err) {
             console.error(chalk.red("[ERROR]:"), err?.toString());
-            console.log(chalk.gray("[DEBUG]:"), (err as Error));
+            console.log(chalk.gray("[DEBUG]:"), err as Error);
             process.exit(1);
         }
     }
