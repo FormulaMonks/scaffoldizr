@@ -24,6 +24,9 @@ type CLIArguments = {
     export?: boolean;
 };
 
+const STRUCTURIZR_CLI_PATH =
+    process.env.STRUCTURIZR_CLI_PATH ?? "structurizr-cli";
+
 async function main(args: CLIArguments = { dest: "." }) {
     console.log(
         chalk.bold(`
@@ -40,8 +43,7 @@ Create a Structurizr DSL scaffolding in seconds!
         const workspacePath = getWorkspacePath(path);
         if (!workspacePath) return;
 
-        // TODO: Make it compatible for Windows
-        return $`structurizr-cli export -w ${workspacePath}/workspace.dsl -f json -o ${workspacePath} || true`;
+        return $`${STRUCTURIZR_CLI_PATH} export -w ${workspacePath}/workspace.dsl -f json -o ${workspacePath} || true`;
     };
 
     const { workspaceGenerator, ...otherGenerators } = generators;

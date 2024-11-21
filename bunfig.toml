@@ -1,3 +1,4 @@
 [test]
 preload = ['./test-setup.ts']
+root = "./lib"
 coverageThreshold = { line = 0.9, function = 0.9, statement = 0.9 }

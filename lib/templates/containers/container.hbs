@@ -1,3 +1,6 @@
-{{pascalCase (removeSpaces elementName)}} = container "{{{elementName}}}" "{{{containerDescription}}}" "{{{containerTechnology}}}"{{#if (eq containerType "None of the above")}}{{else}} {
+{{pascalCase (removeSpaces elementName)}} = container "{{{elementName}}}" "{{{containerDescription}}}" "{{{containerTechnology}}}"{{#if (eq containerType "None of the above")}} {
+    
+}
+{{else}} {
     tags "{{containerType}}"
 }{{/if}}

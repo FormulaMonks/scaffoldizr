@@ -1,9 +1,10 @@
-name: 'Dependabot: Update bun.lockb'
+name: 'Pull Request'
 
 on:
   pull_request:
-    paths:
-      - "package.json"
+    branches:
+      - develop
+      - main
 
 permissions:
   contents: write
@@ -26,3 +27,15 @@ jobs:
           git config --global user.email 'dependabot[bot]@users.noreply.github.com'
           git commit --amend --no-edit 
           git push --force --no-verify
+  test-build:
+    needs: update-bun-lockb
+    if: always()
+    uses: ./.github/workflows/test-build.yaml
+    permissions:
+      contents: write
+  e2e:
+    needs: test-build
+    if: always()
+    uses: ./.github/workflows/e2e.yaml
+    with:
+      smoke: true
