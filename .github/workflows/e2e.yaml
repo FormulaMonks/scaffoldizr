@@ -121,6 +121,7 @@ jobs:
           $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
           $env:TMP_FOLDER = "${{ runner.temp }}"
           $env:INPUT_TIMEOUT = "600"
+          java -version
           bun test:e2e:smoke
       - name: E2E Test (Full) (Windows)
         if: ${{ !inputs.smoke && matrix.os == 'windows' }}
@@ -128,4 +129,5 @@ jobs:
           $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
           $env:TMP_FOLDER = "${{ runner.temp }}"
           $env:INPUT_TIMEOUT = "600"
+          java -version
           bun test:e2e
