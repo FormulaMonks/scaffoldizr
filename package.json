@@ -7,7 +7,8 @@
         "scfz": "lib/main.ts"
     },
     "scripts": {
-        "build:dev": "bun build ./lib/main.ts --compile --watch --outfile ./dist/scfz",
+        "build:dev": "bun build ./lib/main.ts --compile --outfile ./dist/scfz",
+        "build:watch": "bun build:dev --watch",
         "test:dev": "bun test --watch",
         "test": "bun test",
         "test:ci": "bun test --coverage",

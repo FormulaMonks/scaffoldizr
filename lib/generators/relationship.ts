@@ -107,7 +107,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
                 "No system relationships",
             type: "append",
             path: "architecture/relationships/_{{kebabCase elementType}}.dsl",
-            pattern: /\n.* -> .*\n/,
+            pattern: /\r?\n.* -> .*\r?\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
@@ -119,7 +119,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             type: "append",
             createIfNotExists: true,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
-            pattern: /[\s\S]*\n/,
+            pattern: /[\s\S]*\r?\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
@@ -129,7 +129,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
                 Object.keys(answers.relationships).length <= 0 &&
                 "No component relationships",
             type: "append",
-            pattern: /[\s\S]*\n/,
+            pattern: /[\s\S]*\r?\n/,
             path: "architecture/relationships/{{kebabCase systemName}}.dsl",
             templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<RelationshipAnswers>,

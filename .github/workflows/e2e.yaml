@@ -56,6 +56,7 @@ jobs:
         run: |
           choco install jq --version 1.7.1
           choco install bun --version 1.1.20
+          choco install openjdk --version 22.0.2
         if: ${{ matrix.os == 'windows' }}
       - run: bun install --ignore-scripts
       - name: Download created artifacts
@@ -112,14 +113,13 @@ jobs:
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
           bun test:e2e
-      # TODO: Windows E2E Tests
-      # - name: E2E Test (Smoke) (Windows)
-      #   if: ${{ inputs.smoke && matrix.os == 'windows' }}
-      #   run: |
-      #     $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
-      #     bun test:e2e:smoke
-      # - name: E2E Test (Full) (Windows)
-      #   if: ${{ !inputs.smoke && matrix.os == 'windows' }}
-      #   run: |
-      #     $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
-      #     bun test:e2e
+      - name: E2E Test (Smoke) (Windows)
+        if: ${{ inputs.smoke && matrix.os == 'windows' }}
+        run: |
+          $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
+          bun test:e2e:smoke
+      - name: E2E Test (Full) (Windows)
+        if: ${{ !inputs.smoke && matrix.os == 'windows' }}
+        run: |
+          $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
+          bun test:e2e

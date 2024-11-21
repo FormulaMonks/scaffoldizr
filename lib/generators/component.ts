@@ -122,7 +122,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             type: "append",
             path: "architecture/components/{{kebabCase systemName}}--{{kebabCase containerName}}.dsl",
             createIfNotExists: true,
-            pattern: /[\s\S]*\n/,
+            pattern: /[\s\S]*\r?\n/,
             templateFile: "templates/components/component.hbs",
         } as AppendAction<ComponentAnswers>,
         {
@@ -148,7 +148,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
                     `Component relationship for "${answers.containerName}" already included`
                 );
             },
-            pattern: /.*{\n/,
+            pattern: /[\s\S]*{\r?\n/,
             templateFile: "templates/include.hbs",
         } as AppendAction<ComponentAnswers>,
         {
