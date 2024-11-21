@@ -57,6 +57,10 @@ jobs:
           choco install jq --version 1.7.1
           choco install bun --version 1.1.20
           choco install openjdk --version 22.0.2
+          $step_java_home=$env:JAVA_HOME
+          Import-Module "$env:ChocolateyInstall/helpers/chocolateyInstaller.psm1"
+          refreshenv
+          $env:JAVA_HOME=$step_java_home
         if: ${{ matrix.os == 'windows' }}
       - run: bun install --ignore-scripts
       - name: Download created artifacts
