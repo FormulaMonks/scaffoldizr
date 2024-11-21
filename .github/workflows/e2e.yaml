@@ -56,8 +56,12 @@ jobs:
         run: |
           choco install jq --version 1.7.1
           choco install bun --version 1.1.20
-          choco install openjdk --version 22.0.2
         if: ${{ matrix.os == 'windows' }}
+      - uses: actions/setup-java@v4
+        if: ${{ matrix.os == 'windows' }}
+        with:
+          distribution: 'temurin'
+          java-version: '23'
       - run: bun install --ignore-scripts
       - name: Download created artifacts
         uses: actions/download-artifact@v4
