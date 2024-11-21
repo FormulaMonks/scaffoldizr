@@ -6,4 +6,5 @@ if [ "$(git config --get custom.hooks.pre-commit)" == "false" ]; then
   exit 0
 fi
 
+bun build:dev
 bun lint-staged --relative

@@ -15,7 +15,7 @@ jobs:
     name: e2e-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     env:
-      STRUCTURIZR_CLI_VERSION: v2024.11.04 
+      STRUCTURIZR_CLI_VERSION: v2024.07.03
     strategy:
       fail-fast: true
       matrix:
@@ -57,6 +57,11 @@ jobs:
           choco install jq --version 1.7.1
           choco install bun --version 1.1.20
         if: ${{ matrix.os == 'windows' }}
+      - uses: actions/setup-java@v4
+        if: ${{ matrix.os == 'windows' }}
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '21'
       - run: bun install --ignore-scripts
       - name: Download created artifacts
         uses: actions/download-artifact@v4
@@ -106,20 +111,27 @@ jobs:
         if: ${{ inputs.smoke && matrix.os != 'windows' }}
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
+          export TMP_FOLDER=${{ runner.temp }}
           bun test:e2e:smoke
       - name: E2E Test (Full)
         if: ${{ !inputs.smoke && matrix.os != 'windows' }}
         run: |
           export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
+          export TMP_FOLDER=${{ runner.temp }}
           bun test:e2e
-      # TODO: Windows E2E Tests
-      # - name: E2E Test (Smoke) (Windows)
-      #   if: ${{ inputs.smoke && matrix.os == 'windows' }}
-      #   run: |
-      #     $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
-      #     bun test:e2e:smoke
-      # - name: E2E Test (Full) (Windows)
-      #   if: ${{ !inputs.smoke && matrix.os == 'windows' }}
-      #   run: |
-      #     $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
-      #     bun test:e2e
+      - name: E2E Test (Smoke) (Windows)
+        if: ${{ inputs.smoke && matrix.os == 'windows' }}
+        run: |
+          $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
+          $env:TMP_FOLDER = "${{ runner.temp }}"
+          $env:INPUT_TIMEOUT = "600"
+          java -version
+          bun test:e2e:smoke
+      - name: E2E Test (Full) (Windows)
+        if: ${{ !inputs.smoke && matrix.os == 'windows' }}
+        run: |
+          $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
+          $env:TMP_FOLDER = "${{ runner.temp }}"
+          $env:INPUT_TIMEOUT = "600"
+          java -version
+          bun test:e2e

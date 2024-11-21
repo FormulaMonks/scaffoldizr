@@ -137,7 +137,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
                     `Container relationship for "${answers.systemName}" already included`
                 );
             },
-            pattern: /.*\n!include.*/,
+            pattern: /.*\r?\n!include.*/,
             templateFile: "templates/include.hbs",
         } as AppendAction<ContainerAnswers>,
         {
