@@ -37,7 +37,7 @@
         "branch-name-lint": "^2.1.1",
         "czg": "^1.11.0",
         "generate-changelog": "^1.8.0",
-        "husky": "^9.1.6",
+        "husky": "^9.1.7",
         "lint-staged": "^15.2.10",
         "strip-ansi": "^7.1.0"
     },
