@@ -10,6 +10,12 @@ declare module "*.gitignore" {
     export default content;
 }
 
+declare module "*.gitattributes" {
+    const content: string;
+
+    export default content;
+}
+
 declare module "*.sh" {
     const content: string;
 

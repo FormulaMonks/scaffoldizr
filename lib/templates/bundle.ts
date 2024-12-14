@@ -1,4 +1,5 @@
 import envArch from "./.env-arch.hbs";
+import gitattributes from "./.gitattributes";
 import gitignore from "./.gitignore";
 import componentsComponent from "./components/component.hbs";
 import constant from "./constant.hbs";
@@ -24,6 +25,7 @@ import workspace from "./workspace.hbs";
 
 const templatesMap = new Map([
     ["templates/.env-arch", envArch],
+    ["templates/.gitattributes", gitattributes],
     ["templates/.gitignore", gitignore],
     ["templates/components/component.hbs", componentsComponent],
     ["templates/constant.hbs", constant],

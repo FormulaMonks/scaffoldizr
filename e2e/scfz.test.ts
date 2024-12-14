@@ -86,6 +86,7 @@ describe("e2e", () => {
                 "environments",
                 "docs",
                 "decisions",
+                ".gitattributes",
                 ".gitignore",
                 "scripts",
                 "containers",
