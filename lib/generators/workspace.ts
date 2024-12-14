@@ -89,6 +89,11 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
+            path: "architecture/.gitattributes",
+            templateFile: "templates/.gitattributes",
+        } as AddAction<WorkspaceAnswers>,
+        {
+            type: "add",
             path: "architecture/.env-arch",
             templateFile: "templates/.env-arch",
         } as AddAction<WorkspaceAnswers>,
