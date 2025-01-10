@@ -6,14 +6,15 @@ on:
       - 'v*'
 
 jobs:
-  test-build:
-    uses: ./.github/workflows/test-build.yaml
-    permissions:
-      contents: write
   e2e:
     uses: ./.github/workflows/e2e.yaml
     with:
       smoke: false
+  test-build:
+    needs: e2e
+    uses: ./.github/workflows/test-build.yaml
+    permissions:
+      contents: write
   release:
     needs: test-build
     runs-on: ubuntu-latest
