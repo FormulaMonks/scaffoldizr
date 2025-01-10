@@ -7,4 +7,6 @@ if [ "$(git config --get custom.hooks.pre-commit)" == "false" ]; then
 fi
 
 bun build:dev
+TESTED_VERSION=$(jq -r '.version' package.json)
+export TESTED_VERSION
 bun lint-staged --relative

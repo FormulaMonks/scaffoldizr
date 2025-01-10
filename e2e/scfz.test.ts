@@ -48,7 +48,8 @@ describe("e2e", () => {
         const proc = spawn(["dist/scfz", "--version"]);
         const text = await new Response(proc.stdout).text();
 
-        expect(text.trim()).toEqual(pkg.version);
+        expect(process.env.TESTED_VERSION).toBeDefined();
+        expect(text.trim()).toEqual(process.env.TESTED_VERSION as string);
     });
 
     test("@smoke: should create a new workspace", async () => {

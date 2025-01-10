@@ -7,7 +7,6 @@ on:
     branches:
       - develop
       - main
-
 jobs:
   test:
     name: Unit Tests
@@ -70,8 +69,20 @@ jobs:
           skip_checkout: false
           disable_globbing: true
           create_branch: false
+  output-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output version
+        run: |
+          echo "TESTED_VERSION=$(jq -r '.version' package.json)" > TESTED_VERSION.txt"
+          cat TESTED_VERSION.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TESTED_VERSION
+          path: ./TESTED_VERSION.txt
+          if-no-files-found: error
   build:
-    needs: bump-version
+    needs: output-version
     if: always()
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}

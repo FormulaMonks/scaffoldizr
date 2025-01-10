@@ -9,7 +9,6 @@ on:
         type: boolean
         required: true
         default: true
-        
 jobs:
   e2e:
     name: e2e-${{matrix.name}}
@@ -63,6 +62,10 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '21'
       - run: bun install --ignore-scripts
+      - name: Download version to test
+        uses: actions/download-artifact@v4
+        with:
+          name: TESTED_VERSION
       - name: Download created artifacts
         uses: actions/download-artifact@v4
         with:
@@ -107,6 +110,9 @@ jobs:
           } catch {
             Write-Error "An error occurred: $_"
           }
+      - name: Extract version and add it to env variables
+        run: |
+          cat ./TESTED_VERSION.txt >> ${GITHUB_ENV}
       - name: E2E Test (Smoke)
         if: ${{ inputs.smoke && matrix.os != 'windows' }}
         run: |
