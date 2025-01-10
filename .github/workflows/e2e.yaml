@@ -111,11 +111,11 @@ jobs:
             Write-Error "An error occurred: $_"
           }
       - name: Extract version and add it to env variables
-        if: ${{ inputs.smoke && matrix.os != 'windows' }}
+        if: ${{ matrix.os != 'windows' }}
         run: |
           echo "TESTED_VERSION=$(cat ./TESTED_VERSION.txt)" >> ${GITHUB_ENV}
       - name: Extract version and add it to env variables (Windows)
-        if: ${{ inputs.smoke && matrix.os == 'windows' }}
+        if: ${{ matrix.os == 'windows' }}
         run: |
           try {
             $version = Get-Content -Path .\TESTED_VERSION.txt

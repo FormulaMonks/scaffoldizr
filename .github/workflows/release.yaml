@@ -16,7 +16,7 @@ jobs:
     with:
       smoke: false
   release:
-    needs: test-build
+    needs: e2e
     runs-on: ubuntu-latest
     permissions:
       contents: write
