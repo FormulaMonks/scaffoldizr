@@ -70,6 +70,8 @@ jobs:
           disable_globbing: true
           create_branch: false
   output-version:
+    needs: bump-version
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +88,6 @@ jobs:
           if-no-files-found: error
   build:
     needs: output-version
-    if: always()
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     permissions:
