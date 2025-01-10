@@ -72,6 +72,9 @@ jobs:
   output-version:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Output version
         run: |
           echo "TESTED_VERSION=$(jq -r '.version' package.json)" > TESTED_VERSION.txt
