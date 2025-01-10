@@ -111,8 +111,18 @@ jobs:
             Write-Error "An error occurred: $_"
           }
       - name: Extract version and add it to env variables
+        if: ${{ inputs.smoke && matrix.os != 'windows' }}
         run: |
-          cat ./TESTED_VERSION.txt >> ${GITHUB_ENV}
+          echo "TESTED_VERSION=$(cat ./TESTED_VERSION.txt)" >> ${GITHUB_ENV}
+      - name: Extract version and add it to env variables (Windows)
+        if: ${{ inputs.smoke && matrix.os == 'windows' }}
+        run: |
+          try {
+            $version = Get-Content -Path .\TESTED_VERSION.txt
+            echo "TESTED_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          } catch {
+            Write-Error "An error occurred: $_"
+          }
       - name: E2E Test (Smoke)
         if: ${{ inputs.smoke && matrix.os != 'windows' }}
         run: |
