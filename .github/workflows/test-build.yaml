@@ -84,6 +84,7 @@ jobs:
           if-no-files-found: error
   build:
     needs: output-version
+    if: always()
     name: build-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     permissions:
