@@ -74,7 +74,7 @@ jobs:
     steps:
       - name: Output version
         run: |
-          echo "TESTED_VERSION=$(jq -r '.version' package.json)" > TESTED_VERSION.txt"
+          echo "TESTED_VERSION=$(jq -r '.version' package.json)" > TESTED_VERSION.txt
           cat TESTED_VERSION.txt
       - uses: actions/upload-artifact@v4
         with:
