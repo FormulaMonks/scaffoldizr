@@ -3,10 +3,6 @@ name: Test and build
 on:
   workflow_call:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-      - main
 jobs:
   test:
     name: Unit Tests
