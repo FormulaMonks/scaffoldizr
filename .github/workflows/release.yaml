@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: write
   e2e:
+    needs: test-build
     uses: ./.github/workflows/e2e.yaml
     with:
       smoke: false
