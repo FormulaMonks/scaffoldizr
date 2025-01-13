@@ -361,10 +361,10 @@
     ansi-escapes "^4.3.2"
     yoctocolors-cjs "^2.1.2"
 
-"@inquirer/testing@^2.1.39":
-  version "2.1.39"
-  resolved "https://registry.yarnpkg.com/@inquirer/testing/-/testing-2.1.39.tgz#a13ae44099873f6fe3724f5ab82d10284a354256"
-  integrity sha512-tZgfTdR2x0IGKG5Vg14+j8ymI6xRIVLrVKz9k1LaEJmfZfehXV8gzcKYnV5BVW3n0FiARkhCc0eFqSlFaOdpWw==
+"@inquirer/testing@^2.1.40":
+  version "2.1.40"
+  resolved "https://registry.yarnpkg.com/@inquirer/testing/-/testing-2.1.40.tgz#41ea469777bb5e796d386eb43241855ac3274fdf"
+  integrity sha512-QgDwJYDGa5cz/sS4aRKiy1H850967IOAP+E26JUerhMHQgj6EH8jUtRkUxb0MTjTBCeY2XQxGRpYWmro+wSv0w==
   dependencies:
     "@inquirer/type" "^3.0.2"
     ansi-escapes "^4.3.2"
