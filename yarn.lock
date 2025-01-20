@@ -376,12 +376,12 @@
   resolved "https://registry.yarnpkg.com/@inquirer/type/-/type-3.0.2.tgz#baff9f8d70947181deb36772cd9a5b6876d3e60c"
   integrity sha512-ZhQ4TvhwHZF+lGhQ2O/rsjo80XoZR5/5qhOY3t6FJuX5XBg5Be8YzYTvaUGJnc12AUGI2nr4QSUE4PhKSigx7g==
 
-"@types/bun@^1.1.16":
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.16.tgz#caab82543a616d3a738b2add055c863ff1649f34"
-  integrity sha512-E+ue6NMcn4FXC5bDRE1W/BXUVs01h5Mt02qH8/8HGCox9akuh8KNOFdwvaQS9TDgT2RmUyJYFRRqA60WtTnm2g==
+"@types/bun@^1.1.17":
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.17.tgz#1150849aab25437f0a205847d27e68f9c4211f77"
+  integrity sha512-zZt0Kao/8hAwNOXh4bmt8nKbMEd4QD8n7PeTGF+NZTVY5ouXhU/TX7jUj4He1p7mgY+WdplnU1B6MB1j17vdzg==
   dependencies:
-    bun-types "1.1.43"
+    bun-types "1.1.44"
 
 "@types/conventional-commits-parser@^5.0.0":
   version "5.0.0"
@@ -544,10 +544,10 @@ branch-name-lint@^2.1.1:
     find-up "^5.0.0"
     meow "^9.0.0"
 
-bun-types@1.1.43:
-  version "1.1.43"
-  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.43.tgz#f189d2fdffb7b879c8a2883454c9475e546e2218"
-  integrity sha512-W0wCtVH+bwFp7p3Zgs03CqxEDmXxEvmmUM/FBKgWIv9T8gyeotvIjIbHzuDScc2DphhRNtr7hJLCR5PspYL5qw==
+bun-types@1.1.44:
+  version "1.1.44"
+  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.44.tgz#7826a4368641d52f30ae76685bb5e6a60338176f"
+  integrity sha512-jtcekoZeSINgEcHSISzhR13w/cyE+Fankw2Cpl4c0fN3lRmKVAX0i9ay4FyK4lOxUK1HG4HkuIlrPvXKz4Y7sw==
   dependencies:
     "@types/node" "~20.12.8"
     "@types/ws" "~8.5.10"
