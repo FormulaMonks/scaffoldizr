@@ -376,12 +376,12 @@
   resolved "https://registry.yarnpkg.com/@inquirer/type/-/type-3.0.2.tgz#baff9f8d70947181deb36772cd9a5b6876d3e60c"
   integrity sha512-ZhQ4TvhwHZF+lGhQ2O/rsjo80XoZR5/5qhOY3t6FJuX5XBg5Be8YzYTvaUGJnc12AUGI2nr4QSUE4PhKSigx7g==
 
-"@types/bun@^1.1.17":
-  version "1.1.17"
-  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.1.17.tgz#1150849aab25437f0a205847d27e68f9c4211f77"
-  integrity sha512-zZt0Kao/8hAwNOXh4bmt8nKbMEd4QD8n7PeTGF+NZTVY5ouXhU/TX7jUj4He1p7mgY+WdplnU1B6MB1j17vdzg==
+"@types/bun@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@types/bun/-/bun-1.2.2.tgz#ebcc7a5f925166a4e9df3d7c93b0b1b4bca75446"
+  integrity sha512-tr74gdku+AEDN5ergNiBnplr7hpDp3V1h7fqI2GcR/rsUaM39jpSeKH0TFibRvU0KwniRx5POgaYnaXbk0hU+w==
   dependencies:
-    bun-types "1.1.44"
+    bun-types "1.2.2"
 
 "@types/conventional-commits-parser@^5.0.0":
   version "5.0.0"
@@ -407,13 +407,6 @@
   version "20.14.10"
   resolved "https://registry.npmjs.org/@types/node/-/node-20.14.10.tgz"
   integrity sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==
-  dependencies:
-    undici-types "~5.26.4"
-
-"@types/node@~20.12.8":
-  version "20.12.12"
-  resolved "https://registry.npmjs.org/@types/node/-/node-20.12.12.tgz"
-  integrity sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw==
   dependencies:
     undici-types "~5.26.4"
 
@@ -544,12 +537,12 @@ branch-name-lint@^2.1.1:
     find-up "^5.0.0"
     meow "^9.0.0"
 
-bun-types@1.1.44:
-  version "1.1.44"
-  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.44.tgz#7826a4368641d52f30ae76685bb5e6a60338176f"
-  integrity sha512-jtcekoZeSINgEcHSISzhR13w/cyE+Fankw2Cpl4c0fN3lRmKVAX0i9ay4FyK4lOxUK1HG4HkuIlrPvXKz4Y7sw==
+bun-types@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.2.2.tgz#06db618bb0b58939094fa22f2cb1b80df6666fae"
+  integrity sha512-RCbMH5elr9gjgDGDhkTTugA21XtJAy/9jkKe/G3WR2q17VPGhcquf9Sir6uay9iW+7P/BV0CAHA1XlHXMAVKHg==
   dependencies:
-    "@types/node" "~20.12.8"
+    "@types/node" "*"
     "@types/ws" "~8.5.10"
 
 callsites@^3.0.0:
