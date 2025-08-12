@@ -63,11 +63,11 @@ jobs:
           java-version: '21'
       - run: bun install --ignore-scripts
       - name: Download version to test
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: TESTED_VERSION
       - name: Download created artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: tarball-${{ matrix.target }}
       - name: Extract tarball
