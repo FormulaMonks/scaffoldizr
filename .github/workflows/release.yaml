@@ -40,7 +40,7 @@ jobs:
           mkdir ./dist
           bun changelog --file ./dist/changelog.txt --tag $(git for-each-ref --sort=creatordate --format '%(refname:short)' refs/tags | grep -v beta | grep -v $(git describe --tags) | tail -n 1)
           cat ./dist/changelog.txt
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         if: startsWith(github.ref, 'refs/tags/')
         with:
           path: ./dist
