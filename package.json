@@ -23,7 +23,7 @@
         "change-case": "^5.4.4",
         "handlebars": "^4.7.8",
         "minimist": "^1.2.8",
-        "yargs": "^17.7.2"
+        "yargs": "^18.0.0"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.1.1",
