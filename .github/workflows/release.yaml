@@ -58,7 +58,7 @@ jobs:
       - run: mv dist/releases/install.sh docs/assets/install.sh
         if: startsWith(github.ref, 'refs/tags/')
       - name: Update Install Script
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         if: startsWith(github.ref, 'refs/tags/')
         with:
           commit_message: "[skip ci]: Updated install script"
