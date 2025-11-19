@@ -1,5 +1,4 @@
-import { relative, resolve } from "node:path";
-import { basename } from "node:path";
+import { basename, relative, resolve } from "node:path";
 import { select } from "@inquirer/prompts";
 import { $, main as entrypoint } from "bun";
 import chalk from "chalk";
@@ -95,6 +94,7 @@ Let's create a new one by answering the questions below.
     const DEFAULT_GENERATOR_SORTING = [
         "Workspace",
         "Constant",
+        "Archetype",
         "System",
         "Person",
         "External System",

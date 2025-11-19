@@ -1,6 +1,6 @@
 {
     "name": "@formula-monks/scaffoldizr",
-    "version": "0.6.9",
+    "version": "0.7.0",
     "description": "Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations",
     "module": "src/main.mjs",
     "bin": {
@@ -16,7 +16,10 @@
         "test:e2e": "bun --config=./e2e/e2e.toml test --bail --timeout 30000",
         "prepare": "husky"
     },
-    "trustedDependencies": [".", "@biomejs/biome"],
+    "trustedDependencies": [
+        ".",
+        "@biomejs/biome"
+    ],
     "dependencies": {
         "@inquirer/prompts": "^7.3.2",
         "chalk": "^5.4.1",
@@ -45,14 +48,26 @@
         "cross-spawn": "7.0.6"
     },
     "branchNameLinter": {
-        "prefixes": ["feature", "bugfix", "hotfix", "release", "dependabot"],
+        "prefixes": [
+            "feature",
+            "bugfix",
+            "hotfix",
+            "release",
+            "dependabot"
+        ],
         "suggestions": {
             "features": "feature",
             "feat": "feature",
             "fix": "bugfix",
             "releases": "release"
         },
-        "banned": ["wip"],
-        "skip": ["skip ci", "main", "develop"]
+        "banned": [
+            "wip"
+        ],
+        "skip": [
+            "skip ci",
+            "main",
+            "develop"
+        ]
     }
 }

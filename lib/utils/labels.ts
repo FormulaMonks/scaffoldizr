@@ -1,4 +1,5 @@
 export enum Labels {
+    Archetype = "🔺",
     Constant = "🟡",
     Container = "🔷",
     Component = "🔹",

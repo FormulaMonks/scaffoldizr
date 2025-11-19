@@ -1,6 +1,7 @@
 import envArch from "./.env-arch.hbs";
 import gitattributes from "./.gitattributes";
 import gitignore from "./.gitignore";
+import archetypesArchetype from "./archetypes/archetype.hbs";
 import componentsComponent from "./components/component.hbs";
 import constant from "./constant.hbs";
 import containersContainer from "./containers/container.hbs";
@@ -8,8 +9,8 @@ import gitkeep from "./docs/.gitkeep";
 import empty from "./empty.hbs";
 import environmentsDeployment from "./environments/deployment.hbs";
 import include from "./include.hbs";
-import relationshipsMultipleComponent from "./relationships/multiple-component.hbs";
 import relationshipsMultiple from "./relationships/multiple.hbs";
+import relationshipsMultipleComponent from "./relationships/multiple-component.hbs";
 import scriptsRun from "./scripts/run.sh";
 import scriptsUpdate from "./scripts/update.sh";
 import systemExternal from "./system/external.hbs";
@@ -27,6 +28,7 @@ const templatesMap = new Map([
     ["templates/.env-arch", envArch],
     ["templates/.gitattributes", gitattributes],
     ["templates/.gitignore", gitignore],
+    ["templates/archetypes/archetype.hbs", archetypesArchetype],
     ["templates/components/component.hbs", componentsComponent],
     ["templates/constant.hbs", constant],
     ["templates/containers/.gitkeep", gitkeep],

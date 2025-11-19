@@ -69,6 +69,11 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         } as AddAction<WorkspaceAnswers>,
         {
             type: "add",
+            path: "architecture/archetypes/.gitkeep",
+            templateFile: "templates/empty.hbs",
+        } as AddAction<WorkspaceAnswers>,
+        {
+            type: "add",
             path: "architecture/systems/_system.dsl",
             templateFile: "templates/system/system.hbs",
         } as AddAction<WorkspaceAnswers>,

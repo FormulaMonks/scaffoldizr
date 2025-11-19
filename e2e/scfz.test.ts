@@ -1,9 +1,8 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { $, type Subprocess, file, spawn } from "bun";
+import { $, file, type Subprocess, spawn } from "bun";
 import stripAnsi from "strip-ansi";
-import pkg from "../package.json";
 
 const keypress = {
     DOWN: "\x1B\x5B\x42",
@@ -126,12 +125,46 @@ describe("e2e", () => {
         expect(workspaceContents).toContain('const TEST "Value"');
     });
 
+    test("should add a new archetype", async () => {
+        const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+            stdin: "pipe",
+        });
+
+        loop(proc, [
+            keypress.DOWN,
+            keypress.ENTER,
+            "TestArchetype",
+            keypress.ENTER,
+            keypress.ENTER,
+            "Java",
+            keypress.ENTER,
+            "Tag",
+            keypress.ENTER,
+        ]);
+
+        const response = await new Response(proc.stdout).text();
+        console.log(`Scaffoldizr Output:\n${response}`);
+
+        const contents = await readdir(`${folder}/architecture/archetypes`);
+        expect(contents).toEqual(
+            expect.arrayContaining(["test-archetype.dsl"]),
+        );
+
+        const elementContents = await file(
+            `${folder}/architecture/archetypes/test-archetype.dsl`,
+        ).text();
+        expect(elementContents).toContain("testArchetype = container {");
+        expect(elementContents).toContain('technology "Java"');
+        expect(elementContents).toContain('tags "Tag"');
+    });
+
     test("should add a new system", async () => {
         const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
             stdin: "pipe",
         });
 
         loop(proc, [
+            keypress.DOWN,
             keypress.DOWN,
             keypress.ENTER,
             "Test System 2",
@@ -166,6 +199,7 @@ describe("e2e", () => {
         loop(proc, [
             keypress.DOWN,
             keypress.DOWN,
+            keypress.DOWN,
             keypress.ENTER,
             keypress.ENTER,
             "Test Person",
@@ -195,6 +229,7 @@ describe("e2e", () => {
         });
 
         loop(proc, [
+            keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
@@ -229,6 +264,7 @@ describe("e2e", () => {
         });
 
         loop(proc, [
+            keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
@@ -271,6 +307,7 @@ describe("e2e", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
+            keypress.DOWN,
             keypress.ENTER,
             keypress.ENTER,
             "Test Component",
@@ -303,6 +340,7 @@ describe("e2e", () => {
         });
 
         loop(proc, [
+            keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,

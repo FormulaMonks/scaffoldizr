@@ -1,15 +1,15 @@
 import { resolve } from "node:path";
-import { Separator, input, select } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import { file } from "bun";
 import chalk from "chalk";
 import { kebabCase, pascalCase } from "change-case";
-import type { AddAction, AppendAction } from "../utils/actions";
+import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
 import {
-    type Relationship,
     addRelationshipsToElement,
     componentParser,
+    type Relationship,
 } from "../utils/questions/relationships";
 import { getAllWorkspaceElements } from "../utils/questions/system";
 import {
