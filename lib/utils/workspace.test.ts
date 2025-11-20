@@ -1,7 +1,20 @@
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import {
+    afterEach,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    test,
+} from "bun:test";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { getWorkspaceJson, getWorkspacePath } from "./workspace";
+import { createFullWorkspace } from "../../test/utils";
+import { Elements } from "./labels";
+import {
+    getWorkspaceElementFiles,
+    getWorkspaceJson,
+    getWorkspacePath,
+} from "./workspace";
 
 const TEST_DIR = "/tmp/scaffoldizr-workspace-test";
 
@@ -152,6 +165,86 @@ describe("workspace utilities", () => {
             expect(result).toMatchObject(minimalWorkspace);
             expect(result?.id).toBe(1);
             expect(result?.name).toBe("Minimal");
+        });
+    });
+
+    describe("getWorkspaceElementFiles", () => {
+        beforeAll(async () => {
+            const targetArchDir = join(TEST_DIR, "architecture");
+
+            await mkdir(targetArchDir, { recursive: true });
+            await createFullWorkspace(targetArchDir);
+        });
+
+        test("should return list of element files for target element types", async () => {
+            const archDir = join(TEST_DIR, "architecture");
+            const componentResult = await getWorkspaceElementFiles(
+                Elements.Component,
+                archDir,
+            );
+            expect(componentResult).toBeDefined();
+            expect(componentResult?.length).toBeGreaterThan(0);
+            expect(componentResult).toMatchInlineSnapshot(`
+              [
+                {
+                  "element": "component",
+                  "name": "api-gateway",
+                  "parent": "test-system",
+                },
+                {
+                  "element": "component",
+                  "name": "frontend",
+                  "parent": "web-app",
+                },
+                {
+                  "element": "component",
+                  "name": "business-logic",
+                  "parent": "test-system",
+                },
+              ]
+            `);
+
+            const containerResult = await getWorkspaceElementFiles(
+                Elements.Container,
+                archDir,
+            );
+            expect(containerResult).toBeDefined();
+            expect(containerResult?.length).toBeGreaterThan(0);
+            expect(containerResult).toMatchInlineSnapshot(`
+              [
+                {
+                  "element": "container",
+                  "name": "web-app",
+                },
+                {
+                  "element": "container",
+                  "name": "test-system",
+                },
+              ]
+            `);
+
+            const archetypeResult = await getWorkspaceElementFiles(
+                Elements.Archetype,
+                archDir,
+            );
+            expect(archetypeResult).toBeDefined();
+            expect(archetypeResult?.length).toBeGreaterThan(0);
+            expect(archetypeResult).toMatchInlineSnapshot(`
+              [
+                {
+                  "element": "relationship",
+                  "name": "test-archetype",
+                },
+                {
+                  "element": "container",
+                  "name": "test-archetype",
+                },
+                {
+                  "element": "component",
+                  "name": "test-archetype",
+                },
+              ]
+            `);
         });
     });
 });

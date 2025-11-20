@@ -1,5 +1,7 @@
+import { readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { file } from "bun";
+import { Elements, Folders } from "./labels";
 
 type Item = Record<string, unknown>;
 type Properties = {
@@ -154,4 +156,45 @@ export const getWorkspaceJson = async (
     }
 
     return undefined;
+};
+
+export const getWorkspaceElementFiles = async (
+    element: keyof typeof Folders,
+    workspaceFolder: string | undefined,
+): Promise<
+    { name: string; parent?: string; element: string }[] | undefined
+> => {
+    if (!workspaceFolder) return undefined;
+
+    const elementFolder = await readdir(
+        join(workspaceFolder, Folders[element].toLowerCase()),
+    );
+
+    switch (element) {
+        case Elements.Container: {
+            return elementFolder
+                .filter((file) => !file.startsWith("_"))
+                .map((file) => ({
+                    name: file,
+                    element: Elements.Container.toLowerCase(),
+                }));
+        }
+
+        case Elements.Component: {
+            return elementFolder
+                .filter((file) => !file.startsWith("_"))
+                .map((file) => ({
+                    name: file.replace(/.*--(.*)\.dsl$/, "$1"),
+                    parent: file.replace(/(.*)--.*\.dsl$/, "$1"),
+                    element: Elements.Component.toLowerCase(),
+                }));
+        }
+
+        case Elements.Archetype: {
+            return elementFolder.map((file) => ({
+                name: file.replace(/(.*)_.*\.dsl$/, "$1"),
+                element: file.replace(/.*_(.*)\.dsl$/, "$1"),
+            }));
+        }
+    }
 };
