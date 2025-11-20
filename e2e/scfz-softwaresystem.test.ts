@@ -37,7 +37,7 @@ const loop = (
 
 const TMP_FOLDER = process.env.TMP_FOLDER || "/tmp";
 
-describe("e2e", () => {
+describe("e2e: Software System", () => {
     const folder = join(
         TMP_FOLDER,
         `test-${(1000 + Math.ceil(Math.random() * 1000)).toString(16)}`,
@@ -58,6 +58,7 @@ describe("e2e", () => {
 
         loop(proc, [
             "Test Workspace",
+            keypress.ENTER,
             keypress.ENTER,
             keypress.ENTER,
             "Test System",

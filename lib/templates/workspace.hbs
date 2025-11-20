@@ -2,7 +2,7 @@ workspace "{{{workspaceName}}}" {
     description "{{{workspaceDescription}}}"
 
     configuration {
-        scope softwaresystem
+        scope {{{workspaceScope}}}
     }
 
     !adrs decisions
@@ -19,7 +19,9 @@ workspace "{{{workspaceName}}}" {
         !include environments
 
         # Relationships
+        {{#if (eq workspaceScope "softwaresystem")}}
         !include relationships/_system.dsl
+        {{/if}}
     }
 
     views {

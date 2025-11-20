@@ -1,4 +1,4 @@
 {
     "*.{json,ts,js,cjs,mjs,mts,css}": ["bun biome ci"],
-    "*.{ts,mjs}": ["bun test:ci", "bun test:e2e:smoke"]
+    "*.{ts,mjs}": ["bun test:ci"]
 }

@@ -1,5 +1,5 @@
-systemLandscape "{{pascalCase (removeSpaces viewName)}}" {
-    description "{{{viewDescription}}}. ${AUTHOR}" 
+systemLandscape "{{pascalCase (removeSpaces (or viewName workspaceName))}}" {
+    description "{{{or viewDescription workspaceDescription}}}. ${AUTHOR}" 
     include *
     autoLayout lr
 }

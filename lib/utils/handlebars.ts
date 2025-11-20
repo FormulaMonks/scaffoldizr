@@ -13,6 +13,7 @@ Handlebars.registerHelper("camelCase", (target) => camelCase(target));
 Handlebars.registerHelper("upperCase", (target = "") => target.toUpperCase());
 Handlebars.registerHelper("lowerCase", (target = "") => target.toLowerCase());
 Handlebars.registerHelper("eq", (arg1, arg2) => arg1 === arg2);
+Handlebars.registerHelper("or", (arg1, arg2) => arg1 || arg2);
 Handlebars.registerHelper("removeSpaces", (txt = "") => removeSpaces(txt));
 Handlebars.registerHelper("underscoreSpaces", (txt = "") =>
     underscoreSpaces(txt),
