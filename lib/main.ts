@@ -14,7 +14,10 @@ import type {
     GetAnswers,
 } from "./utils/generator";
 import { createGenerator } from "./utils/generator";
-import { labelElementByName } from "./utils/labels";
+import {
+    labelElementByName,
+    SORTED_GENERATOR_AVAILABLE_ELEMENTS,
+} from "./utils/labels";
 import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
 
 type CLIArguments = {
@@ -91,19 +94,6 @@ Let's create a new one by answering the questions below.
         ),
     );
 
-    const DEFAULT_GENERATOR_SORTING = [
-        "Workspace",
-        "Constant",
-        "Archetype",
-        "System",
-        "Person",
-        "External System",
-        "Container",
-        "Component",
-        "View",
-        "Relationship",
-    ];
-
     const element = await select({
         message: "Create a new element:",
         choices: Object.values(otherGenerators)
@@ -113,8 +103,12 @@ Let's create a new one by answering the questions below.
             }))
             .toReversed()
             .toSorted((a, b) => {
-                const aIndex = DEFAULT_GENERATOR_SORTING.indexOf(a.value.name);
-                const bIndex = DEFAULT_GENERATOR_SORTING.indexOf(b.value.name);
+                const aIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
+                    a.value.name,
+                );
+                const bIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
+                    b.value.name,
+                );
 
                 return aIndex - bIndex;
             }),
