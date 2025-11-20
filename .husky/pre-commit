@@ -9,5 +9,4 @@ fi
 bun build:dev
 TESTED_VERSION=$(jq -r '.version' package.json)
 export TESTED_VERSION
-echo "pre-commit: testing version $TESTED_VERSION"
 bun lint-staged --relative
