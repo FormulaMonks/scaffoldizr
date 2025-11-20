@@ -1,4 +1,4 @@
-import { Separator, checkbox, input, select } from "@inquirer/prompts";
+import { checkbox, input, Separator, select } from "@inquirer/prompts";
 import { pascalCase } from "change-case";
 import type { QuestionsObject } from "../generator";
 import { removeSpaces } from "../handlebars";

@@ -1,12 +1,25 @@
 workspace "Scaffoldizr" {
     description "Opinionated Scaffolding Tool for Structurizr DSL"
 
+    configuration {
+        scope softwaresystem
+    }
+
     !adrs decisions
     !docs docs
 
     model {
+        properties {
+            structurizr.inspection.model.softwaresystem.documentation ignore
+            structurizr.inspection.model.softwaresystem.decisions ignore
+        }
+
         # Constants
-        !constant CLI "CLI/Terminal"
+        !const CLI "CLI/Terminal"
+
+        archetypes {
+            !include archetypes
+        }
 
         !include systems
         # !include environments (Enable when environments ready)
@@ -17,8 +30,8 @@ workspace "Scaffoldizr" {
     }
 
     views {
-        themes "https://structurizr.test.zemoga-client.com/share/1/theme"
-        !constant AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
+        themes "https://static.structurizr.com/themes/default/theme.json"
+        !const AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
 
         !include views
     }

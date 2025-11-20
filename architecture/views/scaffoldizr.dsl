@@ -3,7 +3,7 @@ systemContext Scaffoldizr "Scaffoldizr" {
     include *
 }
 
-container Scaffoldizr {
+container Scaffoldizr "ScaffoldizrCLI" {
     description "Command Line Interface (binary). ${AUTHOR}" 
     include *
     autolayout lr

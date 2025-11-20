@@ -3,9 +3,9 @@ import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { elementTypeByTags, labelElementByTags } from "../utils/labels";
 import {
-    type Relationship,
     addRelationshipsToElement,
     componentParser,
+    type Relationship,
 } from "../utils/questions/relationships";
 import { getAllWorkspaceElements } from "../utils/questions/system";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";

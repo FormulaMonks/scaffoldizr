@@ -1,5 +1,7 @@
 {
-  "configuration" : { },
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
   "description" : "Opinionated Scaffolding Tool for Structurizr DSL",
   "documentation" : {
     "decisions" : [ {
@@ -43,23 +45,19 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2024-09-23T21:48:42Z",
+  "lastModifiedDate" : "2025-11-20T15:38:37Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
       "id" : "5",
-      "location" : "Unspecified",
       "name" : "Architect",
       "properties" : {
-        "structurizr.dsl.identifier" : "architect"
+        "structurizr.dsl.identifier" : "Architect"
       },
       "relationships" : [ {
         "description" : "Previews DSL diagrams",
         "destinationId" : "1",
         "id" : "7",
-        "properties" : {
-          "structurizr.dsl.identifier" : "f5ac81ed-9727-4b6f-9694-b2d23430fca1"
-        },
         "sourceId" : "5",
         "tags" : "Relationship",
         "technology" : "Web/HTTP"
@@ -67,9 +65,6 @@
         "description" : "Send commands to",
         "destinationId" : "4",
         "id" : "10",
-        "properties" : {
-          "structurizr.dsl.identifier" : "9593bd15-f3b5-4136-86fe-690975d6ea69"
-        },
         "sourceId" : "5",
         "tags" : "Relationship",
         "technology" : "CLI/Terminal"
@@ -83,32 +78,31 @@
       } ],
       "tags" : "Element,Person"
     } ],
+    "properties" : {
+      "structurizr.inspection.model.softwaresystem.documentation" : "ignore",
+      "structurizr.inspection.model.softwaresystem.decisions" : "ignore"
+    },
     "softwareSystems" : [ {
       "description" : "Local instance for Structurizr diagram visualization.",
       "documentation" : { },
       "id" : "1",
-      "location" : "Unspecified",
       "name" : "Structurizr/Lite",
       "properties" : {
-        "structurizr.dsl.identifier" : "structurizrlite"
+        "structurizr.dsl.identifier" : "StructurizrLite"
       },
       "tags" : "Element,Software System,External"
     }, {
       "description" : "Architect's local file system",
       "documentation" : { },
       "id" : "2",
-      "location" : "Unspecified",
       "name" : "File System",
       "properties" : {
-        "structurizr.dsl.identifier" : "filesystem"
+        "structurizr.dsl.identifier" : "FileSystem"
       },
       "relationships" : [ {
         "description" : "Uses DSL files to generate workspace.json file",
         "destinationId" : "1",
         "id" : "9",
-        "properties" : {
-          "structurizr.dsl.identifier" : "7f8adc8c-5b6f-4091-bb85-d04a6b88b51a"
-        },
         "sourceId" : "2",
         "tags" : "Relationship",
         "technology" : "Structurizr/Lite File System"
@@ -121,15 +115,12 @@
         "id" : "4",
         "name" : "scfz",
         "properties" : {
-          "structurizr.dsl.identifier" : "scfz"
+          "structurizr.dsl.identifier" : "Scfz"
         },
         "relationships" : [ {
           "description" : "Outputs generated scaffolding",
           "destinationId" : "2",
           "id" : "12",
-          "properties" : {
-            "structurizr.dsl.identifier" : "32293d82-2ae2-4ae2-a498-c717254d7728"
-          },
           "sourceId" : "4",
           "tags" : "Relationship",
           "technology" : "CLI/Terminal"
@@ -140,18 +131,14 @@
       "description" : "Scaffolding tool",
       "documentation" : { },
       "id" : "3",
-      "location" : "Unspecified",
       "name" : "Scaffoldizr",
       "properties" : {
-        "structurizr.dsl.identifier" : "scaffoldizr"
+        "structurizr.dsl.identifier" : "Scaffoldizr"
       },
       "relationships" : [ {
         "description" : "Creates scaffolding to preview",
         "destinationId" : "1",
         "id" : "6",
-        "properties" : {
-          "structurizr.dsl.identifier" : "9336e4df-8c87-4fb5-b09e-72d8af50f789"
-        },
         "sourceId" : "3",
         "tags" : "Relationship",
         "technology" : "CLI/Terminal"
@@ -159,9 +146,6 @@
         "description" : "Outputs generated scaffolding",
         "destinationId" : "2",
         "id" : "8",
-        "properties" : {
-          "structurizr.dsl.identifier" : "5320576c-44ae-4edf-9a4a-531591a752c2"
-        },
         "sourceId" : "3",
         "tags" : "Relationship",
         "technology" : "CLI/Terminal"
@@ -171,15 +155,18 @@
   },
   "name" : "Scaffoldizr",
   "properties" : {
-    "structurizr.dsl" : "d29ya3NwYWNlICJTY2FmZm9sZGl6ciIgewogICAgZGVzY3JpcHRpb24gIk9waW5pb25hdGVkIFNjYWZmb2xkaW5nIFRvb2wgZm9yIFN0cnVjdHVyaXpyIERTTCIKCiAgICAhYWRycyBkZWNpc2lvbnMKICAgICFkb2NzIGRvY3MKCiAgICBtb2RlbCB7CiAgICAgICAgIyBDb25zdGFudHMKICAgICAgICAhY29uc3RhbnQgQ0xJICJDTEkvVGVybWluYWwiCgogICAgICAgIFN0cnVjdHVyaXpyTGl0ZSA9IHNvZnR3YXJlU3lzdGVtICJTdHJ1Y3R1cml6ci9MaXRlIiAiTG9jYWwgaW5zdGFuY2UgZm9yIFN0cnVjdHVyaXpyIGRpYWdyYW0gdmlzdWFsaXphdGlvbi4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwiCiAgICAgICAgfQogICAgICAgIAogICAgICAgIEZpbGVTeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiRmlsZSBTeXN0ZW0iICJBcmNoaXRlY3QncyBsb2NhbCBmaWxlIHN5c3RlbSIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCIKICAgICAgICB9CiAgICAgICAgU2NhZmZvbGRpenIgPSBzb2Z0d2FyZVN5c3RlbSAiU2NhZmZvbGRpenIiIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlNjYWZmb2xkaW5nIHRvb2wiCiAgICAgICAgCiAgICAgICAgICAgIFNjZnogPSBjb250YWluZXIgInNjZnoiICJDb21tYW5kIExpbmUgSW50ZXJmYWNlIChiaW5hcnkpIiAiVHlwZVNjcmlwdC9CdW4gKGNvbXBpbGVkKSIKICAgICAgICAKICAgICAgICAgICAgdGFncyAiU3lzdGVtIgogICAgICAgIH0KICAgICAgICBBcmNoaXRlY3QgPSBwZXJzb24gIkFyY2hpdGVjdCIgIkFyY2hpdGVjdCIKICAgICAgICAjICFpbmNsdWRlIGVudmlyb25tZW50cyAoRW5hYmxlIHdoZW4gZW52aXJvbm1lbnRzIHJlYWR5KQoKICAgICAgICAjIFJlbGF0aW9uc2hpcHMKICAgICAgICBTY2FmZm9sZGl6ciAtPiBTdHJ1Y3R1cml6ckxpdGUgIkNyZWF0ZXMgc2NhZmZvbGRpbmcgdG8gcHJldmlldyIgIiR7Q0xJfSIKICAgICAgICBBcmNoaXRlY3QgLT4gU3RydWN0dXJpenJMaXRlICJQcmV2aWV3cyBEU0wgZGlhZ3JhbXMiICJXZWIvSFRUUCIKICAgICAgICAKICAgICAgICBTY2FmZm9sZGl6ciAtPiBGaWxlU3lzdGVtICJPdXRwdXRzIGdlbmVyYXRlZCBzY2FmZm9sZGluZyIgIiR7Q0xJfSIKICAgICAgICBGaWxlU3lzdGVtIC0+IFN0cnVjdHVyaXpyTGl0ZSAiVXNlcyBEU0wgZmlsZXMgdG8gZ2VuZXJhdGUgd29ya3NwYWNlLmpzb24gZmlsZSIgIlN0cnVjdHVyaXpyL0xpdGUgRmlsZSBTeXN0ZW0iCiAgICAgICAgCiAgICAgICAgQXJjaGl0ZWN0IC0+IFNjZnogIlNlbmQgY29tbWFuZHMgdG8iICIke0NMSX0iCiAgICAgICAgCiAgICAgICAgU2NmeiAtPiBGaWxlU3lzdGVtICJPdXRwdXRzIGdlbmVyYXRlZCBzY2FmZm9sZGluZyIgIiR7Q0xJfSIKICAgIH0KCiAgICB2aWV3cyB7CiAgICAgICAgdGhlbWVzICJodHRwczovL3N0cnVjdHVyaXpyLnRlc3QuemVtb2dhLWNsaWVudC5jb20vc2hhcmUvMS90aGVtZSIKICAgICAgICAhY29uc3RhbnQgQVVUSE9SICJBdXRob3I6IEZvcm11bGEubW9ua3MgPGFuZHJlcy56b3Jyb0BtZWRpYW1vbmtzLmNvbT4iCgogICAgICAgIHN5c3RlbUNvbnRleHQgU2NhZmZvbGRpenIgIlNjYWZmb2xkaXpyIiB7CiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJTY2FmZm9sZGluZyB0b29sLiAke0FVVEhPUn0iIAogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CiAgICAgICAgCiAgICAgICAgY29udGFpbmVyIFNjYWZmb2xkaXpyIHsKICAgICAgICAgICAgZGVzY3JpcHRpb24gIkNvbW1hbmQgTGluZSBJbnRlcmZhY2UgKGJpbmFyeSkuICR7QVVUSE9SfSIgCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQogICAgfQp9Cg=="
+    "structurizr.inspection.error" : "0",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "2",
+    "structurizr.inspection.warning" : "0"
   },
   "views" : {
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Scaffoldizr",
+      "lastSavedView" : "ScaffoldizrCLI",
       "styles" : { },
       "terminology" : { },
-      "themes" : [ "https://structurizr.test.zemoga-client.com/share/1/theme" ]
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
@@ -206,8 +193,8 @@
         "y" : 0
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
-      "generatedKey" : true,
-      "key" : "Container-001",
+      "key" : "ScaffoldizrCLI",
+      "name" : "Container View: Scaffoldizr",
       "order" : 2,
       "relationships" : [ {
         "id" : "10"
@@ -241,6 +228,7 @@
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "Scaffoldizr",
+      "name" : "System Context View: Scaffoldizr",
       "order" : 1,
       "relationships" : [ {
         "id" : "11"
