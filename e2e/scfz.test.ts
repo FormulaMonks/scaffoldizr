@@ -147,11 +147,11 @@ describe("e2e", () => {
 
         const contents = await readdir(`${folder}/architecture/archetypes`);
         expect(contents).toEqual(
-            expect.arrayContaining(["test-archetype.dsl"]),
+            expect.arrayContaining(["test-archetype_container.dsl"]),
         );
 
         const elementContents = await file(
-            `${folder}/architecture/archetypes/test-archetype.dsl`,
+            `${folder}/architecture/archetypes/test-archetype_container.dsl`,
         ).text();
         expect(elementContents).toContain("testArchetype = container {");
         expect(elementContents).toContain('technology "Java"');

@@ -42,7 +42,7 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
     actions: [
         {
             type: "add",
-            path: "architecture/archetypes/{{kebabCase name}}.dsl",
+            path: "architecture/archetypes/{{kebabCase name}}_{{baseType}}.dsl",
             templateFile: "templates/archetypes/archetype.hbs",
         } as AddAction<ArchetypeAnswers>,
     ],
