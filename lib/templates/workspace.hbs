@@ -19,9 +19,7 @@ workspace "{{{workspaceName}}}" {
         !include environments
 
         # Relationships
-        {{#if (eq workspaceScope "softwaresystem")}}
-        !include relationships/_system.dsl
-        {{/if}}
+        !include relationships
     }
 
     views {

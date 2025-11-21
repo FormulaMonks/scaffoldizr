@@ -1,6 +1,5 @@
 import { input, Separator } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
-import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import {
@@ -88,17 +87,6 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
         return compiledAnswers;
     },
     actions: [
-        {
-            skip: (_answers, rootPath) =>
-                whenFileExists(
-                    "relationships/_external.dsl",
-                    getWorkspacePath(rootPath),
-                ),
-            type: "append",
-            path: "architecture/workspace.dsl",
-            pattern: /# Relationships/,
-            templateFile: "templates/include.hbs",
-        } as AppendAction<ExternalSystemAnswers>,
         {
             createIfNotExists: true,
             type: "append",

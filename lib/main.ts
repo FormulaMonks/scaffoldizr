@@ -1,4 +1,5 @@
 import { basename, relative, resolve } from "node:path";
+import type { ExitPromptError } from "@inquirer/core";
 import { select } from "@inquirer/prompts";
 import { $, main as entrypoint } from "bun";
 import chalk from "chalk";
@@ -101,7 +102,6 @@ Let's create a new one by answering the questions below.
         const sharedElements: string[] = [
             Elements.Archetype,
             Elements.Constant,
-            Elements.Container,
             Elements.ExternalSystem,
             Elements.View,
             Elements.DeploymentNode,
@@ -112,33 +112,36 @@ Let's create a new one by answering the questions below.
         if (workspaceInfo.configuration.scope === "Landscape") {
             return [...sharedElements, Elements.System].includes(g.name);
         } else {
-            return [...sharedElements, Elements.Component].includes(g.name);
+            return [
+                ...sharedElements,
+                Elements.Container,
+                Elements.Component,
+            ].includes(g.name);
         }
     });
-
-    const element = await select({
-        message: "Create a new element:",
-        choices: Object.values(filteredGenerators)
-            .map((g) => ({
-                name: `${labelElementByName(g.name)} ${g.name}`,
-                value: g,
-            }))
-            .toReversed()
-            .toSorted((a, b) => {
-                const aIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
-                    a.value.name,
-                );
-                const bIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
-                    b.value.name,
-                );
-
-                return aIndex - bIndex;
-            }),
-    });
-
-    type GeneratorAnswers = GetAnswers<typeof element>;
-
     try {
+        const element = await select({
+            message: "Create a new element:",
+            choices: Object.values(filteredGenerators)
+                .map((g) => ({
+                    name: `${labelElementByName(g.name)} ${g.name}`,
+                    value: g,
+                }))
+                .toReversed()
+                .toSorted((a, b) => {
+                    const aIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
+                        a.value.name,
+                    );
+                    const bIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
+                        b.value.name,
+                    );
+
+                    return aIndex - bIndex;
+                }),
+        });
+
+        type GeneratorAnswers = GetAnswers<typeof element>;
+
         const generator: Generator<GeneratorAnswers> = {
             ...(element as GeneratorDefinition<GeneratorAnswers>),
             templates,
@@ -149,6 +152,11 @@ Let's create a new one by answering the questions below.
         await exportWorkspace(relative(process.cwd(), workspacePath));
         process.exit(0);
     } catch (err) {
+        if ((err as ExitPromptError).name === "ExitPromptError") {
+            console.log(chalk.yellow("\nProcess aborted by the user."));
+            process.exit(0);
+        }
+
         console.error(err);
         process.exit(1);
     }

@@ -1,6 +1,5 @@
 import { input, Separator } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
-import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import {
@@ -24,6 +23,7 @@ type PersonAnswers = {
     includeSource: string;
     includeTabs: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<PersonAnswers> = {
@@ -74,6 +74,7 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         );
 
         const compiledAnswers = {
+            workspaceScope: workspaceInfo?.configuration.scope,
             systemName,
             personDescription,
             elementName,
@@ -85,17 +86,6 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         return compiledAnswers;
     },
     actions: [
-        {
-            skip: (_answers, rootPath) =>
-                whenFileExists(
-                    "relationships/_people.dsl",
-                    getWorkspacePath(rootPath),
-                ),
-            type: "append",
-            path: "architecture/workspace.dsl",
-            pattern: /# Relationships/,
-            templateFile: "templates/include.hbs",
-        } as AppendAction<PersonAnswers>,
         {
             type: "append",
             createIfNotExists: true,

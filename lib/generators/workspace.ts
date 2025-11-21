@@ -120,6 +120,11 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
             templateFile: "templates/empty.hbs",
         } as AddAction<WorkspaceAnswers>,
         {
+            type: "add",
+            path: "architecture/relationships/.gitkeep",
+            templateFile: "templates/empty.hbs",
+        } as AddAction<WorkspaceAnswers>,
+        {
             when: (answers) =>
                 Boolean(answers.systemName && answers.systemDescription),
             type: "add",

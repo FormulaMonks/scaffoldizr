@@ -28,6 +28,7 @@ type ContainerAnswers = {
     includeTabs: string;
     includeSource: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<ContainerAnswers> = {
@@ -94,6 +95,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         );
 
         const compiledAnswers = {
+            workspaceScope: workspaceInfo?.configuration.scope,
             systemName,
             elementName,
             containerDescription,
@@ -116,6 +118,8 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         {
             type: "append",
             path: "architecture/relationships/_system.dsl",
+            when: (answers) =>
+                answers.workspaceScope?.toLowerCase() === "softwaresystem",
             skip: async (answers, rootPath) => {
                 const systemRelationshipsPath = resolve(
                     rootPath,
