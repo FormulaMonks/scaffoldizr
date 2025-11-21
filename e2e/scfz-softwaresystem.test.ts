@@ -159,38 +159,39 @@ describe("e2e: Software System", () => {
         expect(elementContents).toContain('tags "Tag"');
     });
 
-    test("should add a new system", async () => {
-        const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
-            stdin: "pipe",
-        });
+    // TODO: Move to E2E Landscape tests
+    // test("should add a new system", async () => {
+    //     const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+    //         stdin: "pipe",
+    //     });
 
-        loop(proc, [
-            keypress.DOWN,
-            keypress.DOWN,
-            keypress.ENTER,
-            "Test System 2",
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.SPACE,
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-        ]);
+    //     loop(proc, [
+    //         keypress.DOWN,
+    //         keypress.DOWN,
+    //         keypress.ENTER,
+    //         "Test System 2",
+    //         keypress.ENTER,
+    //         keypress.ENTER,
+    //         keypress.SPACE,
+    //         keypress.ENTER,
+    //         keypress.ENTER,
+    //         keypress.ENTER,
+    //         keypress.ENTER,
+    //     ]);
 
-        const response = await new Response(proc.stdout).text();
-        console.log(`Scaffoldizr Output:\n${response}`);
+    //     const response = await new Response(proc.stdout).text();
+    //     console.log(`Scaffoldizr Output:\n${response}`);
 
-        const contents = await readdir(`${folder}/architecture/systems`);
-        expect(contents).toEqual(expect.arrayContaining(["test-system-2.dsl"]));
+    //     const contents = await readdir(`${folder}/architecture/systems`);
+    //     expect(contents).toEqual(expect.arrayContaining(["test-system-2.dsl"]));
 
-        const elementContents = await file(
-            `${folder}/architecture/systems/test-system-2.dsl`,
-        ).text();
-        expect(elementContents).toContain(
-            'TestSystem2 = softwareSystem "Test System 2"',
-        );
-    });
+    //     const elementContents = await file(
+    //         `${folder}/architecture/systems/test-system-2.dsl`,
+    //     ).text();
+    //     expect(elementContents).toContain(
+    //         'TestSystem2 = softwareSystem "Test System 2"',
+    //     );
+    // });
 
     test("@smoke: should add a new person", async () => {
         const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
@@ -198,7 +199,6 @@ describe("e2e: Software System", () => {
         });
 
         loop(proc, [
-            keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
             keypress.ENTER,
@@ -233,7 +233,6 @@ describe("e2e: Software System", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
-            keypress.DOWN,
             keypress.ENTER,
             keypress.ENTER,
             "Test External System",
@@ -265,7 +264,6 @@ describe("e2e: Software System", () => {
         });
 
         loop(proc, [
-            keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
@@ -308,7 +306,6 @@ describe("e2e: Software System", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
-            keypress.DOWN,
             keypress.ENTER,
             keypress.ENTER,
             "Test Component",
@@ -341,7 +338,6 @@ describe("e2e: Software System", () => {
         });
 
         loop(proc, [
-            keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,
             keypress.DOWN,

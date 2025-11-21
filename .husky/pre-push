@@ -1,2 +1,6 @@
+#!/bin/bash
 
+TESTED_VERSION=$(jq -r '.version' package.json)
+export TESTED_VERSION
+bun test:e2e
 bun branch-name-lint package.json

@@ -15,6 +15,7 @@ import type {
 } from "./utils/generator";
 import { createGenerator } from "./utils/generator";
 import {
+    Elements,
     labelElementByName,
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
@@ -94,9 +95,30 @@ Let's create a new one by answering the questions below.
         ),
     );
 
+    const filteredGenerators = Object.values(otherGenerators).filter((g) => {
+        if (!workspaceInfo) return true;
+
+        const sharedElements: string[] = [
+            Elements.Archetype,
+            Elements.Constant,
+            Elements.Container,
+            Elements.ExternalSystem,
+            Elements.View,
+            Elements.DeploymentNode,
+            Elements.Person,
+            Elements.Relationship,
+        ];
+
+        if (workspaceInfo.configuration.scope === "Landscape") {
+            return [...sharedElements, Elements.System].includes(g.name);
+        } else {
+            return [...sharedElements, Elements.Component].includes(g.name);
+        }
+    });
+
     const element = await select({
         message: "Create a new element:",
-        choices: Object.values(otherGenerators)
+        choices: Object.values(filteredGenerators)
             .map((g) => ({
                 name: `${labelElementByName(g.name)} ${g.name}`,
                 value: g,
