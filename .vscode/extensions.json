@@ -4,7 +4,6 @@
         "gruntfuggly.todo-tree",
         "biomejs.biome",
         "streetsidesoftware.code-spell-checker",
-        "oven.bun-vscode",
-        "wzulfikar.vscode-bun-test-explorer"
+        "oven.bun-vscode"
     ]
 }
