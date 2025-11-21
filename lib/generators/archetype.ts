@@ -1,6 +1,7 @@
 import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import { stringEmpty } from "../utils/questions/validators";
 
 type ArchetypeAnswers = {
@@ -11,7 +12,7 @@ type ArchetypeAnswers = {
 };
 
 const generator: GeneratorDefinition<ArchetypeAnswers> = {
-    name: "Archetype",
+    name: Elements.Archetype,
     description: "Create a new archetype",
     questions: {
         name: () =>

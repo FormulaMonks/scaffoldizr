@@ -1,13 +1,14 @@
 import { resolve } from "node:path";
-import { Separator, input, select } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
+import { Elements } from "../utils/labels";
 import {
-    type Relationship,
     addRelationshipsToElement,
+    type Relationship,
 } from "../utils/questions/relationships";
 import { resolveSystemQuestion } from "../utils/questions/system";
 import {
@@ -30,7 +31,7 @@ type ContainerAnswers = {
 };
 
 const generator: GeneratorDefinition<ContainerAnswers> = {
-    name: "Container",
+    name: Elements.Container,
     description: "Create a new system container",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(

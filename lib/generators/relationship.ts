@@ -1,7 +1,11 @@
 import { Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
-import { elementTypeByTags, labelElementByTags } from "../utils/labels";
+import {
+    Elements,
+    elementTypeByTags,
+    labelElementByTags,
+} from "../utils/labels";
 import {
     addRelationshipsToElement,
     componentParser,
@@ -19,7 +23,7 @@ type RelationshipAnswers = {
 };
 
 const generator: GeneratorDefinition<RelationshipAnswers> = {
-    name: "Relationship",
+    name: Elements.Relationship,
     description: "Create a new relationship between elements",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(

@@ -1,9 +1,10 @@
 import { input } from "@inquirer/prompts";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import {
-    type Relationship,
     addRelationshipsToElement,
+    type Relationship,
 } from "../utils/questions/relationships";
 import {
     chainValidators,
@@ -20,7 +21,7 @@ type SystemAnswers = {
 };
 
 const generator: GeneratorDefinition<SystemAnswers> = {
-    name: "System",
+    name: Elements.System,
     description: "Create a new software system",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(

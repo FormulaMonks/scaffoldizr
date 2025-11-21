@@ -1,6 +1,7 @@
 import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import { stringEmpty } from "../utils/questions/validators";
 
 type ConstantAnswers = {
@@ -9,7 +10,7 @@ type ConstantAnswers = {
 };
 
 const generator: GeneratorDefinition<ConstantAnswers> = {
-    name: "Constant",
+    name: Elements.Constant,
     description: "Create a new workspace constant",
     questions: {
         constantName: () =>

@@ -2,6 +2,7 @@ import { confirm, input, select } from "@inquirer/prompts";
 import { $ } from "bun";
 import type { AddAction, AddManyAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import { stringEmpty } from "../utils/questions/validators";
 
 const globalUserName =
@@ -21,7 +22,7 @@ type WorkspaceAnswers = {
 };
 
 const generator: GeneratorDefinition<WorkspaceAnswers> = {
-    name: "Workspace",
+    name: Elements.Workspace,
     description: "Create a new workspace",
     questions: async () => {
         const workspaceName = await input({

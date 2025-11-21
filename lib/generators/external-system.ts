@@ -1,11 +1,12 @@
-import { Separator, input } from "@inquirer/prompts";
+import { input, Separator } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import {
-    type Relationship,
     addRelationshipsToElement,
     defaultParser,
+    type Relationship,
     resolveRelationshipForElement,
 } from "../utils/questions/relationships";
 import { resolveSystemQuestion } from "../utils/questions/system";
@@ -27,7 +28,7 @@ type ExternalSystemAnswers = {
 };
 
 const generator: GeneratorDefinition<ExternalSystemAnswers> = {
-    name: "External System",
+    name: Elements.ExternalSystem,
     description: "Create a new external system",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(

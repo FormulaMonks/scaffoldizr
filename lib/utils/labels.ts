@@ -50,7 +50,7 @@ export const SORTED_GENERATOR_AVAILABLE_ELEMENTS: string[] = [
 export const labelElementByTags = (tags = ""): string => {
     for (const tag of tags.split(",")) {
         if (tag === Elements.Person) return Labels.Person;
-        if (tag === Elements.ExternalSystem) return Labels.External;
+        if (tag === "External") return Labels.External;
         if (tag === Elements.Container) return Labels.Container;
         if (tag === Elements.Component) return Labels.Component;
         if (tag === Elements.DeploymentNode) return Labels.DeploymentNode;

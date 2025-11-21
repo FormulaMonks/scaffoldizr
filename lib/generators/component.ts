@@ -6,6 +6,7 @@ import { kebabCase, pascalCase } from "change-case";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
+import { Elements } from "../utils/labels";
 import {
     addRelationshipsToElement,
     componentParser,
@@ -31,7 +32,7 @@ type ComponentAnswers = {
 };
 
 const generator: GeneratorDefinition<ComponentAnswers> = {
-    name: "Component",
+    name: Elements.Component,
     description: "Create a new component for a container",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
