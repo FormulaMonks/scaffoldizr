@@ -95,7 +95,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         );
 
         const compiledAnswers = {
-            workspaceScope: workspaceInfo?.configuration.scope,
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
             systemName,
             elementName,
             containerDescription,
@@ -118,8 +118,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         {
             type: "append",
             path: "architecture/relationships/_system.dsl",
-            when: (answers) =>
-                answers.workspaceScope?.toLowerCase() === "softwaresystem",
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             skip: async (answers, rootPath) => {
                 const systemRelationshipsPath = resolve(
                     rootPath,

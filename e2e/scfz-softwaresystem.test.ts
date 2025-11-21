@@ -269,7 +269,6 @@ describe("e2e: Software System", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.ENTER,
-            keypress.ENTER,
             "Test Container",
             keypress.ENTER,
             keypress.ENTER,

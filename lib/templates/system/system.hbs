@@ -1,6 +1,6 @@
 {{properCase (removeSpaces systemName)}} = softwareSystem "{{{systemName}}}" {
     description "{{{systemDescription}}}"
-    {{#if (eq workspaceScope "SoftwareSystem")}}
+    {{#if (eq workspaceScope "softwaresystem")}}
     !include ../containers/{{kebabCase systemName}}{{/if}}
     tags "System"
 }

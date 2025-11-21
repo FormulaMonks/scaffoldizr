@@ -70,6 +70,8 @@ const generator: GeneratorDefinition<ViewAnswers> = {
                   })
                 : undefined;
 
+        // TODO: For deployment views return system technologies to set in the template
+
         return {
             viewType,
             viewName,

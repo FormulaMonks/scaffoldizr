@@ -107,7 +107,7 @@ type Configuration = {
     branding: Item;
     styles: Item;
     terminology: Item;
-    scope: "Landscape" | "SoftwareSystem";
+    scope?: "Landscape" | "SoftwareSystem";
 };
 
 export type StructurizrWorkspace = {

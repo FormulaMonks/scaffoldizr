@@ -55,7 +55,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
         );
 
         const compiledAnswers = {
-            workspaceScope: workspaceInfo?.configuration.scope,
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
             systemName,
             systemDescription,
             elementName: systemName,
@@ -72,24 +72,21 @@ const generator: GeneratorDefinition<SystemAnswers> = {
             templateFile: "templates/system/system.hbs",
         } as AddAction<SystemAnswers>,
         {
-            when: (answers) =>
-                answers.workspaceScope?.toLowerCase() === "softwaresystem",
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             type: "add",
             skipIfExists: true,
             path: "architecture/containers/{{kebabCase systemName}}/.gitkeep",
             templateFile: "templates/empty.hbs",
         } as AddAction<SystemAnswers>,
         {
-            when: (answers) =>
-                answers.workspaceScope?.toLowerCase() === "softwaresystem",
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             type: "append",
             path: "architecture/relationships/_system.dsl",
             pattern: /\n.* -> .*\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<SystemAnswers>,
         {
-            when: (answers) =>
-                answers.workspaceScope?.toLowerCase() === "landscape",
+            when: (answers) => answers.workspaceScope === "landscape",
             type: "append",
             path: "architecture/relationships/landscape.dsl",
             pattern: /\n.* -> .*\n/,

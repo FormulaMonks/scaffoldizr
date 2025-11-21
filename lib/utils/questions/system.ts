@@ -2,8 +2,8 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { input, select } from "@inquirer/prompts";
 import { kebabCase } from "change-case";
-import { getWorkspacePath } from "../workspace";
 import type { StructurizrWorkspace } from "../workspace";
+import { getWorkspacePath } from "../workspace";
 
 type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
@@ -82,13 +82,20 @@ export function resolveSystemQuestion(
         message: "Relates to system:",
     },
 ): Promise<string> {
-    const voidPromise: Promise<string> = new Promise((resolve) => resolve(""));
+    const voidPromise: Promise<string> = Promise.resolve("");
     const workspaceInfo = typeof workspace !== "string" && workspace;
 
     if (workspaceInfo) {
+        const workspaceScope =
+            workspaceInfo?.configuration.scope?.toLowerCase();
+
         const systems = (workspaceInfo.model?.softwareSystems ?? [])
             .filter((system) => !system.tags.split(",").includes("External"))
             .map((system) => ({ name: system.name, value: system.name }));
+
+        if (workspaceScope === "softwaresystem") {
+            return Promise.resolve(systems[0].value);
+        }
 
         const systemQuestion = select({
             message: options.message,

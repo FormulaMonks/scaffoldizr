@@ -20,6 +20,7 @@ type RelationshipAnswers = {
     containerName?: string;
     elementType: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<RelationshipAnswers> = {
@@ -91,12 +92,18 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             },
         );
 
+        const isPerson = element.elementType === Elements.Person;
+        const isExternalSystem =
+            element.elementType === Elements.ExternalSystem;
+
         const compiledAnswers = {
             ...element,
-            elementType:
-                element.elementType === "Person"
-                    ? "people"
-                    : element.elementType,
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
+            elementType: isPerson
+                ? "people"
+                : isExternalSystem
+                  ? "external"
+                  : element.elementType,
             relationships,
         };
 
@@ -105,12 +112,24 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
     actions: [
         {
             when: (answers) =>
-                !["Container", "Component"].includes(answers.elementType),
+                ["people", "external", "system"].includes(answers.elementType),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No system relationships",
             type: "append",
             path: "architecture/relationships/_{{kebabCase elementType}}.dsl",
+            pattern: /\r?\n.* -> .*\r?\n/,
+            templateFile: "templates/relationships/multiple.hbs",
+        } as AppendAction<RelationshipAnswers>,
+        {
+            when: (answers) =>
+                answers.workspaceScope === "landscape" &&
+                !["people", "external"].includes(answers.elementType),
+            skip: (answers) =>
+                Object.keys(answers.relationships).length <= 0 &&
+                "No system relationships",
+            type: "append",
+            path: "architecture/relationships/landscape.dsl",
             pattern: /\r?\n.* -> .*\r?\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
