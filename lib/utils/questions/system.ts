@@ -97,6 +97,10 @@ export function resolveSystemQuestion(
             return Promise.resolve(systems[0].value);
         }
 
+        if (systems.length === 0) {
+            return voidPromise;
+        }
+
         const systemQuestion = select({
             message: options.message,
             choices: systems,

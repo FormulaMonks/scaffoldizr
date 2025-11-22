@@ -52,16 +52,16 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             default: "Default user",
         });
 
-        const relationshipWithSystem = await resolveRelationshipForElement(
-            systemName,
-            elementName,
-            {
-                defaultRelationship: "Consumes",
-                defaultRelationshipType: "outgoing",
-            },
-        );
+        const relationshipWithSystem = systemName
+            ? await resolveRelationshipForElement(systemName, elementName, {
+                  defaultRelationship: "Consumes",
+                  defaultRelationshipType: "outgoing",
+              })
+            : undefined;
 
-        const mainRelationship = defaultParser(relationshipWithSystem);
+        const mainRelationship =
+            relationshipWithSystem && defaultParser(relationshipWithSystem);
+
         const relationships = await addRelationshipsToElement(
             elementName,
             workspaceInfo,

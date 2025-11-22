@@ -58,13 +58,17 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             defaultRelationshipType: "incoming",
         };
 
-        const relationshipWithSystem = await resolveRelationshipForElement(
-            systemName,
-            elementName,
-            relationshipDefaults,
-        );
+        const relationshipWithSystem = systemName
+            ? await resolveRelationshipForElement(
+                  systemName,
+                  elementName,
+                  relationshipDefaults,
+              )
+            : undefined;
 
-        const mainRelationship = defaultParser(relationshipWithSystem);
+        const mainRelationship =
+            relationshipWithSystem && defaultParser(relationshipWithSystem);
+
         const relationships = await addRelationshipsToElement(
             elementName,
             workspaceInfo,
