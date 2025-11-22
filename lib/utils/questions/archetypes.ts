@@ -2,6 +2,7 @@ import { type Separator, select } from "@inquirer/prompts";
 import { Elements } from "../labels";
 import {
     getWorkspaceElementFiles,
+    getWorkspaceJson,
     getWorkspacePath,
     type WorkspaceElement,
 } from "../workspace";
@@ -38,22 +39,32 @@ const mapArchetypeToChoice = (archetypes: WorkspaceElement[] | undefined) => {
 export async function resolveBaseElementQuestion(
     workspacePath: string,
 ): Promise<{ element: string; archetype?: string; position: number }> {
+    const workspaceInfo = await getWorkspaceJson(
+        getWorkspacePath(workspacePath),
+    );
     const availableArchetypes = await getWorkspaceElementFiles(
         Elements.Archetype,
         getWorkspacePath(workspacePath),
     );
 
+    const isLandscapeScope =
+        workspaceInfo?.configuration.scope?.toLowerCase() === "landscape";
     const mappedArchetypes = mapArchetypeToChoice(availableArchetypes);
 
     const baseTypes = [
-        { name: "Container", value: "container" },
-        { name: "Component", value: "component" },
+        !isLandscapeScope
+            ? { name: "Container", value: "container" }
+            : undefined,
+        !isLandscapeScope
+            ? { name: "Component", value: "component" }
+            : undefined,
         { name: "Software System", value: "softwareSystem" },
         { name: "Relationship (->)", value: "relationship" },
     ];
 
     const selection = await select<string | ArchetypeChoice>({
         message: "Base type:",
+        // @ts-expect-error -- We're already filtering undefined values
         choices: [
             separator("Archetypes", mappedArchetypes),
             ...mappedArchetypes,
