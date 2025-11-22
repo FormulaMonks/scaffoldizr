@@ -100,8 +100,8 @@ describe("e2e: Software System", () => {
         loop(proc, [
             keypress.DOWN,
             keypress.ENTER,
-            "TestArchetype",
             keypress.ENTER,
+            "TestArchetype",
             keypress.ENTER,
             "Java",
             keypress.ENTER,
@@ -114,11 +114,11 @@ describe("e2e: Software System", () => {
 
         const contents = await readdir(`${folder}/architecture/archetypes`);
         expect(contents).toEqual(
-            expect.arrayContaining(["test-archetype_container.dsl"]),
+            expect.arrayContaining(["1_testArchetype_container.dsl"]),
         );
 
         const elementContents = await file(
-            `${folder}/architecture/archetypes/test-archetype_container.dsl`,
+            `${folder}/architecture/archetypes/1_testArchetype_container.dsl`,
         ).text();
         expect(elementContents).toContain("testArchetype = container {");
         expect(elementContents).toContain('technology "Java"');

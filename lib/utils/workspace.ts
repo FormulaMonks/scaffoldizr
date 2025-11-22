@@ -159,21 +159,29 @@ export const getWorkspaceJson = async (
     return undefined;
 };
 
+export type WorkspaceElement = {
+    name: string;
+    parent?: string;
+    element: string;
+};
+
 export const getWorkspaceElementFiles = async (
     element: keyof typeof Folders,
     workspaceFolder: string | undefined,
-): Promise<
-    { name: string; parent?: string; element: string }[] | undefined
-> => {
+): Promise<WorkspaceElement[] | undefined> => {
     if (!workspaceFolder) return undefined;
 
     const elementFolder = await readdir(
         join(workspaceFolder, Folders[element].toLowerCase()),
     );
 
+    const baseFilteredFiles = elementFolder.filter(
+        (file) => !file.startsWith("."),
+    );
+
     switch (element) {
         case Elements.Container: {
-            return elementFolder
+            return baseFilteredFiles
                 .filter((file) => !file.startsWith("_"))
                 .map((file) => ({
                     name: file,
@@ -182,7 +190,7 @@ export const getWorkspaceElementFiles = async (
         }
 
         case Elements.Component: {
-            return elementFolder
+            return baseFilteredFiles
                 .filter((file) => !file.startsWith("_"))
                 .map((file) => ({
                     name: file.replace(/.*--(.*)\.dsl$/, "$1"),
@@ -192,7 +200,7 @@ export const getWorkspaceElementFiles = async (
         }
 
         case Elements.Archetype: {
-            return elementFolder.map((file) => ({
+            return baseFilteredFiles.map((file) => ({
                 name: file.replace(/(.*)_.*\.dsl$/, "$1"),
                 element: file.replace(/.*_(.*)\.dsl$/, "$1"),
             }));

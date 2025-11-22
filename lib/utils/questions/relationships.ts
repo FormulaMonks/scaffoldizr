@@ -5,6 +5,7 @@ import { removeSpaces } from "../handlebars";
 import { labelElementByTags } from "../labels";
 import type { StructurizrWorkspace } from "../workspace";
 import { getAllWorkspaceElements } from "./system";
+import { separator } from "./utils";
 
 export type Relationship = {
     relationship: string;
@@ -130,17 +131,6 @@ export const resolveRelationshipForElement = async (
     return resolveRelationshipPromises(relationshipPromises);
 };
 
-const separator = (
-    name: string,
-    elements: unknown[],
-): Separator | unknown[] => {
-    const maybeSeparator = elements.length
-        ? new Separator(`-- ${name} --`)
-        : [];
-
-    return maybeSeparator;
-};
-
 export async function addRelationshipsToElement(
     elementName: string,
     workspaceInfo: StructurizrWorkspace | undefined,
@@ -189,7 +179,7 @@ export async function addRelationshipsToElement(
             ...softwareSystems,
             separator("People", people),
             ...people,
-        ] as ((typeof elements)[number] | Separator)[]
+        ].filter(Boolean) as ((typeof elements)[number] | Separator)[]
     )
         .flat()
         .map((elm) =>
