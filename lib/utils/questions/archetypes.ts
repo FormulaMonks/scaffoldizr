@@ -83,6 +83,6 @@ export async function resolveBaseElementQuestion(
     return {
         element: selection.baseElement,
         archetype: selection.representation,
-        position: selection.position + 1,
+        position: mappedArchetypes.length + 1,
     };
 }

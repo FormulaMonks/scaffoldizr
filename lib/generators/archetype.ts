@@ -10,7 +10,8 @@ type ArchetypeAnswers = {
     baseElement: string;
     archetype?: string;
     position: number;
-    technology: string;
+    technology?: string;
+    description?: string;
     tags: string;
 };
 
@@ -30,13 +31,29 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
             validate: stringEmpty,
         });
 
-        const technology = await input({
-            message: "Technology (optional):",
+        const description = await input({
+            message: "Description (optional):",
         });
+
+        const technology =
+            baseElement !== "softwareSystem"
+                ? await input({
+                      message: "Technology (optional):",
+                  })
+                : undefined;
+
         const tags = await input({
             message: "Tags (optional):",
         });
-        return { name, baseElement, archetype, position, technology, tags };
+        return {
+            name,
+            baseElement,
+            archetype,
+            position,
+            description,
+            technology,
+            tags,
+        };
     },
     actions: [
         {
