@@ -40,7 +40,7 @@ jobs:
             target: x86_64-ms-windows
             runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Mise Tools install
         uses: jdx/mise-action@v2
         if: ${{ matrix.os != 'windows' }}
