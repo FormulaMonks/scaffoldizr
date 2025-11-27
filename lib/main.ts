@@ -75,6 +75,11 @@ Let's create a new one by answering the questions below.
             );
             process.exit(0);
         } catch (err) {
+            if ((err as ExitPromptError).name === "ExitPromptError") {
+                console.log(chalk.yellow("\nOperation canceled by the user."));
+                process.exit(0);
+            }
+
             console.error(chalk.red("[ERROR]:"), err?.toString());
             console.log(chalk.gray("[DEBUG]:"), err as Error);
             process.exit(1);
@@ -153,7 +158,7 @@ Let's create a new one by answering the questions below.
         process.exit(0);
     } catch (err) {
         if ((err as ExitPromptError).name === "ExitPromptError") {
-            console.log(chalk.yellow("\nProcess aborted by the user."));
+            console.log(chalk.yellow("\nOperation canceled by the user."));
             process.exit(0);
         }
 
