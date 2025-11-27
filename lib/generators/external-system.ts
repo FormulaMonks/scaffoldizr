@@ -1,7 +1,8 @@
-import { input } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
     type Relationship,
@@ -19,15 +20,15 @@ type ExternalSystemAnswers = {
     includeSource: string;
     includeTabs: string;
     relationships: Record<string, Relationship>;
+    archetype?: string;
 };
 
 const generator: GeneratorDefinition<ExternalSystemAnswers> = {
     name: Elements.ExternalSystem,
     description: "Create a new external system",
     questions: async (generator) => {
-        const workspaceInfo = await getWorkspaceJson(
-            getWorkspacePath(generator.destPath),
-        );
+        const workspacePath = getWorkspacePath(generator.destPath);
+        const workspaceInfo = await getWorkspaceJson(workspacePath);
 
         const elementName = await input({
             message: "External system name:",
@@ -38,10 +39,37 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             )(),
         });
 
-        const extSystemDescription = await input({
-            message: "System description:",
-            default: "Untitled System",
-        });
+        const availableSoftwareSystemArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.System,
+              )
+            : undefined;
+
+        const archetype = availableSoftwareSystemArchetypes
+            ? await select<string | "custom">({
+                  message: `Archetype system for ${elementName}:`,
+                  choices: [
+                      ...availableSoftwareSystemArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
+
+        const extSystemDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "System description:",
+                      default: "Untitled System",
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Interacts with",
@@ -52,7 +80,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             elementName,
             workspaceInfo,
             {
-                workspacePath: getWorkspacePath(generator.destPath),
+                workspacePath,
                 ...relationshipDefaults,
             },
         );
@@ -62,6 +90,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             extSystemDescription,
             includeSource: "relationships/_external.dsl",
             includeTabs: "        ",
+            archetype: archetype === "custom" ? undefined : archetype,
             relationships,
         };
 

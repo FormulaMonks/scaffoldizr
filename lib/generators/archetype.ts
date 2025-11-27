@@ -36,7 +36,7 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
         });
 
         const technology =
-            baseElement !== "softwareSystem"
+            baseElement !== "system"
                 ? await input({
                       message: "Technology (optional):",
                   })

@@ -131,12 +131,12 @@ describe("e2e: archetypes", () => {
             const contents = await readdir(`${folder}/architecture/archetypes`);
             expect(contents).toEqual(
                 expect.arrayContaining([
-                    "3_testArchetypeSoftwareSystem_softwareSystem.dsl",
+                    "3_testArchetypeSoftwareSystem_system.dsl",
                 ]),
             );
 
             const elementContents = await file(
-                `${folder}/architecture/archetypes/3_testArchetypeSoftwareSystem_softwareSystem.dsl`,
+                `${folder}/architecture/archetypes/3_testArchetypeSoftwareSystem_system.dsl`,
             ).text();
             expect(elementContents).toContain(
                 "testArchetypeSoftwareSystem = softwareSystem {",
@@ -229,13 +229,11 @@ describe("e2e: archetypes", () => {
 
             const contents = await readdir(`${folder}/architecture/archetypes`);
             expect(contents).toEqual(
-                expect.arrayContaining([
-                    "1_testArchetypeSs_softwareSystem.dsl",
-                ]),
+                expect.arrayContaining(["1_testArchetypeSs_system.dsl"]),
             );
 
             const elementContents = await file(
-                `${folder}/architecture/archetypes/1_testArchetypeSs_softwareSystem.dsl`,
+                `${folder}/architecture/archetypes/1_testArchetypeSs_system.dsl`,
             ).text();
             expect(elementContents).toContain(
                 "testArchetypeSs = softwareSystem {",
@@ -326,8 +324,64 @@ describe("e2e: archetypes", () => {
             expect(elementContents).toContain('technology "HTTPS"');
             expect(elementContents).toContain('tags "Tag"');
         });
+        test("new software systems should have available software system archetypes", async () => {
+            const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+                stdin: "pipe",
+            });
 
-        test.todo("new external software systems should have available software system archetypes", async () => {});
+            loop(proc, [
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.ENTER,
+                "Test System",
+                keypress.ENTER,
+                keypress.ENTER,
+            ]);
+
+            const response = await new Response(proc.stdout).text();
+            console.log(`Scaffoldizr Output:\n${response}`);
+
+            const contents = await readdir(`${folder}/architecture/systems`);
+            expect(contents).toEqual(
+                expect.arrayContaining(["test-system.dsl"]),
+            );
+
+            const elementContents = await file(
+                `${folder}/architecture/systems/test-system.dsl`,
+            ).text();
+            expect(elementContents).toContain(
+                'TestSystem = testArchetypeSs "Test System"',
+            );
+        });
+        test("new external software systems should have available software system archetypes", async () => {
+            const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+                stdin: "pipe",
+            });
+
+            loop(proc, [
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.ENTER,
+                "Test External System",
+                keypress.ENTER,
+                keypress.ENTER,
+                keypress.ENTER,
+            ]);
+
+            const response = await new Response(proc.stdout).text();
+            console.log(`Scaffoldizr Output:\n${response}`);
+
+            const contents = await readdir(`${folder}/architecture/systems`);
+            expect(contents).toEqual(expect.arrayContaining(["_external.dsl"]));
+            const elementContents = await file(
+                `${folder}/architecture/systems/_external.dsl`,
+            ).text();
+            expect(elementContents).toContain(
+                'TestExternalSystem = testArchetypeSs "Test External System"',
+            );
+        });
         test.todo("new relationships should have available relationship archetypes", async () => {});
     });
 });

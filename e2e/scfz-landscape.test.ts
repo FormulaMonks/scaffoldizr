@@ -128,7 +128,6 @@ describe("e2e: landscape", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.ENTER,
-            keypress.ENTER,
             "Test External System",
             keypress.ENTER,
             keypress.ENTER,

@@ -1,7 +1,8 @@
-import { input } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
     type Relationship,
@@ -19,15 +20,15 @@ type SystemAnswers = {
     elementName: string;
     relationships: Record<string, Relationship>;
     workspaceScope?: string;
+    archetype?: string;
 };
 
 const generator: GeneratorDefinition<SystemAnswers> = {
     name: Elements.System,
     description: "Create a new software system",
     questions: async (generator) => {
-        const workspaceInfo = await getWorkspaceJson(
-            getWorkspacePath(generator.destPath),
-        );
+        const workspacePath = getWorkspacePath(generator.destPath);
+        const workspaceInfo = await getWorkspaceJson(workspacePath);
 
         const systemName = await input({
             message: "System Name:",
@@ -37,11 +38,38 @@ const generator: GeneratorDefinition<SystemAnswers> = {
             )(),
         });
 
-        const systemDescription = await input({
-            message: "System Description:",
-            default: "Untitled System",
-            validate: stringEmpty,
-        });
+        const availableSoftwareSystemArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.System,
+              )
+            : undefined;
+
+        const archetype = availableSoftwareSystemArchetypes
+            ? await select<string | "custom">({
+                  message: `Archetype system for ${systemName}:`,
+                  choices: [
+                      ...availableSoftwareSystemArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
+
+        const systemDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "System Description:",
+                      default: "Untitled System",
+                      validate: stringEmpty,
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Uses",
@@ -52,7 +80,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
             systemName,
             workspaceInfo,
             {
-                workspacePath: getWorkspacePath(generator.destPath),
+                workspacePath,
                 ...relationshipDefaults,
             },
         );
@@ -62,6 +90,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
             systemName,
             systemDescription,
             elementName: systemName,
+            archetype: archetype === "custom" ? undefined : archetype,
             relationships,
         };
 
