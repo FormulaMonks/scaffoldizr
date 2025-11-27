@@ -118,35 +118,6 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         } as AddAction<ContainerAnswers>,
         {
             type: "append",
-            path: "architecture/relationships/_system.dsl",
-            when: (answers) => answers.workspaceScope === "softwaresystem",
-            skip: async (answers, rootPath) => {
-                const systemRelationshipsPath = resolve(
-                    rootPath,
-                    "architecture/relationships/_system.dsl",
-                );
-
-                const fileExists = await file(systemRelationshipsPath).exists();
-                if (!fileExists) return false;
-                const systemRelationships = await file(
-                    systemRelationshipsPath,
-                ).text();
-
-                const match = new RegExp(
-                    `include ${kebabCase(answers.systemName)}`,
-                    "g",
-                ).test(systemRelationships);
-
-                return (
-                    match &&
-                    `Container relationship for "${answers.systemName}" already included`
-                );
-            },
-            pattern: /.*\r?\n!include.*/,
-            templateFile: "templates/include.hbs",
-        } as AppendAction<ContainerAnswers>,
-        {
-            type: "append",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
             skip: async (answers, rootPath) => {
                 const systemViewPath = resolve(

@@ -1,12 +1,5 @@
-import {
-    afterEach,
-    beforeAll,
-    beforeEach,
-    describe,
-    expect,
-    test,
-} from "bun:test";
-import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createFullWorkspace } from "../../test/utils";
 import { Elements } from "./labels";

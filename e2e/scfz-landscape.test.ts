@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { $, file, spawn } from "bun";
 import stripAnsi from "strip-ansi";
 import { keypress, loop } from "../test/io";
+import { createWorkspaceFromCLI } from "../test/workspace";
 
 const TMP_FOLDER = process.env.TMP_FOLDER || "/tmp";
 
@@ -18,23 +19,7 @@ describe("e2e: landscape", () => {
     });
 
     test("@smoke: should create a new workspace", async () => {
-        const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
-            stdin: "pipe",
-        });
-
-        loop(proc, [
-            "Test Workspace",
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.DOWN,
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-        ]);
-
-        const response = await new Response(proc.stdout).text();
-        console.log(`Scaffoldizr Output:\n${response}`);
+        const response = await createWorkspaceFromCLI(folder, "landscape");
 
         expect(stripAnsi(response)).toContain("Welcome to Scaffoldizr");
         expect(stripAnsi(response)).toContain("Test Workspace");

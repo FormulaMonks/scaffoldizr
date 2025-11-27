@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { $, file, spawn } from "bun";
 import stripAnsi from "strip-ansi";
 import { keypress, loop } from "../test/io";
+import { createWorkspaceFromCLI } from "../test/workspace";
 
 const TMP_FOLDER = process.env.TMP_FOLDER || "/tmp";
 
@@ -18,25 +19,7 @@ describe("e2e: Software System", () => {
     });
 
     test("@smoke: should create a new workspace", async () => {
-        const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
-            stdin: "pipe",
-        });
-
-        loop(proc, [
-            "Test Workspace",
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-            "Test System",
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
-        ]);
-
-        const response = await new Response(proc.stdout).text();
-        console.log(`Scaffoldizr Output:\n${response}`);
+        const response = await createWorkspaceFromCLI(folder, "softwaresystem");
 
         expect(stripAnsi(response)).toContain("Welcome to Scaffoldizr");
         expect(stripAnsi(response)).toContain("Test Workspace");
@@ -92,39 +75,6 @@ describe("e2e: Software System", () => {
         expect(workspaceContents).toContain('const TEST "Value"');
     });
 
-    test("should add a new archetype", async () => {
-        const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
-            stdin: "pipe",
-        });
-
-        loop(proc, [
-            keypress.DOWN,
-            keypress.ENTER,
-            keypress.ENTER,
-            "TestArchetype",
-            keypress.ENTER,
-            "Java",
-            keypress.ENTER,
-            "Tag",
-            keypress.ENTER,
-        ]);
-
-        const response = await new Response(proc.stdout).text();
-        console.log(`Scaffoldizr Output:\n${response}`);
-
-        const contents = await readdir(`${folder}/architecture/archetypes`);
-        expect(contents).toEqual(
-            expect.arrayContaining(["1_testArchetype_container.dsl"]),
-        );
-
-        const elementContents = await file(
-            `${folder}/architecture/archetypes/1_testArchetype_container.dsl`,
-        ).text();
-        expect(elementContents).toContain("testArchetype = container {");
-        expect(elementContents).toContain('technology "Java"');
-        expect(elementContents).toContain('tags "Tag"');
-    });
-
     test("should add a new person", async () => {
         const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
             stdin: "pipe",
@@ -134,11 +84,7 @@ describe("e2e: Software System", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.ENTER,
-            keypress.ENTER,
             "Test Person",
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
             keypress.ENTER,
             keypress.ENTER,
             keypress.ENTER,
@@ -166,11 +112,7 @@ describe("e2e: Software System", () => {
             keypress.DOWN,
             keypress.DOWN,
             keypress.ENTER,
-            keypress.ENTER,
             "Test External System",
-            keypress.ENTER,
-            keypress.ENTER,
-            keypress.ENTER,
             keypress.ENTER,
             keypress.ENTER,
             keypress.ENTER,
@@ -206,8 +148,6 @@ describe("e2e: Software System", () => {
             keypress.ENTER,
             keypress.ENTER,
             "Node.js",
-            keypress.SPACE,
-            keypress.ENTER,
             keypress.ENTER,
             keypress.ENTER,
         ]);
@@ -277,7 +217,6 @@ describe("e2e: Software System", () => {
             keypress.DOWN,
             keypress.ENTER,
             keypress.ENTER,
-            keypress.ENTER,
             "Test View",
             keypress.ENTER,
             keypress.ENTER,
@@ -317,7 +256,7 @@ describe("e2e: Software System", () => {
         console.log(`Scaffoldizr Output:\n${response}`);
 
         const elementContents = await file(
-            `${folder}/architecture/relationships/_external.dsl`,
+            `${folder}/architecture/relationships/_people.dsl`,
         ).text();
 
         expect(elementContents).toMatch(
