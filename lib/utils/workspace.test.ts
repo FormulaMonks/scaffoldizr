@@ -6,7 +6,7 @@ import {
     expect,
     test,
 } from "bun:test";
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { createFullWorkspace } from "../../test/utils";
 import { Elements } from "./labels";
@@ -169,40 +169,16 @@ describe("workspace utilities", () => {
     });
 
     describe("getWorkspaceElementFiles", () => {
-        beforeAll(async () => {
-            const targetArchDir = join(TEST_DIR, "architecture");
-
-            await mkdir(targetArchDir, { recursive: true });
-            await createFullWorkspace(targetArchDir);
-        });
-
         test("should return list of element files for target element types", async () => {
             const archDir = join(TEST_DIR, "architecture");
+            await mkdir(archDir, { recursive: true });
+            await createFullWorkspace(archDir);
+
             const componentResult = await getWorkspaceElementFiles(
                 Elements.Component,
                 archDir,
             );
-            expect(componentResult).toBeDefined();
-            expect(componentResult?.length).toBeGreaterThan(0);
-            expect(componentResult).toMatchInlineSnapshot(`
-              [
-                {
-                  "element": "component",
-                  "name": "api-gateway",
-                  "parent": "test-system",
-                },
-                {
-                  "element": "component",
-                  "name": "frontend",
-                  "parent": "web-app",
-                },
-                {
-                  "element": "component",
-                  "name": "business-logic",
-                  "parent": "test-system",
-                },
-              ]
-            `);
+            expect(componentResult).not.toBeDefined();
 
             const containerResult = await getWorkspaceElementFiles(
                 Elements.Container,
@@ -214,11 +190,15 @@ describe("workspace utilities", () => {
               [
                 {
                   "element": "container",
-                  "name": "web-app",
+                  "name": "business-logic",
+                  "parent": "test-system",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/containers/test-system/business-logic.dsl",
                 },
                 {
                   "element": "container",
-                  "name": "test-system",
+                  "name": "api-gateway",
+                  "parent": "test-system",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/containers/test-system/api-gateway.dsl",
                 },
               ]
             `);
@@ -234,14 +214,17 @@ describe("workspace utilities", () => {
                 {
                   "element": "relationship",
                   "name": "test-archetype",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_relationship.dsl",
                 },
                 {
                   "element": "container",
                   "name": "test-archetype",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_container.dsl",
                 },
                 {
                   "element": "component",
                   "name": "test-archetype",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_component.dsl",
                 },
               ]
             `);

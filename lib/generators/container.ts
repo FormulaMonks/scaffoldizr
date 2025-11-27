@@ -87,6 +87,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             elementName,
             workspaceInfo,
             {
+                workspacePath: getWorkspacePath(generator.destPath),
                 filterChoices: (elm) =>
                     elm instanceof Separator || elm.value !== systemName,
                 ...relationshipDefaults,
@@ -170,9 +171,10 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             templateFile: "templates/views/container.hbs",
         } as AppendAction<ContainerAnswers>,
         {
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             type: "append",
             createIfNotExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<ContainerAnswers>,
     ],

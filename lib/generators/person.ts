@@ -1,14 +1,11 @@
-import { input, Separator } from "@inquirer/prompts";
+import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import {
     addRelationshipsToElement,
-    defaultParser,
     type Relationship,
-    resolveRelationshipForElement,
 } from "../utils/questions/relationships";
-import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -17,7 +14,6 @@ import {
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type PersonAnswers = {
-    systemName: string;
     personDescription: string;
     elementName: string;
     includeSource: string;
@@ -34,10 +30,6 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             getWorkspacePath(generator.destPath),
         );
 
-        const systemName = await resolveSystemQuestion(
-            workspaceInfo ?? generator.destPath,
-        );
-
         const elementName = await input({
             message: "Person name:",
             required: true,
@@ -52,35 +44,23 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             default: "Default user",
         });
 
-        const relationshipWithSystem = systemName
-            ? await resolveRelationshipForElement(systemName, elementName, {
-                  defaultRelationship: "Consumes",
-                  defaultRelationshipType: "outgoing",
-              })
-            : undefined;
-
-        const mainRelationship =
-            relationshipWithSystem && defaultParser(relationshipWithSystem);
-
         const relationships = await addRelationshipsToElement(
             elementName,
             workspaceInfo,
             {
-                filterChoices: (elm) =>
-                    elm instanceof Separator || elm.value !== systemName,
-                defaultRelationship: "Interacts with",
+                workspacePath: getWorkspacePath(generator.destPath),
+                defaultRelationship: "Consumes",
                 defaultRelationshipType: "outgoing",
             },
         );
 
         const compiledAnswers = {
             workspaceScope: workspaceInfo?.configuration.scope,
-            systemName,
             personDescription,
             elementName,
             includeSource: "relationships/_people.dsl",
             includeTabs: "        ",
-            relationships: { ...mainRelationship, ...relationships },
+            relationships,
         };
 
         return compiledAnswers;

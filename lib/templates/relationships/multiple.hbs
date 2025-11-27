@@ -1,2 +1,2 @@
-{{#each relationships}}{{#if (eq relationshipType "incoming")}}{{pascalCase (removeSpaces @key)}} -> {{pascalCase (removeSpaces ../elementName)}}{{else}}{{pascalCase (removeSpaces ../elementName)}} -> {{pascalCase (removeSpaces @key)}}{{/if}} "{{relationship}}" "{{technology}}"
+{{#each relationships}}{{#if (eq relationshipType "incoming")}}{{pascalCase (removeSpaces @key)}} {{#if archetypeRelationship}} {{{archetypeRelationship}}} {{else}} -> {{/if}}{{pascalCase (removeSpaces ../elementName)}}{{else}}{{pascalCase (removeSpaces ../elementName)}}{{#if archetypeRelationship}} {{{archetypeRelationship}}} {{else}} -> {{/if}}{{pascalCase (removeSpaces @key)}}{{/if}}{{#unless archetypeRelationship}} "{{relationship}}" "{{technology}}"{{/unless}}
 {{/each}}

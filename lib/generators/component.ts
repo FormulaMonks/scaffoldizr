@@ -29,6 +29,7 @@ type ComponentAnswers = {
     includeTabs: string;
     includeSource: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<ComponentAnswers> = {
@@ -94,6 +95,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             elementName,
             workspaceInfo,
             {
+                workspacePath: getWorkspacePath(generator.destPath),
                 includeContainers: container.systemName,
                 includeComponents: container.name,
                 filterChoices: (elm) =>
@@ -106,6 +108,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
         );
 
         const compiledAnswers = {
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
             systemName: container.systemName,
             containerName: container.name,
             elementName,
@@ -178,9 +181,10 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             templateFile: "templates/views/component.hbs",
         } as AppendAction<ComponentAnswers>,
         {
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             type: "append",
             createIfNotExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<ComponentAnswers>,
     ],

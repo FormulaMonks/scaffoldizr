@@ -56,6 +56,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             element.elementName,
             workspaceInfo,
             {
+                workspacePath: getWorkspacePath(generator.destPath),
                 includeContainers: element.systemName
                     ? element.systemName
                     : undefined,
@@ -135,25 +136,27 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
         } as AppendAction<RelationshipAnswers>,
         {
             when: (answers) =>
+                answers.workspaceScope === "softwaresystem" &&
                 Boolean(answers.systemName && !answers.containerName),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No container relationships",
             type: "append",
             createIfNotExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             pattern: /[\s\S]*\r?\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
             when: (answers) =>
+                answers.workspaceScope === "softwaresystem" &&
                 Boolean(answers.systemName && answers.containerName),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No component relationships",
             type: "append",
             pattern: /[\s\S]*\r?\n/,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<RelationshipAnswers>,
     ],

@@ -10,7 +10,6 @@ export const createFullWorkspace = async (basePath: string): Promise<void> => {
         "archetypes",
         "components",
         "containers/test-system",
-        "containers/web-app",
         "decisions",
         "docs",
         "environments",
@@ -146,7 +145,7 @@ Database = softwareSystem "Database System" {
         join(basePath, "containers/test-system/api-gateway.dsl"),
         `ApiGateway = container "API Gateway" "Routes and manages API requests" "Node.js/Express" {
     !include ../../components/test-system--api-gateway.dsl
-    tags "API Gateway"
+    tags "APIGateway"
 }`,
         "utf-8",
     );
@@ -155,7 +154,7 @@ Database = softwareSystem "Database System" {
         join(basePath, "containers/test-system/business-logic.dsl"),
         `BusinessLogic = container "Business Logic" "Core business processing" "Java/Spring Boot" {
     !include ../../components/test-system--business-logic.dsl
-    tags "Business Logic"
+    tags "BusinessLogic"
 }`,
         "utf-8",
     );
@@ -164,14 +163,14 @@ Database = softwareSystem "Database System" {
     await writeFile(
         join(basePath, "components/test-system--api-gateway.dsl"),
         `group "API Layer" {
-    AuthController = component "Authentication Controller" "Handles user authentication" "Express Controller"
-    UserController = component "User Controller" "Manages user operations" "Express Controller"
-    ValidationMiddleware = component "Validation Middleware" "Request validation" "Express Middleware"
+    ApiGateway_AuthController = component "Authentication Controller" "Handles user authentication" "Express Controller"
+    ApiGateway_UserController = component "User Controller" "Manages user operations" "Express Controller"
+    ApiGateway_ValidationMiddleware = component "Validation Middleware" "Request validation" "Express Middleware"
 }
 
 group "Security" {
-    JwtService = component "JWT Service" "Token management" "jsonwebtoken"
-    RateLimiter = component "Rate Limiter" "API rate limiting" "express-rate-limit"
+    ApiGateway_JwtService = component "JWT Service" "Token management" "jsonwebtoken"
+    ApiGateway_RateLimiter = component "Rate Limiter" "API rate limiting" "express-rate-limit"
 }`,
         "utf-8",
     );
@@ -179,29 +178,14 @@ group "Security" {
     await writeFile(
         join(basePath, "components/test-system--business-logic.dsl"),
         `group "Services" {
-    UserService = component "User Service" "User business logic" "Spring Service"
-    OrderService = component "Order Service" "Order processing logic" "Spring Service"
-    PaymentService = component "Payment Service" "Payment processing" "Spring Service"
+    BusinessLogic_UserService = component "User Service" "User business logic" "Spring Service"
+    BusinessLogic_OrderService = component "Order Service" "Order processing logic" "Spring Service"
+    BusinessLogic_PaymentService = component "Payment Service" "Payment processing" "Spring Service"
 }
 
 group "Data Access" {
-    UserRepository = component "User Repository" "User data access" "Spring Data JPA"
-    OrderRepository = component "Order Repository" "Order data access" "Spring Data JPA"
-}`,
-        "utf-8",
-    );
-
-    await writeFile(
-        join(basePath, "components/web-app--frontend.dsl"),
-        `group "Pages" {
-    HomePage = component "Home Page" "Main application page" "React Component"
-    UserDashboard = component "User Dashboard" "User management interface" "React Component"
-    OrderManagement = component "Order Management" "Order handling interface" "React Component"
-}
-
-group "Shared Components" {
-    Navigation = component "Navigation" "App navigation" "React Component"
-    ApiClient = component "API Client" "HTTP client for backend" "Axios"
+    BusinessLogic_UserRepository = component "User Repository" "User data access" "Spring Data JPA"
+    BusinessLogic_OrderRepository = component "Order Repository" "Order data access" "Spring Data JPA"
 }`,
         "utf-8",
     );

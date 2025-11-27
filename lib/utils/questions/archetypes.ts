@@ -86,3 +86,23 @@ export async function resolveBaseElementQuestion(
         position: mappedArchetypes.length + 1,
     };
 }
+
+export async function resolveAvailableArchetypeElements(
+    workspacePath: string,
+    elementType:
+        | Elements.Container
+        | Elements.Component
+        | Elements.Relationship
+        | Elements.System,
+): Promise<WorkspaceElement[]> {
+    const availableArchetypes = await getWorkspaceElementFiles(
+        Elements.Archetype,
+        getWorkspacePath(workspacePath),
+    );
+
+    const filteredArchetypes = availableArchetypes?.filter((archetype) => {
+        return archetype.element === elementType.toLowerCase();
+    });
+
+    return filteredArchetypes ?? [];
+}

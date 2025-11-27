@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { Elements } from "../labels";
 import type { StructurizrWorkspace, WorkspaceElement } from "../workspace";
-import { resolveBaseElementQuestion } from "./archetypes";
+import {
+    resolveAvailableArchetypeElements,
+    resolveBaseElementQuestion,
+} from "./archetypes";
 
 // Mock the workspace module
 mock.module("../workspace", () => ({
@@ -56,8 +60,8 @@ describe("resolveBaseElementQuestion", () => {
 
     it("increments position based on existing archetypes", async () => {
         const existingArchetypes: WorkspaceElement[] = [
-            { name: "1_api", element: "container" },
-            { name: "2_database", element: "container" },
+            { name: "1_api", element: "container", path: "" },
+            { name: "2_database", element: "container", path: "" },
         ];
 
         (getWorkspaceJson as ReturnType<typeof mock>).mockResolvedValue({
@@ -78,7 +82,7 @@ describe("resolveBaseElementQuestion", () => {
 
     it("returns archetype details when archetype is selected", async () => {
         const existingArchetypes: WorkspaceElement[] = [
-            { name: "1_api", element: "container" },
+            { name: "1_api", element: "container", path: "" },
         ];
 
         (getWorkspaceJson as ReturnType<typeof mock>).mockResolvedValue({
@@ -104,7 +108,7 @@ describe("resolveBaseElementQuestion", () => {
 
     it("handles relationship archetypes with arrow representation", async () => {
         const existingArchetypes: WorkspaceElement[] = [
-            { name: "1_http", element: "relationship" },
+            { name: "1_http", element: "relationship", path: "" },
         ];
 
         (getWorkspaceJson as ReturnType<typeof mock>).mockResolvedValue({
@@ -168,9 +172,9 @@ describe("resolveBaseElementQuestion", () => {
 
     it("sorts archetypes alphabetically by name", async () => {
         const unsortedArchetypes: WorkspaceElement[] = [
-            { name: "3_zebra", element: "container" },
-            { name: "1_alpha", element: "container" },
-            { name: "2_beta", element: "container" },
+            { name: "3_zebra", element: "container", path: "" },
+            { name: "1_alpha", element: "container", path: "" },
+            { name: "2_beta", element: "container", path: "" },
         ];
 
         (getWorkspaceJson as ReturnType<typeof mock>).mockResolvedValue({
@@ -206,5 +210,77 @@ describe("resolveBaseElementQuestion", () => {
             element: "component",
             position: 1,
         });
+    });
+});
+
+describe("resolveAvailableArchetypes", () => {
+    beforeEach(() => {
+        mock.restore();
+    });
+
+    it("return no elements when workspace element files are undefined", async () => {
+        (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
+            undefined,
+        );
+
+        const result = await resolveAvailableArchetypeElements(
+            "/test/path",
+            Elements.System,
+        );
+
+        expect(result).toEqual([]);
+    });
+
+    it("select archetypes for the selected element type", async () => {
+        (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
+            [
+                { name: "1_api", element: "container", path: "" },
+                { name: "2_database", element: "system", path: "" },
+                { name: "3_external", element: "system", path: "" },
+                { name: "4_webapp", element: "container", path: "" },
+                { name: "5_other", element: "component", path: "" },
+                { name: "6_https", element: "relationship", path: "" },
+                { name: "7_sql", element: "relationship", path: "" },
+            ],
+        );
+
+        const result1 = await resolveAvailableArchetypeElements(
+            "/test/path",
+            Elements.System,
+        );
+
+        expect(result1).toEqual([
+            { name: "2_database", element: "system", path: "" },
+            { name: "3_external", element: "system", path: "" },
+        ]);
+
+        const result2 = await resolveAvailableArchetypeElements(
+            "/test/path",
+            Elements.Container,
+        );
+
+        expect(result2).toEqual([
+            { name: "1_api", element: "container", path: "" },
+            { name: "4_webapp", element: "container", path: "" },
+        ]);
+
+        const result3 = await resolveAvailableArchetypeElements(
+            "/test/path",
+            Elements.Relationship,
+        );
+
+        expect(result3).toEqual([
+            { name: "6_https", element: "relationship", path: "" },
+            { name: "7_sql", element: "relationship", path: "" },
+        ]);
+
+        const result4 = await resolveAvailableArchetypeElements(
+            "/test/path",
+            Elements.Component,
+        );
+
+        expect(result4).toEqual([
+            { name: "5_other", element: "component", path: "" },
+        ]);
     });
 });

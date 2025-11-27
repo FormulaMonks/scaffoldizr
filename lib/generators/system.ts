@@ -51,7 +51,10 @@ const generator: GeneratorDefinition<SystemAnswers> = {
         const relationships = await addRelationshipsToElement(
             systemName,
             workspaceInfo,
-            relationshipDefaults,
+            {
+                workspacePath: getWorkspacePath(generator.destPath),
+                ...relationshipDefaults,
+            },
         );
 
         const compiledAnswers = {

@@ -1,24 +1,19 @@
-import { input, Separator } from "@inquirer/prompts";
+import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import {
     addRelationshipsToElement,
-    defaultParser,
     type Relationship,
-    resolveRelationshipForElement,
 } from "../utils/questions/relationships";
-import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
-    duplicatedSystemName,
     stringEmpty,
     validateDuplicatedElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type ExternalSystemAnswers = {
-    systemName: string;
     elementName: string;
     extSystemDescription: string;
     includeSource: string;
@@ -34,18 +29,13 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             getWorkspacePath(generator.destPath),
         );
 
-        const systemName = await resolveSystemQuestion(
-            workspaceInfo ?? generator.destPath,
-        );
-
         const elementName = await input({
             message: "External system name:",
             required: true,
-            validate: chainValidators<{ systemName: string }>(
+            validate: chainValidators(
                 stringEmpty,
-                duplicatedSystemName,
                 validateDuplicatedElements(workspaceInfo),
-            )({ systemName }),
+            )(),
         });
 
         const extSystemDescription = await input({
@@ -58,34 +48,21 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
             defaultRelationshipType: "incoming",
         };
 
-        const relationshipWithSystem = systemName
-            ? await resolveRelationshipForElement(
-                  systemName,
-                  elementName,
-                  relationshipDefaults,
-              )
-            : undefined;
-
-        const mainRelationship =
-            relationshipWithSystem && defaultParser(relationshipWithSystem);
-
         const relationships = await addRelationshipsToElement(
             elementName,
             workspaceInfo,
             {
-                filterChoices: (elm) =>
-                    elm instanceof Separator || elm.value !== systemName,
+                workspacePath: getWorkspacePath(generator.destPath),
                 ...relationshipDefaults,
             },
         );
 
         const compiledAnswers = {
-            systemName,
             elementName,
             extSystemDescription,
             includeSource: "relationships/_external.dsl",
             includeTabs: "        ",
-            relationships: { ...mainRelationship, ...relationships },
+            relationships,
         };
 
         return compiledAnswers;
