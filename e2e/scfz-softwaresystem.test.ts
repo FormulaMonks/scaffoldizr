@@ -75,7 +75,7 @@ describe("e2e: Software System", () => {
         expect(workspaceContents).toContain('const TEST "Value"');
     });
 
-    test("should add a new person", async () => {
+    test("@smoke: should add a new person", async () => {
         const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
             stdin: "pipe",
         });
