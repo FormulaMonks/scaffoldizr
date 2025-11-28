@@ -166,6 +166,12 @@ export type WorkspaceElement = {
     path: string;
 };
 
+enum REGEXP {
+    FullName = "^(.*)\\.dsl$",
+    Name = "(.*)_.*\\.dsl$",
+    Element = ".*_(.*)\\.dsl$",
+}
+
 export const getWorkspaceElementFiles = async (
     element: keyof typeof Folders,
     workspaceFolder: string | undefined,
@@ -189,7 +195,7 @@ export const getWorkspaceElementFiles = async (
             return baseFilteredFiles
                 .filter((file) => !file.name.startsWith("_"))
                 .map((file) => ({
-                    name: file.name.replace(/(.*)\.dsl$/, "$1"),
+                    name: file.name.replace(new RegExp(REGEXP.FullName), "$1"),
                     element: Elements.Container.toLowerCase(),
                     parent: file.parentPath.split("/").pop(),
                     path: join(file.parentPath, file.name),
@@ -198,8 +204,8 @@ export const getWorkspaceElementFiles = async (
 
         case Elements.Archetype: {
             return baseFilteredFiles.map((file) => ({
-                name: file.name.replace(/(.*)_.*\.dsl$/, "$1"),
-                element: file.name.replace(/.*_(.*)\.dsl$/, "$1"),
+                name: file.name.replace(new RegExp(REGEXP.Name), "$1"),
+                element: file.name.replace(new RegExp(REGEXP.Element), "$1"),
                 path: join(
                     workspaceFolder,
                     Folders[element].toLowerCase(),

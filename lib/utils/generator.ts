@@ -10,8 +10,10 @@ import { ActionTypes, add, addMany, append } from "./actions";
 /**
  * Added support for latest inquirer API
  */
-export type QuestionsObject<T = string | boolean> = {
-    [key: string]: (accumulatedAnswers: Record<string, unknown>) => Promise<T>;
+export type QuestionsObject<Result = string | boolean> = {
+    [key: string]: (
+        accumulatedAnswers: Record<string, unknown>,
+    ) => Promise<Result>;
 };
 
 export type GeneratorDefinition<

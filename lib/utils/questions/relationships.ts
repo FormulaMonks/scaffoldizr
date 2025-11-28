@@ -66,8 +66,8 @@ export const componentParser = (rawRelationshipMap: Record<string, string>) => {
     );
 };
 
-const resolveRelationshipPromises = async <T>(
-    relationshipPromises: QuestionsObject<T>,
+const resolveRelationshipPromises = async <Resolutions>(
+    relationshipPromises: QuestionsObject<Resolutions>,
 ): Promise<Record<string, string>> => {
     const relationshipMap = await Object.entries(relationshipPromises).reduce(
         async (answers, [name, prompt]) => {
@@ -112,7 +112,7 @@ const archetypeRelationshipQuestion =
         return `--${archetypeAnswer.name.split("_")[1]}->`;
     };
 
-const noCustomArchetypeRel = (
+const archetypeIsNotCustom = (
     answers: Record<string, unknown>,
     elementNamePascalCase: string,
 ) =>
@@ -167,7 +167,7 @@ export const resolveRelationshipForElement = async (
         [`${elementNamePascalCase}_relationship`]: (
             answers: Record<string, unknown>,
         ) => {
-            if (noCustomArchetypeRel(answers, elementNamePascalCase)) {
+            if (archetypeIsNotCustom(answers, elementNamePascalCase)) {
                 return Promise.resolve("");
             }
 
@@ -179,7 +179,7 @@ export const resolveRelationshipForElement = async (
         [`${elementNamePascalCase}_technology`]: (
             answers: Record<string, unknown>,
         ) => {
-            if (noCustomArchetypeRel(answers, elementNamePascalCase)) {
+            if (archetypeIsNotCustom(answers, elementNamePascalCase)) {
                 return Promise.resolve("");
             }
 
