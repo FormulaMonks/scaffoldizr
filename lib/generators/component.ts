@@ -145,7 +145,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             systemName: container.systemName,
             containerName: container.name,
             elementName,
-            archetype,
+            archetype: archetype === "custom" ? undefined : archetype,
             componentDescription,
             componentTechnology,
             includeTabs: "    ",
