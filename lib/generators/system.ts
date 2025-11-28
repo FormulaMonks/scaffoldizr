@@ -45,7 +45,7 @@ const generator: GeneratorDefinition<SystemAnswers> = {
               )
             : undefined;
 
-        const archetype = availableSoftwareSystemArchetypes
+        const archetype = availableSoftwareSystemArchetypes?.length
             ? await select<string | "custom">({
                   message: `Archetype system for ${systemName}:`,
                   choices: [

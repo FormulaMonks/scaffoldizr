@@ -6,6 +6,7 @@ import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
 import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
     type Relationship,
@@ -28,6 +29,7 @@ type ContainerAnswers = {
     includeTabs: string;
     includeSource: string;
     relationships: Record<string, Relationship>;
+    archetype?: string;
     workspaceScope?: string;
 };
 
@@ -35,9 +37,8 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
     name: Elements.Container,
     description: "Create a new system container",
     questions: async (generator) => {
-        const workspaceInfo = await getWorkspaceJson(
-            getWorkspacePath(generator.destPath),
-        );
+        const workspacePath = getWorkspacePath(generator.destPath);
+        const workspaceInfo = await getWorkspaceJson(workspacePath);
 
         const systemName = await resolveSystemQuestion(
             workspaceInfo ?? generator.destPath,
@@ -54,29 +55,65 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             )({ systemName }),
         });
 
-        const containerDescription = await input({
-            message: "Container Description:",
-            default: "Untitled Container",
-            validate: stringEmpty,
-        });
+        const availableContainerArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.Container,
+              )
+            : undefined;
 
-        const containerType = await select({
-            message: "Container type:",
-            default: "None of the above",
-            choices: [
-                { name: "EventBus", value: "EventBus" },
-                { name: "MessageBroker", value: "MessageBroker" },
-                { name: "Function", value: "Function" },
-                { name: "Database", value: "Database" },
-                { name: "WebApp", value: "WebApp" },
-                { name: "MobileApp", value: "MobileApp" },
-                { name: "None of the above", value: "None of the above" },
-            ],
-        });
+        const archetype = availableContainerArchetypes?.length
+            ? await select<string | "custom">({
+                  message: `Archetype container for ${systemName}:`,
+                  choices: [
+                      ...availableContainerArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
 
-        const containerTechnology = await input({
-            message: "Container technology:",
-        });
+        const containerDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "Container Description:",
+                      default: "Untitled Container",
+                      validate: stringEmpty,
+                  })
+                : "";
+
+        const containerType =
+            archetype === "custom"
+                ? await select({
+                      message: "Container type:",
+                      default: "None of the above",
+                      choices: [
+                          { name: "EventBus", value: "EventBus" },
+                          { name: "MessageBroker", value: "MessageBroker" },
+                          { name: "Function", value: "Function" },
+                          { name: "Database", value: "Database" },
+                          { name: "WebApp", value: "WebApp" },
+                          { name: "MobileApp", value: "MobileApp" },
+                          {
+                              name: "None of the above",
+                              value: "None of the above",
+                          },
+                      ],
+                  })
+                : "";
+
+        const containerTechnology =
+            archetype === "custom"
+                ? await input({
+                      message: "Container technology:",
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Uses",
@@ -87,7 +124,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             elementName,
             workspaceInfo,
             {
-                workspacePath: getWorkspacePath(generator.destPath),
+                workspacePath,
                 filterChoices: (elm) =>
                     elm instanceof Separator || elm.value !== systemName,
                 ...relationshipDefaults,
@@ -99,6 +136,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
             systemName,
             elementName,
+            archetype: archetype === "custom" ? undefined : archetype,
             containerDescription,
             containerType,
             containerTechnology,

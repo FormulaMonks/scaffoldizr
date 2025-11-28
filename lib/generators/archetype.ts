@@ -1,4 +1,4 @@
-import { input } from "@inquirer/prompts";
+import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
@@ -35,6 +35,26 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
             message: "Description (optional):",
         });
 
+        const containerType =
+            baseElement === "container"
+                ? await select({
+                      message: "Container type:",
+                      default: "None of the above",
+                      choices: [
+                          { name: "EventBus", value: "EventBus" },
+                          { name: "MessageBroker", value: "MessageBroker" },
+                          { name: "Function", value: "Function" },
+                          { name: "Database", value: "Database" },
+                          { name: "WebApp", value: "WebApp" },
+                          { name: "MobileApp", value: "MobileApp" },
+                          {
+                              name: "None of the above",
+                              value: "",
+                          },
+                      ],
+                  })
+                : undefined;
+
         const technology =
             baseElement !== "system"
                 ? await input({
@@ -45,6 +65,7 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
         const tags = await input({
             message: "Tags (optional):",
         });
+
         return {
             name,
             baseElement,
@@ -52,7 +73,13 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
             position,
             description,
             technology,
-            tags,
+            tags: tags
+                .trim()
+                .split(",")
+                .concat([containerType ?? ""])
+                .map((tag) => tag.trim())
+                .filter(Boolean)
+                .join(","),
         };
     },
     actions: [
