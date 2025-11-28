@@ -1,1 +1,1 @@
-{{pascalCase (removeSpaces containerName)}}_{{pascalCase (removeSpaces elementName)}} = component "{{{elementName}}}" "{{{componentDescription}}}" "{{{componentTechnology}}}"
+{{pascalCase (removeSpaces containerName)}}_{{pascalCase (removeSpaces elementName)}} = {{#if archetype}}{{{archetype}}}{{else}}component{{/if}} "{{{elementName}}}" {{#unless archetype}}"{{{componentDescription}}}" "{{{componentTechnology}}}"{{/unless}}

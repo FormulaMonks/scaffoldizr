@@ -64,7 +64,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
 
         const archetype = availableContainerArchetypes?.length
             ? await select<string | "custom">({
-                  message: `Archetype container for ${systemName}:`,
+                  message: `Archetype container for ${elementName}:`,
                   choices: [
                       ...availableContainerArchetypes.map((archetype) => ({
                           name: archetype.name.split("_")[1],

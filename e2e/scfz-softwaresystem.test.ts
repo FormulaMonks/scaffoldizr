@@ -190,13 +190,15 @@ describe("e2e: Software System", () => {
         const response = await new Response(proc.stdout).text();
         console.log(`Scaffoldizr Output:\n${response}`);
 
-        const contents = await readdir(`${folder}/architecture/components`);
+        const contents = await readdir(
+            `${folder}/architecture/components/test-system/`,
+        );
         expect(contents).toEqual(
-            expect.arrayContaining(["test-system--test-container.dsl"]),
+            expect.arrayContaining(["test-container.dsl"]),
         );
 
         const elementContents = await file(
-            `${folder}/architecture/components/test-system--test-container.dsl`,
+            `${folder}/architecture/components/test-system/test-container.dsl`,
         ).text();
         expect(elementContents).toContain(
             'TestContainer_TestComponent = component "Test Component"',

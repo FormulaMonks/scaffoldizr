@@ -7,6 +7,7 @@ import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
 import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
     componentParser,
@@ -30,12 +31,14 @@ type ComponentAnswers = {
     includeSource: string;
     relationships: Record<string, Relationship>;
     workspaceScope?: string;
+    archetype?: string;
 };
 
 const generator: GeneratorDefinition<ComponentAnswers> = {
     name: Elements.Component,
     description: "Create a new component for a container",
     questions: async (generator) => {
+        const workspacePath = getWorkspacePath(generator.destPath);
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -76,15 +79,45 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             )(),
         });
 
-        const componentDescription = await input({
-            message: "Component Description:",
-            default: "Untitled Component",
-            validate: stringEmpty,
-        });
+        const availableComponentArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.Component,
+              )
+            : undefined;
 
-        const componentTechnology = await input({
-            message: "Component technology:",
-        });
+        const archetype = availableComponentArchetypes?.length
+            ? await select<string | "custom">({
+                  message: `Archetype component for ${elementName}:`,
+                  choices: [
+                      ...availableComponentArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
+
+        const componentDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "Component Description:",
+                      default: "Untitled Component",
+                      validate: stringEmpty,
+                  })
+                : "";
+
+        const componentTechnology =
+            archetype === "custom"
+                ? await input({
+                      message: "Component technology:",
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Uses",
@@ -95,7 +128,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             elementName,
             workspaceInfo,
             {
-                workspacePath: getWorkspacePath(generator.destPath),
+                workspacePath,
                 includeContainers: container.systemName,
                 includeComponents: container.name,
                 filterChoices: (elm) =>
@@ -112,10 +145,11 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             systemName: container.systemName,
             containerName: container.name,
             elementName,
+            archetype,
             componentDescription,
             componentTechnology,
             includeTabs: "    ",
-            includeSource: `../../components/${kebabCase(container.systemName)}--${kebabCase(container.name)}.dsl\n`,
+            includeSource: `../../components/${kebabCase(container.systemName)}/${kebabCase(container.name)}.dsl\n`,
             relationships,
         };
 
@@ -124,7 +158,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
     actions: [
         {
             type: "append",
-            path: "architecture/components/{{kebabCase systemName}}--{{kebabCase containerName}}.dsl",
+            path: "architecture/components/{{kebabCase systemName}}/{{kebabCase containerName}}.dsl",
             createIfNotExists: true,
             pattern: /[\s\S]*\r?\n/,
             templateFile: "templates/components/component.hbs",

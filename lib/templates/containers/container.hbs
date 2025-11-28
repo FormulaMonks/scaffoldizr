@@ -1,6 +1,6 @@
-{{pascalCase (removeSpaces elementName)}} = {{#if archetype}}{{{archetype}}}{{else}}container{{/if}} "{{{elementName}}}" {{#unless archetype}}"{{{containerDescription}}}" "{{{containerTechnology}}}"{{#if (eq containerType "None of the above")}} {
+{{pascalCase (removeSpaces elementName)}} = {{#if archetype}}{{{archetype}}}{{else}}container{{/if}} "{{{elementName}}}" {{#unless archetype}}"{{{containerDescription}}}" "{{{containerTechnology}}}"{{/unless}}{{#if (or archetype (eq containerType "None of the above"))}} {
     
 }
 {{else}} {
     tags "{{containerType}}"
-}{{/if}}{{/unless}}
+}{{/if}}

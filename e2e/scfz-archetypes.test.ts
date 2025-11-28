@@ -208,8 +208,12 @@ describe("e2e: archetypes", () => {
             const response = await new Response(proc.stdout).text();
             console.log(`Scaffoldizr Output:\n${response}`);
 
-            const contents = await readdir(`${folder}/architecture/containers`);
-            expect(contents).toEqual(expect.arrayContaining(["test-system"]));
+            const contents = await readdir(
+                `${folder}/architecture/containers/test-system`,
+            );
+            expect(contents).toEqual(
+                expect.arrayContaining(["test-container-2.dsl"]),
+            );
 
             const elementContents = await file(
                 `${folder}/architecture/containers/test-system/test-container-2.dsl`,
@@ -218,9 +222,102 @@ describe("e2e: archetypes", () => {
                 'TestContainer2 = testArchetypeContainer "Test Container 2"',
             );
         });
-        test.todo("new components should have available component archetypes", async () => {});
-        test.todo("new external software systems should have available software system archetypes", async () => {});
-        test.todo("new relationships should have available relationship archetypes", async () => {});
+
+        test("new components should have available component archetypes", async () => {
+            const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+                stdin: "pipe",
+            });
+
+            loop(proc, [
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.ENTER,
+                keypress.ENTER,
+                "Test Component",
+                keypress.ENTER,
+                keypress.ENTER,
+                keypress.ENTER,
+            ]);
+
+            const response = await new Response(proc.stdout).text();
+            console.log(`Scaffoldizr Output:\n${response}`);
+
+            const contents = await readdir(
+                `${folder}/architecture/components/test-system`,
+            );
+            expect(contents).toEqual(
+                expect.arrayContaining(["test-container-2.dsl"]),
+            );
+
+            const elementContents = await file(
+                `${folder}/architecture/components/test-system/test-container-2.dsl`,
+            ).text();
+            expect(elementContents).toContain(
+                'TestComponent = testArchetypeComponent "Test Component"',
+            );
+        });
+
+        test("new external software systems should have available software system archetypes", async () => {
+            const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+                stdin: "pipe",
+            });
+
+            loop(proc, [
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.DOWN,
+                keypress.ENTER,
+                "Test External System",
+                keypress.ENTER,
+                keypress.ENTER,
+                keypress.ENTER,
+            ]);
+
+            const response = await new Response(proc.stdout).text();
+            console.log(`Scaffoldizr Output:\n${response}`);
+
+            const contents = await readdir(`${folder}/architecture/systems`);
+            expect(contents).toEqual(expect.arrayContaining(["_external.dsl"]));
+            const elementContents = await file(
+                `${folder}/architecture/systems/_external.dsl`,
+            ).text();
+            expect(elementContents).toContain(
+                'TestExternalSystem = testArchetypeSoftwareSystem "Test External System"',
+            );
+        });
+
+        test("new relationships should have available relationship archetypes", async () => {
+            const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
+                stdin: "pipe",
+            });
+
+            loop(proc, [
+                keypress.UP,
+                keypress.ENTER,
+                keypress.ENTER,
+                keypress.SPACE,
+                keypress.ENTER,
+                keypress.ENTER,
+                keypress.ENTER,
+            ]);
+
+            const response = await new Response(proc.stdout).text();
+            console.log(`Scaffoldizr Output:\n${response}`);
+
+            const contents = await readdir(
+                `${folder}/architecture/relationships`,
+            );
+            expect(contents).toEqual(expect.arrayContaining(["_external.dsl"]));
+            const elementContents = await file(
+                `${folder}/architecture/relationships/_external.dsl`,
+            ).text();
+            expect(elementContents).toContain(
+                "TestExternalSystem --testArchetypeRelationship-> TestSystem",
+            );
+        });
     });
 
     describe("Landscape", () => {
@@ -354,6 +451,7 @@ describe("e2e: archetypes", () => {
             expect(elementContents).toContain('technology "HTTPS"');
             expect(elementContents).toContain('tags "Tag"');
         });
+
         test("new software systems should have available software system archetypes", async () => {
             const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
                 stdin: "pipe",
@@ -383,6 +481,7 @@ describe("e2e: archetypes", () => {
                 'TestSystem = testArchetypeSs "Test System"',
             );
         });
+
         test("new external software systems should have available software system archetypes", async () => {
             const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
                 stdin: "pipe",
@@ -412,6 +511,7 @@ describe("e2e: archetypes", () => {
                 'TestExternalSystem = testArchetypeSs "Test External System"',
             );
         });
+
         test("new relationships should have available relationship archetypes", async () => {
             const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
                 stdin: "pipe",
