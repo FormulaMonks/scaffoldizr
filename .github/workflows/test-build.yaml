@@ -21,7 +21,7 @@ jobs:
           experimental: true
       - name: Test
         run: |
-          mise use bun@1.1.20
+          mise use bun@1.2.15
           bun install
           bun test:ci
   bump-version:
@@ -37,7 +37,7 @@ jobs:
           install: true
           cache: true
           experimental: true
-      - run: mise use bun@1.1.20
+      - run: mise use bun@1.2.15
       - run: bun install
       - name: Bump version
         id: bump
@@ -126,12 +126,12 @@ jobs:
           install: true
           cache: true
           experimental: true
-      - run: mise use bun@1.1.20
+      - run: mise use bun@1.2.15
         if: ${{ matrix.os != 'windows' }}
       - name: Choco Tools Install
         run: |
           choco install jq --version 1.7.1
-          choco install bun --version 1.1.20
+          choco install bun --version 1.2.15
         if: ${{ matrix.os == 'windows' }}
       - run: bun install --ignore-scripts
       - name: Create binary and release files
