@@ -59,7 +59,7 @@ jobs:
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
           status_options: "--untracked-files=no"
           # add_options: '-u'
-          push_options: "--force"
+          push_options: "--force --no-verify"
           skip_dirty_check: true
           skip_fetch: false
           skip_checkout: false
