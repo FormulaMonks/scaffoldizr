@@ -45,7 +45,7 @@ jobs:
         uses: jdx/mise-action@v3
         if: ${{ matrix.os != 'windows' }}
         with:
-          version: 2025.11.10
+          version: 2025.11.09
           install: true
           cache: true
           experimental: true
