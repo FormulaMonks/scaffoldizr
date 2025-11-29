@@ -15,7 +15,7 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v3
         with:
-          version: 2025.11.09
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
@@ -33,7 +33,7 @@ jobs:
       - name: Mise Tools install
         uses: jdx/mise-action@v3
         with:
-          version: 2025.11.09
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
@@ -122,7 +122,7 @@ jobs:
         uses: jdx/mise-action@v3
         if: ${{ matrix.os != 'windows' }}
         with:
-          version: 2025.11.09
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true

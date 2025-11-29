@@ -14,7 +14,7 @@ jobs:
     name: e2e-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     env:
-      STRUCTURIZR_CLI_VERSION: v2025.11.08
+      STRUCTURIZR_CLI_VERSION: v2025.11.09
     strategy:
       fail-fast: true
       matrix:
@@ -45,7 +45,7 @@ jobs:
         uses: jdx/mise-action@v3
         if: ${{ matrix.os != 'windows' }}
         with:
-          version: 2025.11.09
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
