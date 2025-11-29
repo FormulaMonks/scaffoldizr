@@ -1,15 +1,17 @@
 import { resolve } from "node:path";
-import { Separator, input, select } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import { file } from "bun";
 import chalk from "chalk";
 import { kebabCase, pascalCase } from "change-case";
-import type { AddAction, AppendAction } from "../utils/actions";
+import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
+import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
-    type Relationship,
     addRelationshipsToElement,
     componentParser,
+    type Relationship,
 } from "../utils/questions/relationships";
 import { getAllWorkspaceElements } from "../utils/questions/system";
 import {
@@ -28,12 +30,15 @@ type ComponentAnswers = {
     includeTabs: string;
     includeSource: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
+    archetype?: string;
 };
 
 const generator: GeneratorDefinition<ComponentAnswers> = {
-    name: "Component",
+    name: Elements.Component,
     description: "Create a new component for a container",
     questions: async (generator) => {
+        const workspacePath = getWorkspacePath(generator.destPath);
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
         );
@@ -74,15 +79,45 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             )(),
         });
 
-        const componentDescription = await input({
-            message: "Component Description:",
-            default: "Untitled Component",
-            validate: stringEmpty,
-        });
+        const availableComponentArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.Component,
+              )
+            : undefined;
 
-        const componentTechnology = await input({
-            message: "Component technology:",
-        });
+        const archetype = availableComponentArchetypes?.length
+            ? await select<string | "custom">({
+                  message: `Archetype component for ${elementName}:`,
+                  choices: [
+                      ...availableComponentArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
+
+        const componentDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "Component Description:",
+                      default: "Untitled Component",
+                      validate: stringEmpty,
+                  })
+                : "";
+
+        const componentTechnology =
+            archetype === "custom"
+                ? await input({
+                      message: "Component technology:",
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Uses",
@@ -93,6 +128,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             elementName,
             workspaceInfo,
             {
+                workspacePath,
                 includeContainers: container.systemName,
                 includeComponents: container.name,
                 filterChoices: (elm) =>
@@ -105,13 +141,15 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
         );
 
         const compiledAnswers = {
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
             systemName: container.systemName,
             containerName: container.name,
             elementName,
+            archetype: archetype === "custom" ? undefined : archetype,
             componentDescription,
             componentTechnology,
             includeTabs: "    ",
-            includeSource: `../../components/${kebabCase(container.systemName)}--${kebabCase(container.name)}.dsl\n`,
+            includeSource: `../../components/${kebabCase(container.systemName)}/${kebabCase(container.name)}.dsl\n`,
             relationships,
         };
 
@@ -120,7 +158,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
     actions: [
         {
             type: "append",
-            path: "architecture/components/{{kebabCase systemName}}--{{kebabCase containerName}}.dsl",
+            path: "architecture/components/{{kebabCase systemName}}/{{kebabCase containerName}}.dsl",
             createIfNotExists: true,
             pattern: /[\s\S]*\r?\n/,
             templateFile: "templates/components/component.hbs",
@@ -177,9 +215,10 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             templateFile: "templates/views/component.hbs",
         } as AppendAction<ComponentAnswers>,
         {
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             type: "append",
             createIfNotExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<ComponentAnswers>,
     ],

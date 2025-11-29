@@ -1,11 +1,15 @@
 import { Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
-import { elementTypeByTags, labelElementByTags } from "../utils/labels";
 import {
-    type Relationship,
+    Elements,
+    elementTypeByTags,
+    labelElementByTags,
+} from "../utils/labels";
+import {
     addRelationshipsToElement,
     componentParser,
+    type Relationship,
 } from "../utils/questions/relationships";
 import { getAllWorkspaceElements } from "../utils/questions/system";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
@@ -16,10 +20,11 @@ type RelationshipAnswers = {
     containerName?: string;
     elementType: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<RelationshipAnswers> = {
-    name: "Relationship",
+    name: Elements.Relationship,
     description: "Create a new relationship between elements",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
@@ -51,6 +56,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             element.elementName,
             workspaceInfo,
             {
+                workspacePath: getWorkspacePath(generator.destPath),
                 includeContainers: element.systemName
                     ? element.systemName
                     : undefined,
@@ -87,12 +93,18 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             },
         );
 
+        const isPerson = element.elementType === Elements.Person;
+        const isExternalSystem =
+            element.elementType === Elements.ExternalSystem;
+
         const compiledAnswers = {
             ...element,
-            elementType:
-                element.elementType === "Person"
-                    ? "people"
-                    : element.elementType,
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
+            elementType: isPerson
+                ? "people"
+                : isExternalSystem
+                  ? "external"
+                  : element.elementType,
             relationships,
         };
 
@@ -101,7 +113,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
     actions: [
         {
             when: (answers) =>
-                !["Container", "Component"].includes(answers.elementType),
+                ["people", "external", "system"].includes(answers.elementType),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No system relationships",
@@ -112,25 +124,39 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
         } as AppendAction<RelationshipAnswers>,
         {
             when: (answers) =>
+                answers.workspaceScope === "landscape" &&
+                !["people", "external"].includes(answers.elementType),
+            skip: (answers) =>
+                Object.keys(answers.relationships).length <= 0 &&
+                "No system relationships",
+            type: "append",
+            path: "architecture/relationships/landscape.dsl",
+            pattern: /\r?\n.* -> .*\r?\n/,
+            templateFile: "templates/relationships/multiple.hbs",
+        } as AppendAction<RelationshipAnswers>,
+        {
+            when: (answers) =>
+                answers.workspaceScope === "softwaresystem" &&
                 Boolean(answers.systemName && !answers.containerName),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No container relationships",
             type: "append",
             createIfNotExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             pattern: /[\s\S]*\r?\n/,
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<RelationshipAnswers>,
         {
             when: (answers) =>
+                answers.workspaceScope === "softwaresystem" &&
                 Boolean(answers.systemName && answers.containerName),
             skip: (answers) =>
                 Object.keys(answers.relationships).length <= 0 &&
                 "No component relationships",
             type: "append",
             pattern: /[\s\S]*\r?\n/,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/relationships/multiple-component.hbs",
         } as AppendAction<RelationshipAnswers>,
     ],

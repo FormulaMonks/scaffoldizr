@@ -1,5 +1,7 @@
+import { readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { file } from "bun";
+import { Elements, Folders } from "./labels";
 
 type Item = Record<string, unknown>;
 type Properties = {
@@ -105,6 +107,7 @@ type Configuration = {
     branding: Item;
     styles: Item;
     terminology: Item;
+    scope?: "Landscape" | "SoftwareSystem";
 };
 
 export type StructurizrWorkspace = {
@@ -154,4 +157,61 @@ export const getWorkspaceJson = async (
     }
 
     return undefined;
+};
+
+export type WorkspaceElement = {
+    name: string;
+    parent?: string;
+    element: string;
+    path: string;
+};
+
+enum REGEXP {
+    FullName = "^(.*)\\.dsl$",
+    Name = "(.*)_.*\\.dsl$",
+    Element = ".*_(.*)\\.dsl$",
+}
+
+export const getWorkspaceElementFiles = async (
+    element: keyof typeof Folders,
+    workspaceFolder: string | undefined,
+): Promise<WorkspaceElement[] | undefined> => {
+    if (!workspaceFolder) return undefined;
+
+    const elementFolder = await readdir(
+        join(workspaceFolder, Folders[element].toLowerCase()),
+        {
+            withFileTypes: true,
+            recursive: true,
+        },
+    );
+
+    const baseFilteredFiles = elementFolder.filter(
+        (file) => file.isFile() && !file.name.startsWith("."),
+    );
+
+    switch (element) {
+        case Elements.Container: {
+            return baseFilteredFiles
+                .filter((file) => !file.name.startsWith("_"))
+                .map((file) => ({
+                    name: file.name.replace(new RegExp(REGEXP.FullName), "$1"),
+                    element: Elements.Container.toLowerCase(),
+                    parent: file.parentPath.split("/").pop(),
+                    path: join(file.parentPath, file.name),
+                }));
+        }
+
+        case Elements.Archetype: {
+            return baseFilteredFiles.map((file) => ({
+                name: file.name.replace(new RegExp(REGEXP.Name), "$1"),
+                element: file.name.replace(new RegExp(REGEXP.Element), "$1"),
+                path: join(
+                    workspaceFolder,
+                    Folders[element].toLowerCase(),
+                    file.name,
+                ),
+            }));
+        }
+    }
 };

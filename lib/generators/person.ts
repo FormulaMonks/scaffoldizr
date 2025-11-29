@@ -1,14 +1,11 @@
-import { Separator, input } from "@inquirer/prompts";
+import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
-import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import {
-    type Relationship,
     addRelationshipsToElement,
-    defaultParser,
-    resolveRelationshipForElement,
+    type Relationship,
 } from "../utils/questions/relationships";
-import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
     stringEmpty,
@@ -17,24 +14,20 @@ import {
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type PersonAnswers = {
-    systemName: string;
     personDescription: string;
     elementName: string;
     includeSource: string;
     includeTabs: string;
     relationships: Record<string, Relationship>;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<PersonAnswers> = {
-    name: "Person",
+    name: Elements.Person,
     description: "Create a new person (customer, user, etc)",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
             getWorkspacePath(generator.destPath),
-        );
-
-        const systemName = await resolveSystemQuestion(
-            workspaceInfo ?? generator.destPath,
         );
 
         const elementName = await input({
@@ -51,50 +44,28 @@ const generator: GeneratorDefinition<PersonAnswers> = {
             default: "Default user",
         });
 
-        const relationshipWithSystem = await resolveRelationshipForElement(
-            systemName,
+        const relationships = await addRelationshipsToElement(
             elementName,
+            workspaceInfo,
             {
+                workspacePath: getWorkspacePath(generator.destPath),
                 defaultRelationship: "Consumes",
                 defaultRelationshipType: "outgoing",
             },
         );
 
-        const mainRelationship = defaultParser(relationshipWithSystem);
-        const relationships = await addRelationshipsToElement(
-            elementName,
-            workspaceInfo,
-            {
-                filterChoices: (elm) =>
-                    elm instanceof Separator || elm.value !== systemName,
-                defaultRelationship: "Interacts with",
-                defaultRelationshipType: "outgoing",
-            },
-        );
-
         const compiledAnswers = {
-            systemName,
+            workspaceScope: workspaceInfo?.configuration.scope,
             personDescription,
             elementName,
             includeSource: "relationships/_people.dsl",
             includeTabs: "        ",
-            relationships: { ...mainRelationship, ...relationships },
+            relationships,
         };
 
         return compiledAnswers;
     },
     actions: [
-        {
-            skip: (_answers, rootPath) =>
-                whenFileExists(
-                    "relationships/_people.dsl",
-                    getWorkspacePath(rootPath),
-                ),
-            type: "append",
-            path: "architecture/workspace.dsl",
-            pattern: /# Relationships/,
-            templateFile: "templates/include.hbs",
-        } as AppendAction<PersonAnswers>,
         {
             type: "append",
             createIfNotExists: true,

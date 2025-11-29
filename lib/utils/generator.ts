@@ -10,8 +10,10 @@ import { ActionTypes, add, addMany, append } from "./actions";
 /**
  * Added support for latest inquirer API
  */
-export type QuestionsObject<T = string | boolean> = {
-    [key: string]: () => Promise<T>;
+export type QuestionsObject<Result = string | boolean> = {
+    [key: string]: (
+        accumulatedAnswers: Record<string, unknown>,
+    ) => Promise<Result>;
 };
 
 export type GeneratorDefinition<
@@ -69,7 +71,7 @@ export async function createGenerator<A extends Record<string, unknown>>(
                   async (answers, [name, prompt]) => {
                       const acc = await answers;
 
-                      const answer = await prompt?.();
+                      const answer = await prompt?.(acc);
 
                       return {
                           ...acc,

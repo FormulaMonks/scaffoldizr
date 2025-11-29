@@ -4,6 +4,6 @@
         "gruntfuggly.todo-tree",
         "biomejs.biome",
         "streetsidesoftware.code-spell-checker",
-        "systemticks.c4-dsl-extension"
+        "oven.bun-vscode"
     ]
 }

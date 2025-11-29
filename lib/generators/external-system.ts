@@ -1,103 +1,102 @@
-import { Separator, input } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
-import { whenFileExists } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
+import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
-    type Relationship,
     addRelationshipsToElement,
-    defaultParser,
-    resolveRelationshipForElement,
+    type Relationship,
 } from "../utils/questions/relationships";
-import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
-    duplicatedSystemName,
     stringEmpty,
     validateDuplicatedElements,
 } from "../utils/questions/validators";
 import { getWorkspaceJson, getWorkspacePath } from "../utils/workspace";
 
 type ExternalSystemAnswers = {
-    systemName: string;
     elementName: string;
     extSystemDescription: string;
     includeSource: string;
     includeTabs: string;
     relationships: Record<string, Relationship>;
+    archetype?: string;
 };
 
 const generator: GeneratorDefinition<ExternalSystemAnswers> = {
-    name: "External System",
+    name: Elements.ExternalSystem,
     description: "Create a new external system",
     questions: async (generator) => {
-        const workspaceInfo = await getWorkspaceJson(
-            getWorkspacePath(generator.destPath),
-        );
-
-        const systemName = await resolveSystemQuestion(
-            workspaceInfo ?? generator.destPath,
-        );
+        const workspacePath = getWorkspacePath(generator.destPath);
+        const workspaceInfo = await getWorkspaceJson(workspacePath);
 
         const elementName = await input({
             message: "External system name:",
             required: true,
-            validate: chainValidators<{ systemName: string }>(
+            validate: chainValidators(
                 stringEmpty,
-                duplicatedSystemName,
                 validateDuplicatedElements(workspaceInfo),
-            )({ systemName }),
+            )(),
         });
 
-        const extSystemDescription = await input({
-            message: "System description:",
-            default: "Untitled System",
-        });
+        const availableSoftwareSystemArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.System,
+              )
+            : undefined;
+
+        const archetype = availableSoftwareSystemArchetypes?.length
+            ? await select<string | "custom">({
+                  message: `Archetype system for ${elementName}:`,
+                  choices: [
+                      ...availableSoftwareSystemArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
+
+        const extSystemDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "System description:",
+                      default: "Untitled System",
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Interacts with",
             defaultRelationshipType: "incoming",
         };
 
-        const relationshipWithSystem = await resolveRelationshipForElement(
-            systemName,
-            elementName,
-            relationshipDefaults,
-        );
-
-        const mainRelationship = defaultParser(relationshipWithSystem);
         const relationships = await addRelationshipsToElement(
             elementName,
             workspaceInfo,
             {
-                filterChoices: (elm) =>
-                    elm instanceof Separator || elm.value !== systemName,
+                workspacePath,
                 ...relationshipDefaults,
             },
         );
 
         const compiledAnswers = {
-            systemName,
             elementName,
             extSystemDescription,
             includeSource: "relationships/_external.dsl",
             includeTabs: "        ",
-            relationships: { ...mainRelationship, ...relationships },
+            archetype: archetype === "custom" ? undefined : archetype,
+            relationships,
         };
 
         return compiledAnswers;
     },
     actions: [
-        {
-            skip: (_answers, rootPath) =>
-                whenFileExists(
-                    "relationships/_external.dsl",
-                    getWorkspacePath(rootPath),
-                ),
-            type: "append",
-            path: "architecture/workspace.dsl",
-            pattern: /# Relationships/,
-            templateFile: "templates/include.hbs",
-        } as AppendAction<ExternalSystemAnswers>,
         {
             createIfNotExists: true,
             type: "append",

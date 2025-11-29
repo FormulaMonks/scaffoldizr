@@ -3,7 +3,7 @@ name: Tool Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   test-build:
@@ -27,13 +27,13 @@ jobs:
           fetch-tags: true
           ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
       - name: Mise Tools install
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
         with:
-          version: 2024.7.3
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
-      - run: mise use bun@1.1.20
+      - run: mise use bun@1.2.15
       - run: bun install
       - name: Create changelog
         run: |
@@ -62,16 +62,16 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           commit_message: "[skip ci]: Updated install script"
-          commit_options: '--no-verify --signoff'
+          commit_options: "--no-verify --signoff"
           branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
-          file_pattern: 'docs/**'
+          file_pattern: "docs/**"
           repository: .
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
-          status_options: '--untracked-files=no'
+          status_options: "--untracked-files=no"
           # add_options: '-u'
-          push_options: '--force'
-          skip_dirty_check: true    
-          skip_fetch: true    
+          push_options: "--force"
+          skip_dirty_check: true
+          skip_fetch: true
           skip_checkout: false
           disable_globbing: true
           create_branch: false

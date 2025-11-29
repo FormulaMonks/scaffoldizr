@@ -1,10 +1,12 @@
-import { Separator, checkbox, input, select } from "@inquirer/prompts";
+import { checkbox, input, Separator, select } from "@inquirer/prompts";
 import { pascalCase } from "change-case";
 import type { QuestionsObject } from "../generator";
 import { removeSpaces } from "../handlebars";
-import { labelElementByTags } from "../labels";
-import type { StructurizrWorkspace } from "../workspace";
+import { Elements, labelElementByTags } from "../labels";
+import type { StructurizrWorkspace, WorkspaceElement } from "../workspace";
+import { resolveAvailableArchetypeElements } from "./archetypes";
 import { getAllWorkspaceElements } from "./system";
+import { separator } from "./utils";
 
 export type Relationship = {
     relationship: string;
@@ -16,6 +18,7 @@ type RelationshipForElementOptions = {
     defaultRelationship?: string;
     defaultRelationshipType?: string;
     defaultTechnology?: string;
+    archetypeRelationships?: WorkspaceElement[];
 };
 
 type AddRelationshipOptions = {
@@ -29,6 +32,7 @@ type AddRelationshipOptions = {
     includeContainers?: string;
     includeComponents?: string;
     message?: string;
+    workspacePath?: string;
 } & RelationshipForElementOptions;
 
 export const defaultParser = (rawRelationshipMap: Record<string, string>) => {
@@ -62,15 +66,15 @@ export const componentParser = (rawRelationshipMap: Record<string, string>) => {
     );
 };
 
-const resolveRelationshipPromises = async (
-    relationshipPromises: QuestionsObject<string>,
+const resolveRelationshipPromises = async <Resolutions>(
+    relationshipPromises: QuestionsObject<Resolutions>,
 ): Promise<Record<string, string>> => {
     const relationshipMap = await Object.entries(relationshipPromises).reduce(
         async (answers, [name, prompt]) => {
             const acc = await answers;
-            const answer = await prompt?.();
+            const answer = await prompt?.(acc);
 
-            if (!answer) return acc;
+            if (!answer || typeof answer !== "string") return acc;
 
             return {
                 ...acc,
@@ -83,6 +87,38 @@ const resolveRelationshipPromises = async (
     return relationshipMap;
 };
 
+const archetypeRelationshipQuestion =
+    (archetypeRelationships: WorkspaceElement[], relName: string) =>
+    async () => {
+        const archetypeAnswer = await select<WorkspaceElement | "custom">({
+            message: `Archetype relationship for ${relName}:`,
+            choices: [
+                ...archetypeRelationships.map((archetype) => ({
+                    name: archetype.name.split("_")[1],
+                    value: archetype,
+                })),
+                new Separator(),
+                {
+                    name: "Custom",
+                    value: "custom",
+                },
+            ],
+        });
+
+        if (archetypeAnswer === "custom") {
+            return "custom";
+        }
+
+        return `--${archetypeAnswer.name.split("_")[1]}->`;
+    };
+
+const archetypeIsNotCustom = (
+    answers: Record<string, unknown>,
+    elementNamePascalCase: string,
+) =>
+    answers[`${elementNamePascalCase}_archetypeRelationship`] &&
+    answers[`${elementNamePascalCase}_archetypeRelationship`] !== "custom";
+
 export const resolveRelationshipForElement = async (
     relationshipName: string,
     elementName: string,
@@ -90,6 +126,7 @@ export const resolveRelationshipForElement = async (
         defaultRelationship = "Interacts with",
         defaultRelationshipType = "incoming",
         defaultTechnology = "Web/HTTP",
+        archetypeRelationships = [],
     }: RelationshipForElementOptions = {},
 ): Promise<Record<string, string>> => {
     const [containerName, maybeRelName] = relationshipName.split("_");
@@ -115,30 +152,45 @@ export const resolveRelationshipForElement = async (
                 ],
                 default: defaultRelationshipType,
             }),
-        [`${elementNamePascalCase}_relationship`]: () =>
-            input({
+        ...(archetypeRelationships.length
+            ? {
+                  [`${elementNamePascalCase}_archetypeRelationship`]:
+                      archetypeRelationshipQuestion(
+                          archetypeRelationships,
+                          relName,
+                      ),
+              }
+            : {
+                  [`${elementNamePascalCase}_archetypeRelationship`]: () =>
+                      Promise.resolve(""),
+              }),
+        [`${elementNamePascalCase}_relationship`]: (
+            answers: Record<string, unknown>,
+        ) => {
+            if (archetypeIsNotCustom(answers, elementNamePascalCase)) {
+                return Promise.resolve("");
+            }
+
+            return input({
                 message: `Relationship with ${relName}:`,
                 default: defaultRelationship,
-            }),
-        [`${elementNamePascalCase}_technology`]: () =>
-            input({
+            });
+        },
+        [`${elementNamePascalCase}_technology`]: (
+            answers: Record<string, unknown>,
+        ) => {
+            if (archetypeIsNotCustom(answers, elementNamePascalCase)) {
+                return Promise.resolve("");
+            }
+
+            return input({
                 message: "Technology:",
                 default: defaultTechnology,
-            }),
+            });
+        },
     };
 
     return resolveRelationshipPromises(relationshipPromises);
-};
-
-const separator = (
-    name: string,
-    elements: unknown[],
-): Separator | unknown[] => {
-    const maybeSeparator = elements.length
-        ? new Separator(`-- ${name} --`)
-        : [];
-
-    return maybeSeparator;
 };
 
 export async function addRelationshipsToElement(
@@ -154,6 +206,7 @@ export async function addRelationshipsToElement(
         defaultTechnology = "Web/HTTP",
         includeContainers,
         includeComponents,
+        workspacePath,
     }: AddRelationshipOptions = {},
 ): Promise<Record<string, Relationship>> {
     if (!workspaceInfo) return {};
@@ -181,15 +234,17 @@ export async function addRelationshipsToElement(
 
     const systemElements = (
         [
-            separator(`Components (${includeComponents})`, components),
+            components.length &&
+                separator(`Components (${includeComponents})`, components),
             ...components,
-            separator(`Containers (${includeContainers})`, containers),
+            containers.length &&
+                separator(`Containers (${includeContainers})`, containers),
             ...containers,
-            separator("Systems", softwareSystems),
+            softwareSystems.length && separator("Systems", softwareSystems),
             ...softwareSystems,
-            separator("People", people),
+            people.length && separator("People", people),
             ...people,
-        ] as ((typeof elements)[number] | Separator)[]
+        ].filter(Boolean) as ((typeof elements)[number] | Separator)[]
     )
         .flat()
         .map((elm) =>
@@ -202,12 +257,11 @@ export async function addRelationshipsToElement(
                           : elm.name,
                   },
         )
-        // TODO: remove separators whose elements are filtered out
-        // (no elements after filterChoices applied)
         .filter(filterChoices);
 
-    if (!systemElements.filter((elm) => !(elm instanceof Separator)).length)
+    if (!systemElements.filter((elm) => !(elm instanceof Separator)).length) {
         return {};
+    }
 
     const relationshipNames = await checkbox({
         message,
@@ -219,11 +273,23 @@ export async function addRelationshipsToElement(
 
     let relationshipsMap: Record<string, Relationship> = {};
 
+    const availableRelationshipArchetypes = workspacePath
+        ? await resolveAvailableArchetypeElements(
+              workspacePath,
+              Elements.Relationship,
+          )
+        : undefined;
+
     for await (const relationshipName of relationshipNames) {
         const relationship = await resolveRelationshipForElement(
             relationshipName,
             elementName,
-            { defaultRelationship, defaultRelationshipType, defaultTechnology },
+            {
+                defaultRelationship,
+                defaultRelationshipType,
+                defaultTechnology,
+                archetypeRelationships: availableRelationshipArchetypes,
+            },
         );
 
         relationshipsMap = {

@@ -1,0 +1,5 @@
+{{camelCase (removeSpaces name)}} = {{#if archetype}}{{{archetype}}}{{else}}{{#if (eq baseElement "relationship")}}->{{else}}{{baseElement}}{{/if}}{{/if}} {
+    {{#if description}}description "{{description}}"{{/if}}{{#if technology}}
+    technology "{{technology}}"{{/if}}{{#if tags}}
+    tags "{{tags}}"{{/if}}
+}

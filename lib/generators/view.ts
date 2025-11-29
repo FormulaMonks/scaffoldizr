@@ -2,6 +2,7 @@ import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import { skipUnlessViewType, whenViewType } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
+import { Elements } from "../utils/labels";
 import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
@@ -24,7 +25,7 @@ type ViewAnswers = {
 // // - System landscape
 // // - Deployment
 const generator: GeneratorDefinition<ViewAnswers> = {
-    name: "View",
+    name: Elements.View,
     description: "Create a new view",
     questions: async (generator) => {
         const workspaceInfo = await getWorkspaceJson(
@@ -68,6 +69,8 @@ const generator: GeneratorDefinition<ViewAnswers> = {
                       default: "System instance",
                   })
                 : undefined;
+
+        // TODO: For deployment views return system technologies to set in the template
 
         return {
             viewType,

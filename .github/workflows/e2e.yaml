@@ -14,7 +14,7 @@ jobs:
     name: e2e-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
     env:
-      STRUCTURIZR_CLI_VERSION: v2024.07.03
+      STRUCTURIZR_CLI_VERSION: v2025.11.09
     strategy:
       fail-fast: true
       matrix:
@@ -42,25 +42,25 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Mise Tools install
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
         if: ${{ matrix.os != 'windows' }}
         with:
-          version: 2024.7.3
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
-      - run: mise use bun@1.1.20
+      - run: mise use bun@1.2.15
         if: ${{ matrix.os != 'windows' }}
       - name: Choco Tools Install
         run: |
           choco install jq --version 1.7.1
-          choco install bun --version 1.1.20
+          choco install bun --version 1.2.15
         if: ${{ matrix.os == 'windows' }}
       - uses: actions/setup-java@v5
         if: ${{ matrix.os == 'windows' }}
         with:
-          distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '21'
+          distribution: "temurin" # See 'Supported distributions' for available options
+          java-version: "21"
       - run: bun install --ignore-scripts
       - name: Download version to test
         uses: actions/download-artifact@v6

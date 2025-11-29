@@ -1,17 +1,25 @@
 workspace "{{{workspaceName}}}" {
     description "{{{workspaceDescription}}}"
 
+    configuration {
+        scope {{{workspaceScope}}}
+    }
+
     !adrs decisions
     !docs docs
 
     model {
         # Constants
+        
+        archetypes {
+            !include archetypes
+        }
 
         !include systems
         !include environments
 
         # Relationships
-        !include relationships/_system.dsl
+        !include relationships
     }
 
     views {

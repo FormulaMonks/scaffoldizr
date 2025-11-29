@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { file } from "bun";
-import { kebabCase, pascalCase } from "change-case";
+import { camelCase, kebabCase, pascalCase } from "change-case";
 import Handlebars from "handlebars";
 
 export const removeSpaces = (txt = "") => txt.replace(/\s/g, "");
@@ -9,9 +9,11 @@ export const underscoreSpaces = (txt = "") => txt.replace(/\s/g, "_");
 Handlebars.registerHelper("kebabCase", (target) => kebabCase(target));
 Handlebars.registerHelper("properCase", (target) => pascalCase(target));
 Handlebars.registerHelper("pascalCase", (target) => pascalCase(target));
+Handlebars.registerHelper("camelCase", (target) => camelCase(target));
 Handlebars.registerHelper("upperCase", (target = "") => target.toUpperCase());
 Handlebars.registerHelper("lowerCase", (target = "") => target.toLowerCase());
 Handlebars.registerHelper("eq", (arg1, arg2) => arg1 === arg2);
+Handlebars.registerHelper("or", (arg1, arg2) => arg1 || arg2);
 Handlebars.registerHelper("removeSpaces", (txt = "") => removeSpaces(txt));
 Handlebars.registerHelper("underscoreSpaces", (txt = "") =>
     underscoreSpaces(txt),

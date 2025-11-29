@@ -1,8 +1,5 @@
 {
     "editor.formatOnSave": true,
-    "files.associations": {
-        "*.hbs": "structurizr"
-    },
     "editor.defaultFormatter": "biomejs.biome",
     "editor.codeActionsOnSave": {
         "source.organizeImports.biome": "explicit"
@@ -27,21 +24,5 @@
             "strings": true
         }
     },
-    "cSpell.words": ["scaffoldizr", "scfz", "structurizr"],
-    "c4.languageserver.java": "/Users/andreszorro/.local/share/mise/installs/java/17/bin/java",
-    "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#232323",
-        "activityBar.background": "#232323",
-        "activityBarBadge.background": "#606020",
-        "activityBarBadge.foreground": "#e7e7e7",
-        "sash.hoverBorder": "#232323",
-        "statusBar.background": "#3d3d3d",
-        "statusBarItem.hoverBackground": "#565656",
-        "statusBarItem.remoteBackground": "#3d3d3d",
-        "activityBar.foreground": "#e7e7e7",
-        "activityBar.inactiveForeground": "#e7e7e799",
-        "statusBar.foreground": "#e7e7e7",
-        "statusBarItem.remoteForeground": "#e7e7e7"
-    },
-    "peacock.color": "#3d3d3d"
+    "cSpell.words": ["scaffoldizr", "scfz", "structurizr"]
 }

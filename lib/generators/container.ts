@@ -1,13 +1,15 @@
 import { resolve } from "node:path";
-import { Separator, input, select } from "@inquirer/prompts";
+import { input, Separator, select } from "@inquirer/prompts";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
+import { Elements } from "../utils/labels";
+import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
-    type Relationship,
     addRelationshipsToElement,
+    type Relationship,
 } from "../utils/questions/relationships";
 import { resolveSystemQuestion } from "../utils/questions/system";
 import {
@@ -27,15 +29,16 @@ type ContainerAnswers = {
     includeTabs: string;
     includeSource: string;
     relationships: Record<string, Relationship>;
+    archetype?: string;
+    workspaceScope?: string;
 };
 
 const generator: GeneratorDefinition<ContainerAnswers> = {
-    name: "Container",
+    name: Elements.Container,
     description: "Create a new system container",
     questions: async (generator) => {
-        const workspaceInfo = await getWorkspaceJson(
-            getWorkspacePath(generator.destPath),
-        );
+        const workspacePath = getWorkspacePath(generator.destPath);
+        const workspaceInfo = await getWorkspaceJson(workspacePath);
 
         const systemName = await resolveSystemQuestion(
             workspaceInfo ?? generator.destPath,
@@ -52,29 +55,65 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             )({ systemName }),
         });
 
-        const containerDescription = await input({
-            message: "Container Description:",
-            default: "Untitled Container",
-            validate: stringEmpty,
-        });
+        const availableContainerArchetypes = workspacePath
+            ? await resolveAvailableArchetypeElements(
+                  workspacePath,
+                  Elements.Container,
+              )
+            : undefined;
 
-        const containerType = await select({
-            message: "Container type:",
-            default: "None of the above",
-            choices: [
-                { name: "EventBus", value: "EventBus" },
-                { name: "MessageBroker", value: "MessageBroker" },
-                { name: "Function", value: "Function" },
-                { name: "Database", value: "Database" },
-                { name: "WebApp", value: "WebApp" },
-                { name: "MobileApp", value: "MobileApp" },
-                { name: "None of the above", value: "None of the above" },
-            ],
-        });
+        const archetype = availableContainerArchetypes?.length
+            ? await select<string | "custom">({
+                  message: `Archetype container for ${elementName}:`,
+                  choices: [
+                      ...availableContainerArchetypes.map((archetype) => ({
+                          name: archetype.name.split("_")[1],
+                          value: archetype.name.split("_")[1],
+                      })),
+                      new Separator(),
+                      {
+                          name: "Custom",
+                          value: "custom",
+                      },
+                  ],
+              })
+            : "custom";
 
-        const containerTechnology = await input({
-            message: "Container technology:",
-        });
+        const containerDescription =
+            archetype === "custom"
+                ? await input({
+                      message: "Container Description:",
+                      default: "Untitled Container",
+                      validate: stringEmpty,
+                  })
+                : "";
+
+        const containerType =
+            archetype === "custom"
+                ? await select({
+                      message: "Container type:",
+                      default: "None of the above",
+                      choices: [
+                          { name: "EventBus", value: "EventBus" },
+                          { name: "MessageBroker", value: "MessageBroker" },
+                          { name: "Function", value: "Function" },
+                          { name: "Database", value: "Database" },
+                          { name: "WebApp", value: "WebApp" },
+                          { name: "MobileApp", value: "MobileApp" },
+                          {
+                              name: "None of the above",
+                              value: "None of the above",
+                          },
+                      ],
+                  })
+                : "";
+
+        const containerTechnology =
+            archetype === "custom"
+                ? await input({
+                      message: "Container technology:",
+                  })
+                : "";
 
         const relationshipDefaults = {
             defaultRelationship: "Uses",
@@ -85,6 +124,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             elementName,
             workspaceInfo,
             {
+                workspacePath,
                 filterChoices: (elm) =>
                     elm instanceof Separator || elm.value !== systemName,
                 ...relationshipDefaults,
@@ -93,8 +133,10 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         );
 
         const compiledAnswers = {
+            workspaceScope: workspaceInfo?.configuration.scope?.toLowerCase(),
             systemName,
             elementName,
+            archetype: archetype === "custom" ? undefined : archetype,
             containerDescription,
             containerType,
             containerTechnology,
@@ -112,34 +154,6 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             skipIfExists: true,
             templateFile: "templates/containers/container.hbs",
         } as AddAction<ContainerAnswers>,
-        {
-            type: "append",
-            path: "architecture/relationships/_system.dsl",
-            skip: async (answers, rootPath) => {
-                const systemRelationshipsPath = resolve(
-                    rootPath,
-                    "architecture/relationships/_system.dsl",
-                );
-
-                const fileExists = await file(systemRelationshipsPath).exists();
-                if (!fileExists) return false;
-                const systemRelationships = await file(
-                    systemRelationshipsPath,
-                ).text();
-
-                const match = new RegExp(
-                    `include ${kebabCase(answers.systemName)}`,
-                    "g",
-                ).test(systemRelationships);
-
-                return (
-                    match &&
-                    `Container relationship for "${answers.systemName}" already included`
-                );
-            },
-            pattern: /.*\r?\n!include.*/,
-            templateFile: "templates/include.hbs",
-        } as AppendAction<ContainerAnswers>,
         {
             type: "append",
             path: "architecture/views/{{kebabCase systemName}}.dsl",
@@ -166,9 +180,10 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
             templateFile: "templates/views/container.hbs",
         } as AppendAction<ContainerAnswers>,
         {
+            when: (answers) => answers.workspaceScope === "softwaresystem",
             type: "append",
             createIfNotExists: true,
-            path: "architecture/relationships/{{kebabCase systemName}}.dsl",
+            path: "architecture/relationships/_system.dsl",
             templateFile: "templates/relationships/multiple.hbs",
         } as AppendAction<ContainerAnswers>,
     ],

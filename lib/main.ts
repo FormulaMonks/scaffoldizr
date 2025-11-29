@@ -1,5 +1,5 @@
-import { relative, resolve } from "node:path";
-import { basename } from "node:path";
+import { basename, relative, resolve } from "node:path";
+import type { ExitPromptError } from "@inquirer/core";
 import { select } from "@inquirer/prompts";
 import { $, main as entrypoint } from "bun";
 import chalk from "chalk";
@@ -15,7 +15,11 @@ import type {
     GetAnswers,
 } from "./utils/generator";
 import { createGenerator } from "./utils/generator";
-import { labelElementByName } from "./utils/labels";
+import {
+    Elements,
+    labelElementByName,
+    SORTED_GENERATOR_AVAILABLE_ELEMENTS,
+} from "./utils/labels";
 import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
 
 type CLIArguments = {
@@ -71,6 +75,11 @@ Let's create a new one by answering the questions below.
             );
             process.exit(0);
         } catch (err) {
+            if ((err as ExitPromptError).name === "ExitPromptError") {
+                console.log(chalk.yellow("\nOperation canceled by the user."));
+                process.exit(0);
+            }
+
             console.error(chalk.red("[ERROR]:"), err?.toString());
             console.log(chalk.gray("[DEBUG]:"), err as Error);
             process.exit(1);
@@ -92,37 +101,52 @@ Let's create a new one by answering the questions below.
         ),
     );
 
-    const DEFAULT_GENERATOR_SORTING = [
-        "Workspace",
-        "Constant",
-        "System",
-        "Person",
-        "External System",
-        "Container",
-        "Component",
-        "View",
-        "Relationship",
-    ];
+    const filteredGenerators = Object.values(otherGenerators).filter((g) => {
+        if (!workspaceInfo) return true;
 
-    const element = await select({
-        message: "Create a new element:",
-        choices: Object.values(otherGenerators)
-            .map((g) => ({
-                name: `${labelElementByName(g.name)} ${g.name}`,
-                value: g,
-            }))
-            .toReversed()
-            .toSorted((a, b) => {
-                const aIndex = DEFAULT_GENERATOR_SORTING.indexOf(a.value.name);
-                const bIndex = DEFAULT_GENERATOR_SORTING.indexOf(b.value.name);
+        const sharedElements: string[] = [
+            Elements.Archetype,
+            Elements.Constant,
+            Elements.ExternalSystem,
+            Elements.View,
+            Elements.DeploymentNode,
+            Elements.Person,
+            Elements.Relationship,
+        ];
 
-                return aIndex - bIndex;
-            }),
+        if (workspaceInfo.configuration.scope === "Landscape") {
+            return [...sharedElements, Elements.System].includes(g.name);
+        } else {
+            return [
+                ...sharedElements,
+                Elements.Container,
+                Elements.Component,
+            ].includes(g.name);
+        }
     });
-
-    type GeneratorAnswers = GetAnswers<typeof element>;
-
     try {
+        const element = await select({
+            message: "Create a new element:",
+            choices: Object.values(filteredGenerators)
+                .map((g) => ({
+                    name: `${labelElementByName(g.name)} ${g.name}`,
+                    value: g,
+                }))
+                .toReversed()
+                .toSorted((a, b) => {
+                    const aIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
+                        a.value.name,
+                    );
+                    const bIndex = SORTED_GENERATOR_AVAILABLE_ELEMENTS.indexOf(
+                        b.value.name,
+                    );
+
+                    return aIndex - bIndex;
+                }),
+        });
+
+        type GeneratorAnswers = GetAnswers<typeof element>;
+
         const generator: Generator<GeneratorAnswers> = {
             ...(element as GeneratorDefinition<GeneratorAnswers>),
             templates,
@@ -133,6 +157,11 @@ Let's create a new one by answering the questions below.
         await exportWorkspace(relative(process.cwd(), workspacePath));
         process.exit(0);
     } catch (err) {
+        if ((err as ExitPromptError).name === "ExitPromptError") {
+            console.log(chalk.yellow("\nOperation canceled by the user."));
+            process.exit(0);
+        }
+
         console.error(err);
         process.exit(1);
     }
