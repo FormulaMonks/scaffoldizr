@@ -13,9 +13,9 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
       - name: Mise Tools install
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
         with:
-          version: 2024.7.3
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
@@ -31,9 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Mise Tools install
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
         with:
-          version: 2024.7.3
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
@@ -52,16 +52,16 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "[skip ci]: Bump version"
-          commit_options: '--no-verify --signoff'
-          file_pattern: 'package.json'
+          commit_options: "--no-verify --signoff"
+          file_pattern: "package.json"
           repository: .
           branch: main
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
-          status_options: '--untracked-files=no'
+          status_options: "--untracked-files=no"
           # add_options: '-u'
-          push_options: '--force'
-          skip_dirty_check: true    
-          skip_fetch: false    
+          push_options: "--force"
+          skip_dirty_check: true
+          skip_fetch: false
           skip_checkout: false
           disable_globbing: true
           create_branch: false
@@ -119,10 +119,10 @@ jobs:
         with:
           ref: ${{ contains(github.ref, '-beta') && 'develop' || (startsWith(github.ref, 'refs/tags/') && 'main' || github.ref) }}
       - name: Mise Tools install
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
         if: ${{ matrix.os != 'windows' }}
         with:
-          version: 2024.7.3
+          version: 2025.11.10
           install: true
           cache: true
           experimental: true
