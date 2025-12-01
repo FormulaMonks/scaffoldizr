@@ -43,7 +43,7 @@
       "order" : 5,
       "title" : ""
     }, {
-      "content" : "## Themes\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).\n\n### How to reference\n\nWithin your `workspace.dsl`, add the following line under `views`:\n\n```dsl\n\nviews {\n    themes \"<url to theme 1>.json\" \"<url to theme 2>.json\"\n}\n\n```\n\n---\n\n### Shapes\n\nAdded tag support to most available shapes within Structurizr.\n\nTODO: Shapes Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json\"\n```\n\n### Status\n\nAdded handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.\n\nTODO: Status Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json\"\n```\n\n### Color-based\n\nBecause not all diagrams have to be architecture blue!\n\n#### Green\n\nTODO: Green Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json\"\n```\n\n#### Yellow\n\nTODO: Yellow Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json\"\n```\n\n#### Red\n\nTODO: Red Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json\"\n```\n",
+      "content" : "## Themes\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).\n\n### How to reference\n\nWithin your `workspace.dsl`, add the following line under `views`:\n\n```dsl\n\nviews {\n    themes \"<url to theme 1>.json\" \"<url to theme 2>.json\"\n}\n\n```\n\n---\n\n### Shapes\n\nAdded tag support to most available shapes within Structurizr.\n\n![Scaffoldizr Shapes](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json\"\n```\n\n### Status\n\nAdded handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.\n\n![Scaffoldizr Status](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json\"\n```\n\n### Color-based\n\nBecause not all diagrams have to be architecture blue!\n\n#### Green\n\n![Scaffoldizr Green](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json\"\n```\n\n#### Yellow\n\n![Scaffoldizr Yellow](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json\"\n```\n\n#### Red\n\n![Scaffoldizr Red](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json\"\n```\n",
       "filename" : "06-themes.md",
       "format" : "Markdown",
       "order" : 6,
@@ -51,7 +51,8 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2025-12-01T22:22:00Z",
+  "lastModifiedAgent" : "structurizr-ui",
+  "lastModifiedDate" : "2025-12-01T22:37:40Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -92,8 +93,8 @@
       "tags" : "Element,Person"
     } ],
     "properties" : {
-      "structurizr.inspection.model.softwaresystem.documentation" : "ignore",
-      "structurizr.inspection.model.softwaresystem.decisions" : "ignore"
+      "structurizr.inspection.model.softwaresystem.decisions" : "ignore",
+      "structurizr.inspection.model.softwaresystem.documentation" : "ignore"
     },
     "softwareSystems" : [ {
       "description" : "Local instance for Structurizr diagram visualization.",
@@ -247,9 +248,9 @@
   },
   "name" : "Scaffoldizr",
   "properties" : {
-    "structurizr.inspection.error" : "0",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "2",
+    "structurizr.inspection.error" : "0",
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
@@ -306,13 +307,14 @@
     "configuration" : {
       "branding" : { },
       "lastSavedView" : "ScaffoldizrCLI",
+      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
-      "themes" : [ "https://static.structurizr.com/themes/default/theme.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json" ]
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : false,
+        "applied" : true,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
@@ -321,18 +323,22 @@
         "vertices" : false
       },
       "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "dimensions" : {
+        "height" : 820,
+        "width" : 2350
+      },
       "elements" : [ {
         "id" : "2",
-        "x" : 0,
-        "y" : 0
+        "x" : 1699,
+        "y" : 163
       }, {
         "id" : "4",
-        "x" : 0,
-        "y" : 0
+        "x" : 949,
+        "y" : 163
       }, {
         "id" : "9",
-        "x" : 0,
-        "y" : 0
+        "x" : 199,
+        "y" : 163
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "ScaffoldizrCLI",
