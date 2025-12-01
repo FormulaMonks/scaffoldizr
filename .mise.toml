@@ -2,7 +2,7 @@
 jq = "1.7.1"
 ruby = "3.3"
 java = "23"
-bun = "1.2.15"
+bun = "1.3.3"
 
 [tasks."docs:install"]
 run = "cd docs && bundle"
