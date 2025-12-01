@@ -1,0 +1,46 @@
+{
+    "name": "Scaffoldizr-Shapes-Theme",
+    "description": "Opinionated Scaffolding Tool for Structurizr DSL",
+    "elements": [
+        {
+            "tag": "Broker",
+            "shape": "Pipe"
+        },
+        {
+            "tag": "Bus",
+            "shape": "Pipe"
+        },
+        {
+            "tag": "Database",
+            "shape": "Cylinder"
+        },
+        {
+            "tag": "EventBus",
+            "shape": "Pipe"
+        },
+        {
+            "tag": "Function",
+            "shape": "Hexagon"
+        },
+        {
+            "tag": "MessageBroker",
+            "shape": "Pipe"
+        },
+        {
+            "tag": "MessageBus",
+            "shape": "Pipe"
+        },
+        {
+            "tag": "MobileApp",
+            "shape": "MobileDevicePortrait"
+        },
+        {
+            "tag": "WebApp",
+            "shape": "WebBrowser"
+        },
+        {
+            "tag": "Agent",
+            "shape": "Robot"
+        }
+    ]
+}

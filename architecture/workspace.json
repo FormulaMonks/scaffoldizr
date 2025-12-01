@@ -43,7 +43,7 @@
       "order" : 5,
       "title" : ""
     }, {
-      "content" : "## Themes\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme:\n\n### Green\n\n",
+      "content" : "## Themes\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).\n\n### How to reference\n\nWithin your `workspace.dsl`, add the following line under `views`:\n\n```dsl\n\nviews {\n    themes \"<url to theme 1>.json\" \"<url to theme 2>.json\"\n}\n\n```\n\n---\n\n### Shapes\n\nAdded tag support to most available shapes within Structurizr.\n\nTODO: Shapes Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json\"\n```\n\n### Status\n\nAdded handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.\n\nTODO: Status Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json\"\n```\n\n### Color-based\n\nBecause not all diagrams have to be architecture blue!\n\n#### Green\n\nTODO: Green Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json\"\n```\n\n#### Yellow\n\nTODO: Yellow Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json\"\n```\n\n#### Red\n\nTODO: Red Screenshot\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json\"\n```\n",
       "filename" : "06-themes.md",
       "format" : "Markdown",
       "order" : 6,
@@ -52,7 +52,7 @@
   },
   "id" : 1,
   "lastModifiedAgent" : "structurizr-ui",
-  "lastModifiedDate" : "2025-12-01T18:09:43Z",
+  "lastModifiedDate" : "2025-12-01T20:51:28Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -306,7 +306,7 @@
     } ],
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Generator",
+      "lastSavedView" : "Scaffoldizr",
       "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
@@ -329,16 +329,16 @@
       },
       "elements" : [ {
         "id" : "2",
-        "x" : 1700,
-        "y" : 162
+        "x" : 1699,
+        "y" : 163
       }, {
         "id" : "4",
-        "x" : 950,
-        "y" : 162
+        "x" : 949,
+        "y" : 163
       }, {
         "id" : "9",
-        "x" : 200,
-        "y" : 162
+        "x" : 199,
+        "y" : 163
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "ScaffoldizrCLI",
