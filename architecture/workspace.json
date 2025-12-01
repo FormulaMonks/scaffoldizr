@@ -51,8 +51,7 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr-ui",
-  "lastModifiedDate" : "2025-12-01T20:51:28Z",
+  "lastModifiedDate" : "2025-12-01T22:22:00Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -93,8 +92,8 @@
       "tags" : "Element,Person"
     } ],
     "properties" : {
-      "structurizr.inspection.model.softwaresystem.decisions" : "ignore",
-      "structurizr.inspection.model.softwaresystem.documentation" : "ignore"
+      "structurizr.inspection.model.softwaresystem.documentation" : "ignore",
+      "structurizr.inspection.model.softwaresystem.decisions" : "ignore"
     },
     "softwareSystems" : [ {
       "description" : "Local instance for Structurizr diagram visualization.",
@@ -248,9 +247,9 @@
   },
   "name" : "Scaffoldizr",
   "properties" : {
+    "structurizr.inspection.error" : "0",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "2",
-    "structurizr.inspection.error" : "0",
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
@@ -306,15 +305,14 @@
     } ],
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Scaffoldizr",
-      "metadataSymbols" : "SquareBrackets",
+      "lastSavedView" : "ScaffoldizrCLI",
       "styles" : { },
       "terminology" : { },
-      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
+        "applied" : false,
         "edgeSeparation" : 0,
         "implementation" : "Graphviz",
         "nodeSeparation" : 300,
@@ -323,22 +321,18 @@
         "vertices" : false
       },
       "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
-      "dimensions" : {
-        "height" : 820,
-        "width" : 2350
-      },
       "elements" : [ {
         "id" : "2",
-        "x" : 1699,
-        "y" : 163
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "4",
-        "x" : 949,
-        "y" : 163
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "9",
-        "x" : 199,
-        "y" : 163
+        "x" : 0,
+        "y" : 0
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "ScaffoldizrCLI",

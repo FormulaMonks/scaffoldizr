@@ -20,7 +20,7 @@ views {
 
 Added tag support to most available shapes within Structurizr.
 
-TODO: Shapes Screenshot
+![Scaffoldizr Shapes](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.png)
 
 ```dsl
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"
@@ -30,7 +30,7 @@ themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.jso
 
 Added handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.
 
-TODO: Status Screenshot
+![Scaffoldizr Status](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.png)
 
 ```dsl
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json"
@@ -42,7 +42,7 @@ Because not all diagrams have to be architecture blue!
 
 #### Green
 
-TODO: Green Screenshot
+![Scaffoldizr Green](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.png)
 
 ```dsl
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json"
@@ -50,7 +50,7 @@ themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json
 
 #### Yellow
 
-TODO: Yellow Screenshot
+![Scaffoldizr Yellow](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.png)
 
 ```dsl
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json"
@@ -58,7 +58,7 @@ themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.jso
 
 #### Red
 
-TODO: Red Screenshot
+![Scaffoldizr Red](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.png)
 
 ```dsl
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json"
