@@ -234,15 +234,13 @@ export async function addRelationshipsToElement(
 
     const systemElements = (
         [
-            components.length &&
-                separator(`Components (${includeComponents})`, components),
+            separator(`Components (${includeComponents})`, components),
             ...components,
-            containers.length &&
-                separator(`Containers (${includeContainers})`, containers),
+            separator(`Containers (${includeContainers})`, containers),
             ...containers,
-            softwareSystems.length && separator("Systems", softwareSystems),
+            separator("Systems", softwareSystems),
             ...softwareSystems,
-            people.length && separator("People", people),
+            separator("People", people),
             ...people,
         ].filter(Boolean) as ((typeof elements)[number] | Separator)[]
     )
@@ -257,7 +255,14 @@ export async function addRelationshipsToElement(
                           : elm.name,
                   },
         )
-        .filter(filterChoices);
+        .filter(filterChoices)
+        .filter((elm, idx, arr) => {
+            const nextElm = arr[idx + 1];
+            if (elm instanceof Separator && nextElm instanceof Separator) {
+                return false;
+            }
+            return true;
+        });
 
     if (!systemElements.filter((elm) => !(elm instanceof Separator)).length) {
         return {};
