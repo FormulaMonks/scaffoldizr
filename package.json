@@ -11,7 +11,7 @@
         "build:watch": "bun build:dev --watch",
         "test:dev": "bun test --watch",
         "test": "bun test",
-        "test:ci": "bun test --coverage --test-name-pattern lib",
+        "test:ci": "bun test --coverage",
         "test:e2e:smoke": "bun --config=./e2e/e2e.toml test -t '@smoke' --bail --timeout 30000",
         "test:e2e": "bun --config=./e2e/e2e.toml test --bail --timeout 30000",
         "prepare": "husky"
@@ -34,7 +34,7 @@
         "@commitlint/config-conventional": "^19.6.0",
         "@inquirer/testing": "^2.1.41",
         "@inquirer/type": "^4.0.1",
-        "@types/bun": "^1.2.15",
+        "@types/bun": "^1.3.3",
         "@types/inquirer": "^9.0.7",
         "@types/yargs": "^17.0.33",
         "branch-name-lint": "^3.0.1",

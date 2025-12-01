@@ -1,0 +1,27 @@
+{
+    "name": "Scaffoldizr-Yellow-Theme",
+    "description": "Opinionated Scaffolding Tool for Structurizr DSL",
+    "elements": [
+        {
+            "tag": "Component",
+            "background": "#fff9c4",
+            "color": "#000000"
+        },
+        {
+            "tag": "Container",
+            "background": "#ffeb3b",
+            "color": "#000000"
+        },
+        {
+            "tag": "Person",
+            "background": "#b8860b",
+            "color": "#ffffff",
+            "shape": "Person"
+        },
+        {
+            "tag": "Software System",
+            "background": "#ffd700",
+            "color": "#000000"
+        }
+    ]
+}

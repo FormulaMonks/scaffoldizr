@@ -8,3 +8,8 @@ container Scaffoldizr "ScaffoldizrCLI" {
     include *
     autolayout lr
 }
+
+component Scfz "Generator" {
+    description "Definition to generate files and folders. ${AUTHOR}" 
+    include *
+}

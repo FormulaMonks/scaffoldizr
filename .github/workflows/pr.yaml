@@ -1,4 +1,4 @@
-name: 'Pull Request'
+name: "Pull Request"
 
 on:
   pull_request:
@@ -14,25 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  update-bun-lockb:
-    name: "Update bun.lockb"
-    if: github.actor == 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: oven-sh/setup-bun@v2
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-      - run: |
-          bun install --yarn --ignore-scripts
-          git add bun.lockb
-          git config --global user.name 'dependabot[bot]'
-          git config --global user.email 'dependabot[bot]@users.noreply.github.com'
-          git commit --amend --no-edit 
-          git push --force --no-verify
   test-build:
-    needs: update-bun-lockb
     if: always()
     uses: ./.github/workflows/test-build.yaml
     permissions:

@@ -49,12 +49,12 @@ jobs:
           install: true
           cache: true
           experimental: true
-      - run: mise use bun@1.2.15
+      - run: mise use bun@1.3.3
         if: ${{ matrix.os != 'windows' }}
       - name: Choco Tools Install
         run: |
           choco install jq --version 1.7.1
-          choco install bun --version 1.2.15
+          choco install bun --version 1.3.3
         if: ${{ matrix.os == 'windows' }}
       - uses: actions/setup-java@v5
         if: ${{ matrix.os == 'windows' }}

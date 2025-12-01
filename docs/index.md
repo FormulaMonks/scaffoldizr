@@ -16,4 +16,5 @@ permalink: /
 - [Usage]({{ site.baseurl }}/usage)
 - [Workspace]({{ site.baseurl }}/workspace)
 - [Contribute]({{ site.baseurl }}/contribute)
+- [Themes]({{ site.baseurl }}/themes)
 - [Architecture Decision Records]({{ site.baseurl }}/adrs)

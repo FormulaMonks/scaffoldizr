@@ -1,0 +1,35 @@
+{
+    "name": "Scaffoldizr-Status-Theme",
+    "description": "Opinionated Scaffolding Tool for Structurizr DSL",
+    "elements": [
+        {
+            "tag": "Deprecated",
+            "background": "#cc4444",
+            "stroke": "#aa3434",
+            "color": "#ffffff"
+        },
+        {
+            "tag": "External",
+            "background": "#8e8e8e",
+            "color": "#ffffff"
+        },
+        {
+            "tag": "Inactive",
+            "border": "Dashed",
+            "opacity": 50
+        },
+        {
+            "tag": "New",
+            "background": "#2c8c2a",
+            "stroke": "#277525",
+            "color": "#ffffff"
+        }
+    ],
+    "relationships": [
+        {
+            "tag": "Inactive",
+            "style": "Dashed",
+            "opacity": 50
+        }
+    ]
+}

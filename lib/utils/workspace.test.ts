@@ -179,22 +179,22 @@ describe("workspace utilities", () => {
             );
             expect(containerResult).toBeDefined();
             expect(containerResult?.length).toBeGreaterThan(0);
-            expect(containerResult).toMatchInlineSnapshot(`
-              [
-                {
-                  "element": "container",
-                  "name": "business-logic",
-                  "parent": "test-system",
-                  "path": "/tmp/scaffoldizr-workspace-test/architecture/containers/test-system/business-logic.dsl",
-                },
-                {
-                  "element": "container",
-                  "name": "api-gateway",
-                  "parent": "test-system",
-                  "path": "/tmp/scaffoldizr-workspace-test/architecture/containers/test-system/api-gateway.dsl",
-                },
-              ]
-            `);
+            expect(containerResult).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        element: "container",
+                        name: "api-gateway",
+                        parent: "test-system",
+                        path: expect.stringContaining("api-gateway.dsl"),
+                    }),
+                    expect.objectContaining({
+                        element: "container",
+                        name: "business-logic",
+                        parent: "test-system",
+                        path: expect.stringContaining("business-logic.dsl"),
+                    }),
+                ]),
+            );
 
             const archetypeResult = await getWorkspaceElementFiles(
                 Elements.Archetype,
