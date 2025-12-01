@@ -16,6 +16,7 @@ workspace "Scaffoldizr" {
 
         # Constants
         !const CLI "CLI/Terminal"
+        !const TS "TypeScript/Import"
 
         archetypes {
             !include archetypes

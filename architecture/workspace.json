@@ -19,13 +19,13 @@
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n",
+      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n\n### Options\n\n- `--help`: Show help information\n- `--version`: Show current tool version\n- `--dest <path>`: Target architecture folder (default: current directory)\n- `-e, --export`: Use structurizr-cli to export the workspace to JSON (default: false)\n",
       "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
       "title" : ""
     }, {
-      "content" : "\n## Supported Elements\n\n|        Elements        | Description                                                                                                                                   |\n| :--------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |\n|      `Workspace`       | Creates a new workspace, with the proper scaffolding. Created only when architecture folder not found.                                        |\n|      `🟦 System`       | Something that delivers value. E.g. application, product, service. [See this for more information](https://arc.net/l/quote/vcentqxx).         |\n| `⬜️ External System`   | An external system is a system not owned by the development team. E.g. third party dependencies.                                              |\n|      `👤 Person`       | Actor or user interacting with the system.                                                                                                    |\n|     `🔸 Constant`      | To reuse within other diagrams. Useful for relationships.                                                                                     |\n|    `🔹 Container`      | A Software Element within the system that is needed for the system to run. [See this for more information](https://arc.net/l/quote/adfwciig). |\n|   `⇢  Relationship`    | A relationship represents a unidirectional connection between two software systems, elements or people.                                       |\n|       `🔳 View`        | Creates a Structurizr view. [See below](#supported-view-types).                                                                               |\n\n## Supported View Types\n\n|  View type   | Description                                                         |\n| :----------: | :------------------------------------------------------------------ |\n| `landscape`  | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources.                 |\n",
+      "content" : "\n## CLI Usage\n\nWhen you run Scaffoldizr:\n\n1. The CLI displays a welcome message\n2. It checks if the destination folder contains a `workspace.dsl` file\n3. If no workspace is found, it automatically initiates the workspace creation generator\n4. You'll be prompted with interactive questions to configure your workspace\n5. The tool generates the appropriate scaffolding based on your answers\n\n## Supported Elements\n\n| Element | Description | Prompts |\n| :-----: | :---------- | :------ |\n| `Workspace` | Creates a new workspace with proper scaffolding. Automatically triggered when no `workspace.dsl` file is found. Creates workspace structure including `workspace.dsl`, system files, relationships, and configuration files. | Workspace name, description, scope (Software System/Landscape), system details (if applicable), author info (from git config), theme preference |\n| `🟡 Constant` | Reusable constant that can be referenced across diagrams and relationships. Appends the constant definition to `workspace.dsl`. | Constant name, value |\n| `🔺 Archetype` | [Reusable element templates](https://docs.structurizr.com/dsl/archetypes) (Container, Component, Software System, or Relationship). Creates `architecture/archetypes/{name}_{baseType}.dsl`. | Archetype name, base type, optional technology, optional tags |\n| `👤 Person` | An actor or user interacting with systems. Creates/appends to `systems/_people.dsl` and `relationships/_people.dsl`. | Person name, description, relationships, technology |\n| `🟦 System` | Creates a system. Available for landscape scope only. (See [scope](https://docs.structurizr.com/workspaces/scope)) | System name, description, relationships |\n| `⬜️ External System` | Creates an external system not owned by the development team (e.g., third-party dependencies, external APIs). Appends to `systems/_external.dsl` and `relationships/_external.dsl`. | Parent system, external system name, description, relationships |\n| `🔷 Container` | Creates a deployable/executable unit within a system (web app, database, API, message broker, etc.). Creates container file, view, and relationship files. Supports types: EventBus, MessageBroker, Function, Database, WebApp, MobileApp. | Parent system, container name, description, type, technology, relationships |\n| `🔹 Component` | Creates a component within a container (controller, service, repository, etc.). Requires at least one existing container. Creates/updates component files, includes, views, and relationships. | Parent container, component name, description, technology, relationships |\n| `🔳 View` | Creates Structurizr views for visualizing architecture. Supports Deployment and Landscape view types. Creates view files and environment configurations. See [Supported View Types](#supported-view-types) below. | View type, system name (if needed), view name, description, instance details (for deployment) |\n\n## Supported View Types\n\n| View type | Description |\n| :-------: | :---------- |\n| `landscape` | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources. |\n",
       "filename" : "03-usage.md",
       "format" : "Markdown",
       "order" : 3,
@@ -42,15 +42,21 @@
       "format" : "Markdown",
       "order" : 5,
       "title" : ""
+    }, {
+      "content" : "## Themes\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme:\n\n### Green\n\n",
+      "filename" : "06-themes.md",
+      "format" : "Markdown",
+      "order" : 6,
+      "title" : ""
     } ]
   },
   "id" : 1,
   "lastModifiedAgent" : "structurizr-ui",
-  "lastModifiedDate" : "2025-11-20T15:52:39Z",
+  "lastModifiedDate" : "2025-12-01T18:09:43Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
-      "id" : "5",
+      "id" : "9",
       "name" : "Architect",
       "properties" : {
         "structurizr.dsl.identifier" : "Architect"
@@ -58,23 +64,30 @@
       "relationships" : [ {
         "description" : "Previews DSL diagrams",
         "destinationId" : "1",
-        "id" : "7",
-        "sourceId" : "5",
+        "id" : "11",
+        "sourceId" : "9",
         "tags" : "Relationship",
         "technology" : "Web/HTTP"
       }, {
         "description" : "Send commands to",
         "destinationId" : "4",
-        "id" : "10",
-        "sourceId" : "5",
+        "id" : "14",
+        "sourceId" : "9",
         "tags" : "Relationship",
         "technology" : "CLI/Terminal"
       }, {
         "description" : "Send commands to",
         "destinationId" : "3",
-        "id" : "11",
-        "linkedRelationshipId" : "10",
-        "sourceId" : "5",
+        "id" : "15",
+        "linkedRelationshipId" : "14",
+        "sourceId" : "9",
+        "technology" : "CLI/Terminal"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "8",
+        "id" : "22",
+        "sourceId" : "9",
+        "tags" : "Relationship",
         "technology" : "CLI/Terminal"
       } ],
       "tags" : "Element,Person"
@@ -103,7 +116,7 @@
       "relationships" : [ {
         "description" : "Uses DSL files to generate workspace.json file",
         "destinationId" : "1",
-        "id" : "9",
+        "id" : "13",
         "sourceId" : "2",
         "tags" : "Relationship",
         "technology" : "Structurizr/Lite File System"
@@ -111,6 +124,85 @@
       "tags" : "Element,Software System,External"
     }, {
       "containers" : [ {
+        "components" : [ {
+          "description" : "Definition to generate files and folders",
+          "documentation" : { },
+          "id" : "5",
+          "name" : "Generator",
+          "properties" : {
+            "structurizr.dsl.identifier" : "Scfz_Generator"
+          },
+          "relationships" : [ {
+            "description" : "References",
+            "destinationId" : "6",
+            "id" : "17",
+            "sourceId" : "5",
+            "tags" : "Relationship",
+            "technology" : "TypeScript/Import"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "TypeScript"
+        }, {
+          "description" : "Referenced by generators to create/update files",
+          "documentation" : { },
+          "id" : "6",
+          "name" : "Template",
+          "properties" : {
+            "structurizr.dsl.identifier" : "Scfz_Template"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Handlebars"
+        }, {
+          "description" : "Definition and shared methods for actions, questions, etc",
+          "documentation" : { },
+          "id" : "7",
+          "name" : "Utility",
+          "properties" : {
+            "structurizr.dsl.identifier" : "Scfz_Utility"
+          },
+          "relationships" : [ {
+            "description" : "References",
+            "destinationId" : "5",
+            "id" : "18",
+            "sourceId" : "7",
+            "tags" : "Relationship",
+            "technology" : "TypeScript/Import"
+          }, {
+            "description" : "Adds HBS helpers",
+            "destinationId" : "6",
+            "id" : "19",
+            "sourceId" : "7",
+            "tags" : "Relationship",
+            "technology" : "TypeScript/Import"
+          }, {
+            "description" : "Creates/Updates Files",
+            "destinationId" : "2",
+            "id" : "20",
+            "sourceId" : "7",
+            "tags" : "Relationship",
+            "technology" : "Bun/FS Write"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "TypeScript"
+        }, {
+          "description" : "Connects user prompts to scaffolding generators",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "Command-Line Interface",
+          "properties" : {
+            "structurizr.dsl.identifier" : "Scfz_CommandLineInterface"
+          },
+          "relationships" : [ {
+            "description" : "Leverages",
+            "destinationId" : "5",
+            "id" : "21",
+            "sourceId" : "8",
+            "tags" : "Relationship",
+            "technology" : "TypeScript/Import"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Inquirer.js"
+        } ],
         "description" : "Command Line Interface (binary)",
         "documentation" : { },
         "id" : "4",
@@ -121,7 +213,7 @@
         "relationships" : [ {
           "description" : "Outputs generated scaffolding",
           "destinationId" : "2",
-          "id" : "12",
+          "id" : "16",
           "sourceId" : "4",
           "tags" : "Relationship",
           "technology" : "CLI/Terminal"
@@ -139,14 +231,14 @@
       "relationships" : [ {
         "description" : "Creates scaffolding to preview",
         "destinationId" : "1",
-        "id" : "6",
+        "id" : "10",
         "sourceId" : "3",
         "tags" : "Relationship",
         "technology" : "CLI/Terminal"
       }, {
         "description" : "Outputs generated scaffolding",
         "destinationId" : "2",
-        "id" : "8",
+        "id" : "12",
         "sourceId" : "3",
         "tags" : "Relationship",
         "technology" : "CLI/Terminal"
@@ -162,9 +254,59 @@
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
+    "componentViews" : [ {
+      "containerId" : "4",
+      "description" : "Definition to generate files and folders. Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "dimensions" : {
+        "height" : 1515,
+        "width" : 3632
+      },
+      "elements" : [ {
+        "id" : "2",
+        "x" : 2982,
+        "y" : 759
+      }, {
+        "id" : "5",
+        "x" : 1650,
+        "y" : 192
+      }, {
+        "id" : "6",
+        "x" : 2397,
+        "y" : 192
+      }, {
+        "id" : "7",
+        "x" : 2023,
+        "y" : 759
+      }, {
+        "id" : "8",
+        "x" : 892,
+        "y" : 192
+      }, {
+        "id" : "9",
+        "x" : 200,
+        "y" : 142
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "Generator",
+      "name" : "Component View: Scaffoldizr - scfz",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "17"
+      }, {
+        "id" : "18"
+      }, {
+        "id" : "19"
+      }, {
+        "id" : "20"
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "22"
+      } ]
+    } ],
     "configuration" : {
       "branding" : { },
-      "lastSavedView" : "Scaffoldizr",
+      "lastSavedView" : "Generator",
       "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
@@ -187,65 +329,65 @@
       },
       "elements" : [ {
         "id" : "2",
-        "x" : 1699,
-        "y" : 163
+        "x" : 1700,
+        "y" : 162
       }, {
         "id" : "4",
-        "x" : 949,
-        "y" : 163
+        "x" : 950,
+        "y" : 162
       }, {
-        "id" : "5",
-        "x" : 199,
-        "y" : 163
+        "id" : "9",
+        "x" : 200,
+        "y" : 162
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "ScaffoldizrCLI",
       "name" : "Container View: Scaffoldizr",
       "order" : 2,
       "relationships" : [ {
-        "id" : "10"
+        "id" : "14"
       }, {
-        "id" : "12"
+        "id" : "16"
       } ],
       "softwareSystemId" : "3"
     } ],
     "systemContextViews" : [ {
       "description" : "Scaffolding tool. Author: Formula.monks <andres.zorro@mediamonks.com>",
       "dimensions" : {
-        "height" : 1585,
-        "width" : 2665
+        "height" : 1730,
+        "width" : 2350
       },
       "elements" : [ {
         "id" : "1",
-        "x" : 1049,
-        "y" : 199
+        "x" : 939,
+        "y" : 1172
       }, {
         "id" : "2",
-        "x" : 2014,
-        "y" : 584
+        "x" : 1699,
+        "y" : 617
       }, {
         "id" : "3",
-        "x" : 1049,
-        "y" : 1084
+        "x" : 939,
+        "y" : 142
       }, {
-        "id" : "5",
+        "id" : "9",
         "x" : 199,
-        "y" : 534
+        "y" : 567
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "Scaffoldizr",
       "name" : "System Context View: Scaffoldizr",
       "order" : 1,
       "relationships" : [ {
+        "id" : "10"
+      }, {
         "id" : "11"
       }, {
-        "id" : "6"
+        "id" : "12"
       }, {
-        "id" : "7"
+        "id" : "13"
       }, {
-        "id" : "8"
-      }, {
-        "id" : "9"
+        "id" : "15"
       } ],
       "softwareSystemId" : "3"
     } ]
