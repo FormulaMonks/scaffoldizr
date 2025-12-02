@@ -31,7 +31,7 @@ workspace "Scaffoldizr" {
     }
 
     views {
-        themes "https://static.structurizr.com/themes/default/theme.json"
+        themes "https://static.structurizr.com/themes/default/theme.json" "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json" "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json" "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json"
         !const AUTHOR "Author: Formula.monks <andres.zorro@mediamonks.com>"
 
         !include views
