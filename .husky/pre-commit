@@ -10,3 +10,4 @@ bun build:dev
 TESTED_VERSION=$(jq -r '.version' package.json)
 export TESTED_VERSION
 bun lint-staged --relative
+bun test:ci

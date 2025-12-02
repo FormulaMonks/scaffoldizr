@@ -1,4 +1,4 @@
-import { confirm, input, select } from "@inquirer/prompts";
+import { checkbox, confirm, input, select } from "@inquirer/prompts";
 import { $ } from "bun";
 import type { AddAction, AddManyAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
@@ -19,6 +19,7 @@ type WorkspaceAnswers = {
     authorName: string;
     authorEmail: string;
     shouldIncludeTheme: boolean;
+    additionalThemes?: string[];
 };
 
 const generator: GeneratorDefinition<WorkspaceAnswers> = {
@@ -76,6 +77,43 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
             default: true,
         });
 
+        const additionalThemes = shouldIncludeTheme
+            ? await checkbox({
+                  message: "Select additional themes to include:",
+                  choices: [
+                      {
+                          name: "Shapes (Scaffoldizr)",
+                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json",
+                      },
+                      {
+                          name: "Status (Scaffoldizr)",
+                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json",
+                      },
+                  ],
+              })
+            : [];
+
+        const mainColor = shouldIncludeTheme
+            ? await select({
+                  message: "Main color for elements?",
+                  choices: [
+                      { name: "Blue (Default)", value: undefined },
+                      {
+                          name: "Red",
+                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json",
+                      },
+                      {
+                          name: "Green",
+                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json",
+                      },
+                      {
+                          name: "Yellow",
+                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json",
+                      },
+                  ],
+              })
+            : undefined;
+
         return {
             workspaceName,
             workspaceDescription,
@@ -85,6 +123,9 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
             authorName,
             authorEmail,
             shouldIncludeTheme,
+            additionalThemes: [...additionalThemes, mainColor].filter(
+                Boolean,
+            ) as string[],
         };
     },
     actions: [

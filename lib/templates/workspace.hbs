@@ -24,8 +24,7 @@ workspace "{{{workspaceName}}}" {
 
     views {
         {{#if shouldIncludeTheme}}
-        themes "https://static.structurizr.com/themes/default/theme.json"
-        {{/if}}
+        themes "https://static.structurizr.com/themes/default/theme.json"{{#each additionalThemes}} "{{this}}" {{/each}}{{/if}}
         !const AUTHOR "Author: {{{authorName}}} <{{authorEmail}}>"
 
         !include views
