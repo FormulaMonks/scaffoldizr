@@ -1,4 +1,5 @@
-## Themes
+
+## Available Themes
 
 Scaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).
 
@@ -16,7 +17,7 @@ views {
 
 ---
 
-### Shapes
+## Shapes
 
 Added tag support to most available shapes within Structurizr.
 
@@ -26,7 +27,7 @@ Added tag support to most available shapes within Structurizr.
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"
 ```
 
-### Status
+## Status
 
 Added handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.
 
@@ -36,11 +37,11 @@ Added handy representations for elements when they need to be added/removed from
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json"
 ```
 
-### Color-based
+## Color-based
 
 Because not all diagrams have to be architecture blue!
 
-#### Green
+### Green
 
 ![Scaffoldizr Green](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.png)
 
@@ -48,7 +49,7 @@ Because not all diagrams have to be architecture blue!
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json"
 ```
 
-#### Yellow
+### Yellow
 
 ![Scaffoldizr Yellow](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.png)
 
@@ -56,7 +57,7 @@ themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json
 themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json"
 ```
 
-#### Red
+### Red
 
 ![Scaffoldizr Red](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.png)
 
