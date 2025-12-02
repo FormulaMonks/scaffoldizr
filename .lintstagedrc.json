@@ -1,4 +1,3 @@
 {
-    "*.{json,ts,js,cjs,mjs,mts,css}": ["bun biome ci --no-errors-on-unmatched"],
-    "*.{ts,mjs}": ["bun test:ci"]
+    "*.{json,ts,js,cjs,mjs,mts,css}": ["bun biome ci --no-errors-on-unmatched"]
 }

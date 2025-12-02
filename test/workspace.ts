@@ -26,6 +26,7 @@ export const createWorkspaceFromCLI = async (
               ]),
         keypress.ENTER, // Author
         keypress.ENTER, // Email
+        "n",
         keypress.ENTER, // Include default theme (Y/n)
     ]);
 
