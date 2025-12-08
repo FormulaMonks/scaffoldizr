@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "@formula-monks/scaffoldizr",
@@ -16,7 +17,7 @@
         "@commitlint/cli": "^19.6.1",
         "@commitlint/config-conventional": "^19.6.0",
         "@inquirer/testing": "^2.1.41",
-        "@inquirer/type": "^4.0.1",
+        "@inquirer/type": "^4.0.2",
         "@types/bun": "^1.3.3",
         "@types/inquirer": "^9.0.7",
         "@types/yargs": "^17.0.33",
@@ -32,6 +33,9 @@
   "trustedDependencies": [
     "@biomejs/biome",
   ],
+  "overrides": {
+    "cross-spawn": "7.0.6",
+  },
   "packages": {
     "@babel/code-frame": ["@babel/code-frame@7.27.1", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.27.1", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg=="],
 
@@ -121,7 +125,7 @@
 
     "@inquirer/testing": ["@inquirer/testing@2.1.53", "", { "dependencies": { "@inquirer/type": "^3.0.10", "mute-stream": "^2.0.0" }, "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-16yaxG5tS4BkCxvIbnGMb4WWWGp8rl5sNBu6LkG93x/7+zpyFyMH0cx78izuNi020yadoke9eoz/Nl31XAkEKg=="],
 
-    "@inquirer/type": ["@inquirer/type@4.0.1", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-odO8YwoQAw/eVu/PSPsDDVPmqO77r/Mq7zcoF5VduVqIu2wSRWUgmYb5K9WH1no0SjLnOe8MDKtDL++z6mfo2g=="],
+    "@inquirer/type": ["@inquirer/type@4.0.2", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-cae7mzluplsjSdgFA6ACLygb5jC8alO0UUnFPyu0E7tNRPrL+q/f8VcSXp+cjZQ7l5CMpDpi2G1+IQvkOiL1Lw=="],
 
     "@types/bun": ["@types/bun@1.3.3", "", { "dependencies": { "bun-types": "1.3.3" } }, "sha512-ogrKbJ2X5N0kWLLFKeytG0eHDleBYtngtlbu9cyBKFtNL3cnpDZkNdQj8flVf6WTZUX5ulI9AY1oa7ljhSrp+g=="],
 
