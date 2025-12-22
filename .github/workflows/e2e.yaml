@@ -88,7 +88,7 @@ jobs:
           }
       - name: Cache Structurizr CLI
         id: structurizr-cli-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: dist/structurizr-cli-bin
           key: ${{ matrix.os }}-structurizr-cli-${{ env.STRUCTURIZR_CLI_VERSION }}
