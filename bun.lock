@@ -17,7 +17,7 @@
         "@commitlint/cli": "^19.6.1",
         "@commitlint/config-conventional": "^19.6.0",
         "@inquirer/testing": "^2.1.41",
-        "@inquirer/type": "^4.0.1",
+        "@inquirer/type": "^4.0.2",
         "@types/bun": "^1.3.4",
         "@types/inquirer": "^9.0.7",
         "@types/yargs": "^17.0.33",
@@ -125,7 +125,7 @@
 
     "@inquirer/testing": ["@inquirer/testing@2.1.53", "", { "dependencies": { "@inquirer/type": "^3.0.10", "mute-stream": "^2.0.0" }, "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-16yaxG5tS4BkCxvIbnGMb4WWWGp8rl5sNBu6LkG93x/7+zpyFyMH0cx78izuNi020yadoke9eoz/Nl31XAkEKg=="],
 
-    "@inquirer/type": ["@inquirer/type@4.0.1", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-odO8YwoQAw/eVu/PSPsDDVPmqO77r/Mq7zcoF5VduVqIu2wSRWUgmYb5K9WH1no0SjLnOe8MDKtDL++z6mfo2g=="],
+    "@inquirer/type": ["@inquirer/type@4.0.2", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-cae7mzluplsjSdgFA6ACLygb5jC8alO0UUnFPyu0E7tNRPrL+q/f8VcSXp+cjZQ7l5CMpDpi2G1+IQvkOiL1Lw=="],
 
     "@types/bun": ["@types/bun@1.3.4", "", { "dependencies": { "bun-types": "1.3.4" } }, "sha512-EEPTKXHP+zKGPkhRLv+HI0UEX8/o+65hqARxLy8Ov5rIxMBPNTjeZww00CIihrIQGEQBYg+0roO5qOnS/7boGA=="],
 
