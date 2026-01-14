@@ -10,7 +10,7 @@
         },
         {
             "tag": "External",
-            "background": "#8e8e8e",
+            "background": "#999999",
             "color": "#ffffff"
         },
         {
@@ -27,9 +27,25 @@
     ],
     "relationships": [
         {
+            "tag": "Relationship",
+            "style": "Solid"
+        },
+        {
             "tag": "Inactive",
             "style": "Dashed",
             "opacity": 50
+        },
+        {
+            "tag": "Deprecated",
+            "color": "#aa3434"
+        },
+        {
+            "tag": "External",
+            "color": "#999999"
+        },
+        {
+            "tag": "New",
+            "color": "#34aa34"
         }
     ]
 }
