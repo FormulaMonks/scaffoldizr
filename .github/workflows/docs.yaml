@@ -24,7 +24,7 @@ jobs:
         with:
           ref: main
       - name: Mise Tools install
-        uses: jdx/mise-action@v3
+        uses: jdx/mise-action@v4
         with:
           version: 2025.11.10
           install: true

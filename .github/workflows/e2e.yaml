@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Mise Tools install
-        uses: jdx/mise-action@v3
+        uses: jdx/mise-action@v4
         if: ${{ matrix.os != 'windows' }}
         with:
           version: 2025.11.10
