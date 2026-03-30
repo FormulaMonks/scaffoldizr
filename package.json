@@ -24,7 +24,7 @@
         "@inquirer/prompts": "^8.1.0",
         "chalk": "^5.4.1",
         "change-case": "^5.4.4",
-        "handlebars": "^4.7.8",
+        "handlebars": "^4.7.9",
         "minimist": "^1.2.8",
         "yargs": "^18.0.0"
     },
