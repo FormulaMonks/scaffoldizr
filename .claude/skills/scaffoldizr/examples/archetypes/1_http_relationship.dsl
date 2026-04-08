@@ -1,0 +1,3 @@
+https = -> {
+    technology "Web/HTTPS"
+}
