@@ -1,8 +1,8 @@
-import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import { skipUnlessViewType, whenViewType } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { input, select } from "../utils/prompts";
 import { resolveSystemQuestion } from "../utils/questions/system";
 import {
     chainValidators,
@@ -33,6 +33,7 @@ const generator: GeneratorDefinition<ViewAnswers> = {
         );
 
         const viewType = await select<string>({
+            name: "viewType",
             message: "View type:",
             choices: [
                 // "dynamic",
@@ -50,6 +51,7 @@ const generator: GeneratorDefinition<ViewAnswers> = {
                 : undefined;
 
         const viewName = await input({
+            name: "viewName",
             message: "View name:",
             validate: chainValidators(
                 stringEmpty,
@@ -58,6 +60,7 @@ const generator: GeneratorDefinition<ViewAnswers> = {
         });
 
         const viewDescription = await input({
+            name: "viewDescription",
             message: "View description:",
             default: "Untitled view",
         });
@@ -65,6 +68,7 @@ const generator: GeneratorDefinition<ViewAnswers> = {
         const instanceDescription =
             viewType === "deployment"
                 ? await input({
+                      name: "instanceDescription",
                       message: "System Instance description:",
                       default: "System instance",
                   })

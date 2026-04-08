@@ -1,7 +1,7 @@
-import { input, select } from "@inquirer/prompts";
 import type { AddAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { input, select } from "../utils/prompts";
 import { resolveBaseElementQuestion } from "../utils/questions/archetypes";
 import { stringEmpty } from "../utils/questions/validators";
 
@@ -26,18 +26,21 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
         } = await resolveBaseElementQuestion(generator.destPath);
 
         const name = await input({
+            name: "archetypeName",
             message: "Archetype name:",
             required: true,
             validate: stringEmpty,
         });
 
         const description = await input({
+            name: "archetypeDescription",
             message: "Description (optional):",
         });
 
         const containerType =
             baseElement === "container"
                 ? await select({
+                      name: "containerType",
                       message: "Container type:",
                       default: "None of the above",
                       choices: [
@@ -58,11 +61,13 @@ const generator: GeneratorDefinition<ArchetypeAnswers> = {
         const technology =
             baseElement !== "system"
                 ? await input({
+                      name: "archetypeTechnology",
                       message: "Technology (optional):",
                   })
                 : undefined;
 
         const tags = await input({
+            name: "archetypeTags",
             message: "Tags (optional):",
         });
 

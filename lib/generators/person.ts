@@ -1,7 +1,7 @@
-import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { input } from "../utils/prompts";
 import {
     addRelationshipsToElement,
     type Relationship,
@@ -31,6 +31,7 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         );
 
         const elementName = await input({
+            name: "elementName",
             message: "Person name:",
             required: true,
             validate: chainValidators(
@@ -40,6 +41,7 @@ const generator: GeneratorDefinition<PersonAnswers> = {
         });
 
         const personDescription = await input({
+            name: "personDescription",
             message: "Person description:",
             default: "Default user",
         });

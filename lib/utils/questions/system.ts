@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { input, select } from "@inquirer/prompts";
 import { kebabCase } from "change-case";
+import { input, select } from "../prompts";
 import type { StructurizrWorkspace } from "../workspace";
 import { getWorkspacePath } from "../workspace";
 
@@ -102,6 +102,7 @@ export function resolveSystemQuestion(
         }
 
         const systemQuestion = select({
+            name: "systemName",
             message: options.message,
             choices: systems,
         });
@@ -115,18 +116,19 @@ export function resolveSystemQuestion(
     const workspaceFolder = getWorkspacePath(workspacePath);
 
     return input({
+        name: "systemName",
         message: options.message,
-        validate: async (input) => {
+        validate: async (inputValue) => {
             if (workspaceFolder) {
                 const systemPath = resolve(
                     workspaceFolder,
-                    `containers/${kebabCase(input)}`,
+                    `containers/${kebabCase(inputValue)}`,
                 );
                 if (existsSync(systemPath)) return true;
             }
 
             throw new Error(
-                `System "${input}" does not exist in the workspace.`,
+                `System "${inputValue}" does not exist in the workspace.`,
             );
         },
     });

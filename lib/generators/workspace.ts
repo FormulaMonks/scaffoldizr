@@ -1,8 +1,8 @@
-import { checkbox, confirm, input, select } from "@inquirer/prompts";
 import { $ } from "bun";
 import type { AddAction, AddManyAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { checkbox, confirm, input, select } from "../utils/prompts";
 import { stringEmpty } from "../utils/questions/validators";
 
 const globalUserName =
@@ -27,17 +27,20 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
     description: "Create a new workspace",
     questions: async () => {
         const workspaceName = await input({
+            name: "workspaceName",
             message: "Workspace name:",
             required: true,
             validate: stringEmpty,
         });
 
         const workspaceDescription = await input({
+            name: "workspaceDescription",
             message: "Workspace description:",
             default: "Untitled Workspace",
         });
 
         const workspaceScope = await select({
+            name: "workspaceScope",
             message: "Workspace scope:",
             choices: [
                 { name: "Software System", value: "softwaresystem" },
@@ -48,6 +51,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         const systemName =
             workspaceScope === "softwaresystem"
                 ? await input({
+                      name: "systemName",
                       message: "System name:",
                       required: true,
                       validate: stringEmpty,
@@ -57,28 +61,33 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         const systemDescription =
             workspaceScope === "softwaresystem"
                 ? await input({
+                      name: "systemDescription",
                       message: "System description:",
                       default: "Untitled System",
                   })
                 : undefined;
 
         const authorName = await input({
+            name: "authorName",
             message: "Author Name:",
             default: globalUserName.trim(),
         });
 
         const authorEmail = await input({
+            name: "authorEmail",
             message: "Author email:",
             default: globalUserEmail.trim(),
         });
 
         const shouldIncludeTheme = await confirm({
+            name: "shouldIncludeTheme",
             message: "Include default theme?",
             default: true,
         });
 
         const additionalThemes = shouldIncludeTheme
             ? await checkbox({
+                  name: "additionalThemes",
                   message: "Select additional themes to include:",
                   choices: [
                       {
@@ -95,6 +104,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
 
         const mainColor = shouldIncludeTheme
             ? await select({
+                  name: "mainColor",
                   message: "Main color for elements?",
                   choices: [
                       { name: "Blue (Default)", value: undefined },

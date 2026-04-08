@@ -1,4 +1,3 @@
-import { Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
@@ -6,6 +5,7 @@ import {
     elementTypeByTags,
     labelElementByTags,
 } from "../utils/labels";
+import { Separator, select } from "../utils/prompts";
 import {
     addRelationshipsToElement,
     componentParser,
@@ -35,22 +35,44 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
             includeContainers: true,
             includeComponents: true,
             includeDeploymentNodes: false,
-        }).map((elm) => ({
-            name: `${labelElementByTags(elm.tags)} ${
-                elm.systemName ? `${elm.systemName}/` : ""
-            }${elm.containerName ? `${elm.containerName}/` : ""}${elm.name}`,
-            value: {
-                elementName: elm.name,
-                systemName: elm.systemName,
-                containerName: elm.containerName,
-                elementType: elementTypeByTags(elm.tags),
-            },
-        }));
-
-        const element = await select({
-            message: "Element:",
-            choices: systemElements,
+        }).map((elm) => {
+            const key = [
+                elementTypeByTags(elm.tags),
+                elm.systemName,
+                elm.containerName,
+                elm.name,
+            ]
+                .filter(Boolean)
+                .join("/");
+            return {
+                name: `${labelElementByTags(elm.tags)} ${
+                    elm.systemName ? `${elm.systemName}/` : ""
+                }${elm.containerName ? `${elm.containerName}/` : ""}${elm.name}`,
+                value: key,
+                _elm: elm,
+            };
         });
+
+        const elementKey = await select<string>({
+            name: "element",
+            message: "Element:",
+            choices: systemElements.map(({ name, value }) => ({
+                name,
+                value,
+            })),
+        });
+
+        const selected = systemElements.find((e) => e.value === elementKey);
+        if (!selected) {
+            throw new Error(`Element "${elementKey}" not found in workspace`);
+        }
+
+        const element = {
+            elementName: selected._elm.name,
+            systemName: selected._elm.systemName,
+            containerName: selected._elm.containerName,
+            elementType: elementTypeByTags(selected._elm.tags),
+        };
 
         const relationships = await addRelationshipsToElement(
             element.elementName,

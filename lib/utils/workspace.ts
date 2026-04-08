@@ -203,15 +203,20 @@ export const getWorkspaceElementFiles = async (
         }
 
         case Elements.Archetype: {
-            return baseFilteredFiles.map((file) => ({
-                name: file.name.replace(new RegExp(REGEXP.Name), "$1"),
-                element: file.name.replace(new RegExp(REGEXP.Element), "$1"),
-                path: join(
-                    workspaceFolder,
-                    Folders[element].toLowerCase(),
-                    file.name,
-                ),
-            }));
+            return baseFilteredFiles
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((file) => ({
+                    name: file.name.replace(new RegExp(REGEXP.Name), "$1"),
+                    element: file.name.replace(
+                        new RegExp(REGEXP.Element),
+                        "$1",
+                    ),
+                    path: join(
+                        workspaceFolder,
+                        Folders[element].toLowerCase(),
+                        file.name,
+                    ),
+                }));
         }
     }
 };

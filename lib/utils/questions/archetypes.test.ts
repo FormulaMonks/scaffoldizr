@@ -26,15 +26,17 @@ mock.module("../workspace", () => ({
     getWorkspacePath: mock((input: string) => input),
 }));
 
-// Mock inquirer prompts
-mock.module("@inquirer/prompts", () => ({
-    select: mock(async (_options: unknown) => "softwareSystem"),
+const { Separator } = await import("../prompts");
+
+mock.module("../prompts", () => ({
+    select: mock(async (_options: unknown) => "system"),
+    Separator,
 }));
 
 const { getWorkspaceJson, getWorkspaceElementFiles } = await import(
     "../workspace"
 );
-const { select } = await import("@inquirer/prompts");
+const { select } = await import("../prompts");
 
 describe("resolveBaseElementQuestion", () => {
     beforeEach(() => {
@@ -48,12 +50,13 @@ describe("resolveBaseElementQuestion", () => {
         (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
             [],
         );
-        (select as ReturnType<typeof mock>).mockResolvedValue("softwareSystem");
+        (select as ReturnType<typeof mock>).mockResolvedValue("system");
 
         const result = await resolveBaseElementQuestion("/test/path");
 
         expect(result).toEqual({
-            element: "softwareSystem",
+            element: "system",
+            archetype: "softwareSystem",
             position: 1,
         });
     });
@@ -91,11 +94,9 @@ describe("resolveBaseElementQuestion", () => {
         (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
             existingArchetypes,
         );
-        (select as ReturnType<typeof mock>).mockResolvedValue({
-            position: 1,
-            representation: "api",
-            baseElement: "container",
-        });
+        (select as ReturnType<typeof mock>).mockResolvedValue(
+            "archetype:container:api",
+        );
 
         const result = await resolveBaseElementQuestion("/test/path");
 
@@ -117,11 +118,9 @@ describe("resolveBaseElementQuestion", () => {
         (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
             existingArchetypes,
         );
-        (select as ReturnType<typeof mock>).mockResolvedValue({
-            position: 1,
-            representation: "--http->",
-            baseElement: "relationship",
-        });
+        (select as ReturnType<typeof mock>).mockResolvedValue(
+            "archetype:relationship:--http->",
+        );
 
         const result = await resolveBaseElementQuestion("/test/path");
 
@@ -139,12 +138,13 @@ describe("resolveBaseElementQuestion", () => {
         (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
             [],
         );
-        (select as ReturnType<typeof mock>).mockResolvedValue("softwareSystem");
+        (select as ReturnType<typeof mock>).mockResolvedValue("system");
 
         const result = await resolveBaseElementQuestion("/test/path");
 
         expect(result).toEqual({
-            element: "softwareSystem",
+            element: "system",
+            archetype: "softwareSystem",
             position: 1,
         });
 
@@ -160,12 +160,12 @@ describe("resolveBaseElementQuestion", () => {
         (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
             [],
         );
-        (select as ReturnType<typeof mock>).mockResolvedValue("softwareSystem");
+        (select as ReturnType<typeof mock>).mockResolvedValue("component");
 
         const result = await resolveBaseElementQuestion("/test/path");
 
         expect(result).toEqual({
-            element: "softwareSystem",
+            element: "component",
             position: 1,
         });
     });
@@ -183,15 +183,12 @@ describe("resolveBaseElementQuestion", () => {
         (getWorkspaceElementFiles as ReturnType<typeof mock>).mockResolvedValue(
             unsortedArchetypes,
         );
-        (select as ReturnType<typeof mock>).mockResolvedValue({
-            position: 1,
-            representation: "alpha",
-            baseElement: "container",
-        });
+        (select as ReturnType<typeof mock>).mockResolvedValue(
+            "archetype:container:alpha",
+        );
 
         const result = await resolveBaseElementQuestion("/test/path");
 
-        // Position should be incremented based on number of archetypes
         expect(result.position).toBe(4);
     });
 
@@ -216,6 +213,7 @@ describe("resolveBaseElementQuestion", () => {
 describe("resolveAvailableArchetypes", () => {
     beforeEach(() => {
         mock.restore();
+        (getWorkspaceElementFiles as ReturnType<typeof mock>).mockReset();
     });
 
     it("return no elements when workspace element files are undefined", async () => {

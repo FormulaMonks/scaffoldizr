@@ -1,10 +1,9 @@
-import { access } from "node:fs/promises";
+import { access, chmod } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
-import { chmod } from "node:fs/promises";
 import { file, write } from "bun";
 import chalk from "chalk";
-import type { ActionTypes, BaseAction, ExtendedAction } from ".";
 import { compileSource, compileTemplateFile } from "../handlebars";
+import type { ActionTypes, BaseAction, ExtendedAction } from ".";
 
 export type AppendAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Append;

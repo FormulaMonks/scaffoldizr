@@ -1,5 +1,4 @@
 import { resolve } from "node:path";
-import { input, Separator, select } from "@inquirer/prompts";
 import { file } from "bun";
 import chalk from "chalk";
 import { kebabCase, pascalCase } from "change-case";
@@ -7,6 +6,7 @@ import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
 import { Elements } from "../utils/labels";
+import { input, Separator, select } from "../utils/prompts";
 import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
@@ -58,19 +58,33 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             process.exit(1);
         }
 
-        const container = await select({
+        const containerKey = await select<string>({
+            name: "container",
             message: "Container:",
             choices: containers.map((elm) => ({
                 name: `${elm.systemName ? `${elm.systemName}/` : ""}${elm.name}`,
-                value: elm,
+                value: `${elm.systemName ? `${elm.systemName}/` : ""}${elm.name}`,
             })),
         });
+
+        const container = containers.find(
+            (elm) =>
+                `${elm.systemName ? `${elm.systemName}/` : ""}${elm.name}` ===
+                containerKey,
+        );
+
+        if (!container) {
+            throw new Error(
+                `Container "${containerKey}" not found in workspace`,
+            );
+        }
 
         if (!container.systemName) {
             throw new Error("Selected container does not belong to a system");
         }
 
         const elementName = await input({
+            name: "elementName",
             message: "Component Name:",
             required: true,
             validate: chainValidators(
@@ -88,6 +102,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
 
         const archetype = availableComponentArchetypes?.length
             ? await select<string | "custom">({
+                  name: "archetype",
                   message: `Archetype component for ${elementName}:`,
                   choices: [
                       ...availableComponentArchetypes.map((archetype) => ({
@@ -106,6 +121,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
         const componentDescription =
             archetype === "custom"
                 ? await input({
+                      name: "componentDescription",
                       message: "Component Description:",
                       default: "Untitled Component",
                       validate: stringEmpty,
@@ -115,6 +131,7 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
         const componentTechnology =
             archetype === "custom"
                 ? await input({
+                      name: "componentTechnology",
                       message: "Component technology:",
                   })
                 : "";

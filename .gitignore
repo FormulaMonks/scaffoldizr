@@ -184,3 +184,6 @@ __base
 lib/scfz
 
 *.bun-build
+
+.sisyphus
+.playwright-mcp
