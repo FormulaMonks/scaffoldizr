@@ -24,59 +24,23 @@ jobs:
           mise use bun@1.3.3
           bun install
           bun test:ci
-  bump-version:
-    needs: test
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/checkout@v6
-      - name: Mise Tools install
-        uses: jdx/mise-action@v4
-        with:
-          version: 2025.11.10
-          install: true
-          cache: true
-          experimental: true
-      - run: mise use bun@1.3.3
-      - run: bun install
-      - name: Bump version
-        id: bump
-        run: |
-          version=$(echo "${{ github.ref }}" | sed -e s%refs/tags/v%%)
-          echo "New tag found. Updating package.json to $version..."
-          jq --indent 4 --arg version "$version" '.version = $version' package.json > package.json.tmp
-          mv package.json.tmp package.json
-          bun biome format --write package.json
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-      - name: Update package.json version
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: "[skip ci]: Bump version"
-          commit_options: "--no-verify --signoff"
-          file_pattern: "package.json"
-          repository: .
-          branch: main
-          commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
-          status_options: "--untracked-files=no"
-          # add_options: '-u'
-          push_options: "--force --no-verify"
-          skip_dirty_check: true
-          skip_fetch: false
-          skip_checkout: false
-          disable_globbing: true
-          create_branch: false
   output-version:
-    needs: bump-version
+    needs: test
     if: always()
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
-      - name: Output version
+      - name: Extract version from tag
+        id: extract
         run: |
-          jq -r '.version' package.json > TESTED_VERSION.txt
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            version=$(echo "${{ github.ref }}" | sed -e s%refs/tags/v%%)
+          else
+            version=$(echo "${{ github.ref }}" | sed -e 's|refs/heads/||')
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "$version" > TESTED_VERSION.txt
           cat TESTED_VERSION.txt
       - uses: actions/upload-artifact@v6
         with:
@@ -116,8 +80,6 @@ jobs:
             runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ contains(github.ref, '-beta') && 'develop' || (startsWith(github.ref, 'refs/tags/') && 'main' || github.ref) }}
       - name: Mise Tools install
         uses: jdx/mise-action@v4
         if: ${{ matrix.os != 'windows' }}
@@ -134,6 +96,12 @@ jobs:
           choco install bun --version 1.3.3
         if: ${{ matrix.os == 'windows' }}
       - run: bun install --ignore-scripts
+      - name: Write version to package.json
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="${{ needs.output-version.outputs.version }}"
+          jq --indent 4 --arg version "$version" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json
