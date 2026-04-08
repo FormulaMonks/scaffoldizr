@@ -41,6 +41,14 @@ Refer to the [documentation](https://docs.structurizr.com/dsl/archetypes) for fu
       - `{technology}` denotes the technology for the element. `softwareSystem` does not allow technology field.
       - `{tags}` are a list of comma-separated values to tag the element.
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz archetype \
+  --archetypeName "<archetype name>" \
+  --archetypeDescription "<description>"
+```
+
 ## References
 
 Check [examples of archetypes](../examples/archetypes) for examples of archetype files.

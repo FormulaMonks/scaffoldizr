@@ -47,6 +47,15 @@ _⚠️ IMPORTANT:_ Components can only be created when the [Workspace Scope](..
 
 6. Validate the workspace to ensure the component has been created successfully and there are no errors. Refer to [structurizr-cli validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz component \
+  --elementName "<component name>" \
+  --componentDescription "<description>" \
+  --componentTechnology "<technology>"
+```
+
 ## References
 
 - Check [component documentation](https://c4model.com/abstractions/component) for further details.

@@ -29,6 +29,14 @@ In the C4 model, a person represents a user or actor that interacts with the sof
 
 5. Validate the workspace to ensure the person has been created successfully and there are no errors. Refer to [structurizr-cli validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz person \
+  --elementName "<person name>" \
+  --personDescription "<description>"
+```
+
 ## References
 
 - Check [examples of people](../examples/people) for examples of person files.

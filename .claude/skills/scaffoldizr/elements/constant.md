@@ -27,6 +27,14 @@ The `!const` keyword can be used to define a constant. Check the [documentation]
     - ✅ Correct: `technology "${WEB}"`.
     - ❌ Incorrect: `technology ${WEB}` <- No double quotes around
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz constant \
+  --constantName "<CONST_NAME>" \
+  --constantValue "<value>"
+```
+
 ## References
 
 - Check the [documentation](https://docs.structurizr.com/dsl/basics#string-constants-and-variables) for further details.
