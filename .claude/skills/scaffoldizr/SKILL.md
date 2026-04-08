@@ -4,7 +4,7 @@ description: Creates Structurizr elements and workspace based on Scaffoldizr opi
 license: MIT
 metadata:
   author: Andrés Zorro <andres.zorro@monks.com>
-  version: 0.8.0
+  version: 0.9.0
 ---
 
 # Structurizr Workspace - Created with Scaffoldizr
@@ -22,10 +22,51 @@ This skill enables Copilot to generate and interact with a [Structurizr workspac
 - In the root folder, search for an `./architecture` folder. If there is no such folder, offer to create one using Scaffoldizr, run:
 
   ```bash
-  scfz --dest <root_folder>
+  scfz --dest <root_folder> \
+    --workspaceName "<name>" \
+    --workspaceDescription "<description>" \
+    --workspaceScope "softwaresystem" \
+    --systemName "<system name>" \
+    --systemDescription "<system description>" \
+    --authorName "<author name>" \
+    --authorEmail "<author email>" \
+    --shouldIncludeTheme "false"
   ```
 
   Scaffoldizr will create the `./architecture` folder with all the relevant files.
+
+## Non-interactive CLI usage (AI Agent Mode)
+
+Scaffoldizr supports non-interactive execution by specifying a generator as a subcommand and passing all prompt answers as CLI flags. **This is the preferred approach for AI agents** — it avoids interactive prompts entirely.
+
+### Subcommand routing
+
+When a `workspace.dsl` already exists, bypass the main menu by specifying a generator subcommand:
+
+```bash
+scfz <generator> [--flag "value"]
+```
+
+Generator names are kebab-cased: `external-system`, `software-system`, etc.
+
+### Passing arguments
+
+All prompt questions can be answered via CLI flags using `--parameter "value"` or `--parameter=value` format.
+
+### Element generators reference
+
+| Generator | Common Flags |
+|---|---|
+| `system` | `--systemName`, `--systemDescription`, `--archetype` |
+| `container` | `--systemName` (parent), `--elementName`, `--containerDescription`, `--containerType`, `--containerTechnology` |
+| `component` | `--elementName`, `--componentDescription`, `--componentTechnology` |
+| `person` | `--elementName`, `--personDescription` |
+| `external-system` | `--elementName`, `--extSystemDescription` |
+| `view` | `--viewType`, `--viewName`, `--viewDescription` |
+| `constant` | `--constantName`, `--constantValue` |
+| `archetype` | `--archetypeName`, `--archetypeDescription` |
+
+Each element file documents the specific flags and CLI command for that generator.
 
 - All the relevant documentation files are contained within the `./architecture` folder.
 - The main entrypoint is the `./architecture/workspace.dsl` file.

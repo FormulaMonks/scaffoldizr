@@ -42,6 +42,17 @@ _⚠️ IMPORTANT:_ Software Systems can only be created when the [Workspace Sco
 
 5. Validate the workspace to ensure the software system has been created successfully and there are no errors. Refer to [structurizr-cli validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz system \
+  --systemName "<system name>" \
+  --systemDescription "<description>" \
+  --archetype "<archetype name>"
+```
+
+The `--archetype` flag is optional; omit it if no archetype applies.
+
 ## References
 
 - Check [software system documentation](https://c4model.com/abstractions/software-system) for further details.

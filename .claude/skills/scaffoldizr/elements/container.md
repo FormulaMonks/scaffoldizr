@@ -43,6 +43,17 @@ _⚠️ IMPORTANT:_ Containers can only be created when the [Workspace Scope](..
 
 6. Validate the workspace to ensure the container has been created successfully and there are no errors. Refer to [structurizr-cli validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz container \
+  --systemName "<parent system name>" \
+  --elementName "<container name>" \
+  --containerDescription "<description>" \
+  --containerType "<type>" \
+  --containerTechnology "<technology>"
+```
+
 ## References
 
 - Check [container documentation](https://c4model.com/abstractions/container) for further details.

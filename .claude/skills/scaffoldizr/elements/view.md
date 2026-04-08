@@ -64,6 +64,17 @@ _⚠️ Important Note_: Dynamic views require that the relationships being refe
 
 ### Deployment Views
 
+## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz view \
+  --viewType "<landscape|deployment>" \
+  --viewName "<view name>" \
+  --viewDescription "<description>"
+```
+
+The `--viewType` flag accepts `landscape` or `deployment`. For other view types (`systemContext`, `container`, `component`, `dynamic`), create the DSL file manually following the instructions above.
+
 ## References
 
 - Check the [documentation](https://docs.structurizr.com/dsl/language#views) for further details.
