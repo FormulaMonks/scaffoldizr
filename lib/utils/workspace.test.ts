@@ -205,9 +205,9 @@ describe("workspace utilities", () => {
             expect(archetypeResult).toMatchInlineSnapshot(`
               [
                 {
-                  "element": "relationship",
+                  "element": "component",
                   "name": "test-archetype",
-                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_relationship.dsl",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_component.dsl",
                 },
                 {
                   "element": "container",
@@ -215,9 +215,9 @@ describe("workspace utilities", () => {
                   "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_container.dsl",
                 },
                 {
-                  "element": "component",
+                  "element": "relationship",
                   "name": "test-archetype",
-                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_component.dsl",
+                  "path": "/tmp/scaffoldizr-workspace-test/architecture/archetypes/test-archetype_relationship.dsl",
                 },
               ]
             `);
