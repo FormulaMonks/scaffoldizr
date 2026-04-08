@@ -1,3 +1,6 @@
+_config.local.yml
+_data_local/
+_plugins/remote_include_local.rb
 .jekyll-cache
 .jekyll-metadata
 .sass-cache
