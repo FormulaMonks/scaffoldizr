@@ -46,12 +46,12 @@ Agents should verify the current scope before attempting to scaffold new element
 
 AI agents interact with the workspace using the `scfz` CLI tool in non-interactive mode. This is achieved by passing arguments as flags to bypass interactive prompts.
 
-For a detailed list of subcommands and parameters, refer to the [Usage Guide](/usage).
+For a detailed list of subcommands and parameters, refer to the [Usage Guide](./03-usage.md).
 
 ## Workspace Build Process
 
-*   **Source**: The `architecture/workspace.dsl` file is the primary entry point.
-*   **Compilation**: The DSL files are compiled into a single `architecture/workspace.json` file.
-*   **Visualization**: Use the provided scripts (e.g., `architecture/scripts/run.sh`) to start Structurizr Lite and visualize diagrams at `http://localhost:8080`.
+* **Source**: The `architecture/workspace.dsl` file is the primary entry point.
+* **Compilation**: The DSL files are compiled into a single `architecture/workspace.json` file.
+* **Visualization**: Use the provided scripts (e.g., `architecture/scripts/run.sh`) to start Structurizr Lite and visualize diagrams at `http://localhost:8080`.
 
 Agents should never modify the `workspace.json` file directly; all changes should be made to the DSL source files.

@@ -1,11 +1,12 @@
 import { describe, expect, it, mock } from "bun:test";
-import { Separator, separator } from "../prompts";
 import type { StructurizrWorkspace } from "../workspace";
 import {
     addRelationshipsToElement,
     defaultParser,
     resolveRelationshipForElement,
 } from "./relationships";
+
+const { Separator, separator } = await import("../prompts");
 
 mock.module("../prompts", () => ({
     select: mock(async (_options: unknown) => "outgoing"),

@@ -130,7 +130,9 @@ Let's create a new one by answering the questions below.
 
         if (subcommand) {
             const matchedGenerator = filteredGenerators.find(
-                (g) => g.name.toLowerCase() === subcommand.toLowerCase(),
+                (g) =>
+                    g.name.toLowerCase().replace(/\s+/g, "-") ===
+                    subcommand.toLowerCase(),
             );
 
             if (!matchedGenerator) {

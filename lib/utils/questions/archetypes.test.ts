@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { Elements } from "../labels";
-import { Separator } from "../prompts";
 import type { StructurizrWorkspace, WorkspaceElement } from "../workspace";
 import {
     resolveAvailableArchetypeElements,
@@ -26,6 +25,8 @@ mock.module("../workspace", () => ({
     ),
     getWorkspacePath: mock((input: string) => input),
 }));
+
+const { Separator } = await import("../prompts");
 
 mock.module("../prompts", () => ({
     select: mock(async (_options: unknown) => "system"),
