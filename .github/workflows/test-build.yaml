@@ -31,13 +31,17 @@ jobs:
     outputs:
       version: ${{ steps.extract.outputs.version }}
     steps:
-      - name: Extract version from tag
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
+      - name: Extract version
         id: extract
         run: |
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             version=$(echo "${{ github.ref }}" | sed -e s%refs/tags/v%%)
           else
-            version=$(echo "${{ github.ref }}" | sed -e 's|refs/heads/||')
+            version=$(jq -r '.version' package.json)
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "$version" > TESTED_VERSION.txt
