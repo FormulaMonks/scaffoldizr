@@ -58,14 +58,26 @@ const generator: GeneratorDefinition<ComponentAnswers> = {
             process.exit(1);
         }
 
-        const container = await select({
+        const containerKey = await select<string>({
             name: "container",
             message: "Container:",
             choices: containers.map((elm) => ({
                 name: `${elm.systemName ? `${elm.systemName}/` : ""}${elm.name}`,
-                value: elm,
+                value: `${elm.systemName ? `${elm.systemName}/` : ""}${elm.name}`,
             })),
         });
+
+        const container = containers.find(
+            (elm) =>
+                `${elm.systemName ? `${elm.systemName}/` : ""}${elm.name}` ===
+                containerKey,
+        );
+
+        if (!container) {
+            throw new Error(
+                `Container "${containerKey}" not found in workspace`,
+            );
+        }
 
         if (!container.systemName) {
             throw new Error("Selected container does not belong to a system");

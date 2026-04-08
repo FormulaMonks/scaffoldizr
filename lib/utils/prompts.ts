@@ -58,7 +58,15 @@ type CheckboxConfig<Value> = {
 
 type WithOptionalName<T> = T & { name?: string };
 
+let cachedArgv: Record<string, string | undefined> | undefined;
+
+export function resetArgvCache(): void {
+    cachedArgv = undefined;
+}
+
 function parseArgv(): Record<string, string | undefined> {
+    if (cachedArgv !== undefined) return cachedArgv;
+
     const parsed = yargs(hideBin(process.argv)).parseSync();
     const result: Record<string, string | undefined> = {};
 
@@ -68,13 +76,13 @@ function parseArgv(): Record<string, string | undefined> {
         }
     }
 
-    return result;
+    cachedArgv = result;
+    return cachedArgv;
 }
 
 function getCliValue(name: string | undefined): string | undefined {
     if (name === undefined) return undefined;
-    const argv = parseArgv();
-    return argv[name];
+    return parseArgv()[name];
 }
 
 async function runValidation(
@@ -135,9 +143,15 @@ export async function select<Value>(
         }
     }
 
-    return inquirerSelect(
-        rest as Parameters<typeof inquirerSelect>[0],
-    ) as Promise<Value>;
+    throw new Error(
+        `Invalid value "${cliValue}" for --${name}. Valid options are: ${nonSeparatorChoices
+            .map((c) =>
+                c !== null && typeof c === "object" && "value" in c
+                    ? String((c as SelectChoice<Value>).value)
+                    : String(c),
+            )
+            .join(", ")}`,
+    );
 }
 
 export async function confirm(
@@ -193,7 +207,32 @@ export async function checkbox<Value>(
         })
         .filter((value): value is Value => value !== undefined);
 
+    if (rest.validate !== undefined) {
+        const matchedAsChoices = matched.map((value) => ({
+            value,
+        })) as ReadonlyArray<CheckboxChoice<Value>>;
+        const validationResult = await rest.validate(matchedAsChoices);
+        if (validationResult !== true) {
+            const message =
+                typeof validationResult === "string"
+                    ? validationResult
+                    : "Validation failed";
+            throw new Error(message);
+        }
+    }
+
     return matched;
 }
 
 export { Separator };
+
+export const separator = (
+    name: string,
+    elements: unknown[],
+): Separator | undefined => {
+    const maybeSeparator = elements.length
+        ? new Separator(`-- ${name} --`)
+        : undefined;
+
+    return maybeSeparator;
+};

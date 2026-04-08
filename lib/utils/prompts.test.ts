@@ -11,8 +11,10 @@ import {
 describe("prompts", () => {
     const originalArgv = process.argv;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         process.argv = ["bun", "scfz"];
+        const { resetArgvCache } = await import("./prompts");
+        resetArgvCache();
     });
 
     afterEach(() => {
@@ -285,6 +287,22 @@ describe("prompts", () => {
             });
 
             expect(result).toBe("NewElement");
+        });
+    });
+
+    describe("separator", () => {
+        test("returns a Separator instance when elements are present", async () => {
+            const { separator, Separator } = await import("./prompts");
+            const createdSeparator = separator("Group", [
+                { name: "Item1", value: 1 },
+            ]);
+            expect(createdSeparator).toBeInstanceOf(Separator);
+        });
+
+        test("returns undefined when elements array is empty", async () => {
+            const { separator } = await import("./prompts");
+            const createdSeparator = separator("EmptyGroup", []);
+            expect(createdSeparator).toBeUndefined();
         });
     });
 });

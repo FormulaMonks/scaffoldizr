@@ -4,4 +4,4 @@ NodeJSApp = container "NodeJS App" {
     description "A NodeJS application that serves as an example."
     technology "Node.js"
     tags "WebApp"
-}}
+}

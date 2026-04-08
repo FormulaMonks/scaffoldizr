@@ -25,7 +25,7 @@ This skill enables Copilot to generate and interact with a [Structurizr workspac
   scfz --dest <root_folder>
   ```
 
-  Scaffoldizr wiill create the `./architiecture` folder with all the relevant files.
+  Scaffoldizr will create the `./architecture` folder with all the relevant files.
 
 - All the relevant documentation files are contained within the `./architecture` folder.
 - The main entrypoint is the `./architecture/workspace.dsl` file.

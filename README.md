@@ -40,7 +40,7 @@ scfz <generator> [options]
 
 ### Passing Arguments
 
-All prompt questions can be answered via CLI flags using the `--parameter "value"` format. Note that parameters must be space-separated.
+All prompt questions can be answered via CLI flags using `--parameter "value"` or `--parameter=value` format.
 
 #### Workspace Generator (Initial Setup)
 
@@ -66,7 +66,7 @@ Once a workspace is initialized, use these subcommands:
 | ----------- | ------------- | ------------------ |
 | `system` | Software System | `--systemName`, `--systemDescription`, `--archetype` |
 | `container` | Container | `--systemName` (parent), `--elementName`, `--containerDescription`, `--containerType`, `--containerTechnology` |
-| `component` | Component | `--container` (parent), `--elementName`, `--componentDescription`, `--componentTechnology` |
+| `component` | Component | `--elementName`, `--componentDescription`, `--componentTechnology` |
 | `person` | Person | `--elementName`, `--personDescription` |
 | `external-system` | External System | `--elementName`, `--extSystemDescription` |
 | `view` | View | `--viewType` (landscape/deployment), `--viewName`, `--viewDescription` |

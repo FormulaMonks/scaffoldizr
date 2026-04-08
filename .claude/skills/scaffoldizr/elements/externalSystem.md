@@ -12,7 +12,6 @@ Follow the same instructions as a regular Software System, but make sure to crea
 
 ```dsl
 ExternalPaymentSystem = softwareSystem "External Payment System" {
-    name "External Payment System"
     description "Handles payments for our e-commerce platform"
     tags "System,External"
 }

@@ -31,9 +31,8 @@ export type Generator<A extends Record<string, unknown>> =
         templates: Map<string, string>;
     };
 
-export type GetAnswers<Type> = Type extends GeneratorDefinition<infer X>
-    ? X
-    : null;
+export type GetAnswers<Type> =
+    Type extends GeneratorDefinition<infer X> ? X : null;
 
 async function executeAction<A extends Record<string, unknown>>(
     action: ExtendedAction &

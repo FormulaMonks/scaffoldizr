@@ -1,9 +1,9 @@
 import { join } from "node:path";
 import { Glob } from "bun";
 import chalk from "chalk";
+import { compileSource } from "../handlebars";
 import type { BaseAction, ExtendedAction } from ".";
 import { ActionTypes, add } from ".";
-import { compileSource } from "../handlebars";
 
 export type AddManyAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.AddMany;

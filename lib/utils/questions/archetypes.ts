@@ -1,18 +1,11 @@
-import { type Separator, select } from "@inquirer/prompts";
 import { Elements } from "../labels";
+import { type Separator as SeparatorType, select, separator } from "../prompts";
 import {
     getWorkspaceElementFiles,
     getWorkspaceJson,
     getWorkspacePath,
     type WorkspaceElement,
 } from "../workspace";
-import { separator } from "./utils";
-
-type ArchetypeChoice = {
-    position: number;
-    representation: string;
-    baseElement: string;
-};
 
 const mapArchetypeToChoice = (archetypes: WorkspaceElement[] | undefined) => {
     if (!archetypes) return [];
@@ -56,44 +49,57 @@ export async function resolveBaseElementQuestion(
         workspaceInfo?.configuration.scope?.toLowerCase() === "landscape";
     const mappedArchetypes = mapArchetypeToChoice(availableArchetypes);
 
-    const baseTypes = [
-        !isLandscapeScope
-            ? { name: "Container", value: "container" }
-            : undefined,
-        !isLandscapeScope
-            ? { name: "Component", value: "component" }
-            : undefined,
-        {
-            name: "Software System",
-            value: {
-                baseElement: "system",
-                representation: "softwareSystem",
-            },
-        },
+    const allChoices: { name: string; value: string }[] = [
+        ...mappedArchetypes.map((a) => ({
+            name: a.name,
+            value: `archetype:${a.value.baseElement}:${a.value.representation}`,
+        })),
+        ...(!isLandscapeScope
+            ? [
+                  { name: "Container", value: "container" },
+                  { name: "Component", value: "component" },
+              ]
+            : []),
+        { name: "Software System", value: "system" },
         { name: "Relationship (->)", value: "relationship" },
     ];
 
-    const selection = await select<string | ArchetypeChoice>({
+    const archetypeChoices = allChoices.slice(0, mappedArchetypes.length);
+    const baseChoices = allChoices.slice(mappedArchetypes.length);
+
+    const selectionKey = await select<string>({
+        name: "archetypeBaseType",
         message: "Base type:",
-        // @ts-expect-error -- We're already filtering undefined values
         choices: [
-            separator("Archetypes", mappedArchetypes),
-            ...mappedArchetypes,
-            separator("Base elements", baseTypes),
-            ...baseTypes,
-        ].filter(Boolean) as ((typeof baseTypes)[number] | Separator)[],
+            separator("Archetypes", archetypeChoices),
+            ...archetypeChoices,
+            separator("Base elements", baseChoices),
+            ...baseChoices,
+        ].filter(
+            (c): c is SeparatorType | { name: string; value: string } =>
+                c !== undefined,
+        ),
     });
 
-    if (typeof selection === "string") {
+    if (selectionKey.startsWith("archetype:")) {
+        const [, baseElement, representation] = selectionKey.split(":");
         return {
-            element: selection,
+            element: baseElement,
+            archetype: representation,
+            position: mappedArchetypes.length + 1,
+        };
+    }
+
+    if (selectionKey === "system") {
+        return {
+            element: "system",
+            archetype: "softwareSystem",
             position: mappedArchetypes.length + 1,
         };
     }
 
     return {
-        element: selection.baseElement,
-        archetype: selection.representation,
+        element: selectionKey,
         position: mappedArchetypes.length + 1,
     };
 }

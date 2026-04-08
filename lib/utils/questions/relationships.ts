@@ -1,12 +1,11 @@
-import { checkbox, input, Separator, select } from "@inquirer/prompts";
 import { pascalCase } from "change-case";
 import type { QuestionsObject } from "../generator";
 import { removeSpaces } from "../handlebars";
 import { Elements, labelElementByTags } from "../labels";
+import { checkbox, input, Separator, select, separator } from "../prompts";
 import type { StructurizrWorkspace, WorkspaceElement } from "../workspace";
 import { resolveAvailableArchetypeElements } from "./archetypes";
 import { getAllWorkspaceElements } from "./system";
-import { separator } from "./utils";
 
 export type Relationship = {
     relationship: string;
@@ -91,6 +90,7 @@ const archetypeRelationshipQuestion =
     (archetypeRelationships: WorkspaceElement[], relName: string) =>
     async () => {
         const archetypeAnswer = await select<WorkspaceElement | "custom">({
+            name: `${relName}_archetypeRelationship`,
             message: `Archetype relationship for ${relName}:`,
             choices: [
                 ...archetypeRelationships.map((archetype) => ({
@@ -139,6 +139,7 @@ export const resolveRelationshipForElement = async (
     const relationshipPromises = {
         [`${elementNamePascalCase}_relationshipType`]: () =>
             select({
+                name: `${elementNamePascalCase}_relationshipType`,
                 message: `Relationship type for ${relName}`,
                 choices: [
                     {
@@ -172,6 +173,7 @@ export const resolveRelationshipForElement = async (
             }
 
             return input({
+                name: `${elementNamePascalCase}_relationship`,
                 message: `Relationship with ${relName}:`,
                 default: defaultRelationship,
             });
@@ -184,6 +186,7 @@ export const resolveRelationshipForElement = async (
             }
 
             return input({
+                name: `${elementNamePascalCase}_technology`,
                 message: "Technology:",
                 default: defaultTechnology,
             });
@@ -269,6 +272,7 @@ export async function addRelationshipsToElement(
     }
 
     const relationshipNames = await checkbox({
+        name: "relationshipNames",
         message,
         choices: systemElements,
         validate,

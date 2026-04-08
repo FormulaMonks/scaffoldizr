@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
 import { file, write } from "bun";
-import { ActionTypes } from ".";
 import templates from "../../templates/bundle";
+import { ActionTypes } from ".";
 import { append } from "./append";
 
 describe("actions", () => {
