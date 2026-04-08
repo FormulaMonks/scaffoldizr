@@ -1,4 +1,3 @@
-import { Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import {
@@ -6,6 +5,7 @@ import {
     elementTypeByTags,
     labelElementByTags,
 } from "../utils/labels";
+import { Separator, select } from "../utils/prompts";
 import {
     addRelationshipsToElement,
     componentParser,
@@ -48,6 +48,7 @@ const generator: GeneratorDefinition<RelationshipAnswers> = {
         }));
 
         const element = await select({
+            name: "element",
             message: "Element:",
             choices: systemElements,
         });

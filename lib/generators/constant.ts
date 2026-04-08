@@ -1,7 +1,7 @@
-import { input } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition, QuestionsObject } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { input } from "../utils/prompts";
 import { stringEmpty } from "../utils/questions/validators";
 
 type ConstantAnswers = {
@@ -15,12 +15,14 @@ const generator: GeneratorDefinition<ConstantAnswers> = {
     questions: {
         constantName: () =>
             input({
+                name: "constantName",
                 message: "Constant:",
                 required: true,
                 validate: stringEmpty,
             }),
         constantValue: () =>
             input({
+                name: "constantValue",
                 message: "Value:",
                 default: "New Value",
                 required: true,

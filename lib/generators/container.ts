@@ -1,11 +1,11 @@
 import { resolve } from "node:path";
-import { input, Separator, select } from "@inquirer/prompts";
 import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
 import type { AddAction, AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { removeSpaces } from "../utils/handlebars";
 import { Elements } from "../utils/labels";
+import { input, Separator, select } from "../utils/prompts";
 import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
@@ -46,6 +46,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         );
 
         const elementName = await input({
+            name: "elementName",
             message: "Container Name:",
             required: true,
             validate: chainValidators<{ systemName: string }>(
@@ -64,6 +65,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
 
         const archetype = availableContainerArchetypes?.length
             ? await select<string | "custom">({
+                  name: "archetype",
                   message: `Archetype container for ${elementName}:`,
                   choices: [
                       ...availableContainerArchetypes.map((archetype) => ({
@@ -82,6 +84,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         const containerDescription =
             archetype === "custom"
                 ? await input({
+                      name: "containerDescription",
                       message: "Container Description:",
                       default: "Untitled Container",
                       validate: stringEmpty,
@@ -91,6 +94,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         const containerType =
             archetype === "custom"
                 ? await select({
+                      name: "containerType",
                       message: "Container type:",
                       default: "None of the above",
                       choices: [
@@ -111,6 +115,7 @@ const generator: GeneratorDefinition<ContainerAnswers> = {
         const containerTechnology =
             archetype === "custom"
                 ? await input({
+                      name: "containerTechnology",
                       message: "Container technology:",
                   })
                 : "";

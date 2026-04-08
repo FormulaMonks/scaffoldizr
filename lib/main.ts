@@ -26,6 +26,7 @@ type CLIArguments = {
     dest: string;
     version?: boolean;
     export?: boolean;
+    _?: (string | number)[];
 };
 
 const STRUCTURIZR_CLI_PATH =
@@ -125,6 +126,34 @@ Let's create a new one by answering the questions below.
         }
     });
     try {
+        const subcommand = args._?.[0]?.toString();
+
+        if (subcommand) {
+            const matchedGenerator = filteredGenerators.find(
+                (g) => g.name.toLowerCase() === subcommand.toLowerCase(),
+            );
+
+            if (!matchedGenerator) {
+                console.error(
+                    chalk.red(
+                        `[ERROR]: Generator "${subcommand}" not found or not allowed in current scope.`,
+                    ),
+                );
+                process.exit(1);
+            }
+
+            type MatchedAnswers = GetAnswers<typeof matchedGenerator>;
+            const directGenerator: Generator<MatchedAnswers> = {
+                ...(matchedGenerator as GeneratorDefinition<MatchedAnswers>),
+                templates,
+                destPath,
+            };
+
+            await createGenerator(directGenerator);
+            await exportWorkspace(relative(process.cwd(), workspacePath));
+            process.exit(0);
+        }
+
         const element = await select({
             message: "Create a new element:",
             choices: Object.values(filteredGenerators)

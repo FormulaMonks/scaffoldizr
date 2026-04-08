@@ -1,7 +1,7 @@
-import { input, Separator, select } from "@inquirer/prompts";
 import type { AppendAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
+import { input, Separator, select } from "../utils/prompts";
 import { resolveAvailableArchetypeElements } from "../utils/questions/archetypes";
 import {
     addRelationshipsToElement,
@@ -31,6 +31,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
         const workspaceInfo = await getWorkspaceJson(workspacePath);
 
         const elementName = await input({
+            name: "elementName",
             message: "External system name:",
             required: true,
             validate: chainValidators(
@@ -48,6 +49,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
 
         const archetype = availableSoftwareSystemArchetypes?.length
             ? await select<string | "custom">({
+                  name: "archetype",
                   message: `Archetype system for ${elementName}:`,
                   choices: [
                       ...availableSoftwareSystemArchetypes.map((archetype) => ({
@@ -66,6 +68,7 @@ const generator: GeneratorDefinition<ExternalSystemAnswers> = {
         const extSystemDescription =
             archetype === "custom"
                 ? await input({
+                      name: "extSystemDescription",
                       message: "System description:",
                       default: "Untitled System",
                   })
