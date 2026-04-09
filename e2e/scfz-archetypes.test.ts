@@ -296,6 +296,7 @@ describe("e2e: archetypes", () => {
 
             loop(proc, [
                 keypress.UP,
+                keypress.UP,
                 keypress.ENTER,
                 keypress.ENTER,
                 keypress.SPACE,
@@ -518,6 +519,7 @@ describe("e2e: archetypes", () => {
             });
 
             loop(proc, [
+                keypress.UP,
                 keypress.UP,
                 keypress.ENTER,
                 keypress.ENTER,
