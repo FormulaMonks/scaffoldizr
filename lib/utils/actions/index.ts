@@ -2,6 +2,7 @@ export enum ActionTypes {
     Add = "add",
     AddMany = "addMany",
     Append = "append",
+    Replace = "replace",
 }
 
 declare function whenOrSkip<A extends Record<string, unknown>>(
@@ -22,3 +23,4 @@ export type ExtendedAction = {
 export * from "./add";
 export * from "./add-many";
 export * from "./append";
+export * from "./replace";

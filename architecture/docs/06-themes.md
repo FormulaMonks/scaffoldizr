@@ -1,5 +1,44 @@
 
+
+## Managing Themes with Scaffoldizr
+
+Use the `theme` generator to manage your workspace themes without manually editing the DSL.
+
+### Interactive
+
+Run `scfz theme` to launch the interactive theme manager. It provides three actions:
+
+- **Add themes**: select from built-in themes or enter a custom URL.
+- **Remove themes**: select currently configured themes to remove.
+- **List themes**: see all theme URLs currently used in your workspace.
+
+Color-based themes (Blue, Red, Green, Yellow) are mutually exclusive. Selecting a new color theme automatically replaces any existing one.
+
+### Non-Interactive (AI Agent Mode)
+
+Use the `theme` subcommand with flags for automation:
+
+- `--themeAction`: one of `"Add themes"`, `"Remove themes"`, or `"List themes"`.
+- `--additionalThemes`: comma-separated theme URLs to add (e.g. `"url1,url2"`).
+
+For example, to add the Shapes theme:
+
+```bash
+scfz theme \
+  --themeAction "Add themes" \
+  --additionalThemes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"
+```
+
+The Blue color theme, which is not included by default during workspace initialization, can be added using:
+
+```bash
+scfz theme \
+  --themeAction "Add themes" \
+  --additionalThemes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-blue.json"
+```
+
 ## Available Themes
+
 
 Scaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).
 

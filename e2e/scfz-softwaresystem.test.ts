@@ -245,6 +245,7 @@ describe("e2e: Software System", () => {
 
         loop(proc, [
             keypress.UP,
+            keypress.UP,
             keypress.ENTER,
             keypress.ENTER,
             keypress.SPACE,

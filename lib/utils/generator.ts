@@ -4,8 +4,9 @@ import type {
     AddManyAction,
     AppendAction,
     ExtendedAction,
+    ReplaceAction,
 } from "./actions";
-import { ActionTypes, add, addMany, append } from "./actions";
+import { ActionTypes, add, addMany, append, replace } from "./actions";
 
 /**
  * Added support for latest inquirer API
@@ -22,7 +23,12 @@ export type GeneratorDefinition<
     name: string;
     description: string;
     questions: ((generator: Generator<A>) => Promise<A>) | QuestionsObject;
-    actions: (AddAction<A> | AddManyAction<A> | AppendAction<A>)[];
+    actions: (
+        | AddAction<A>
+        | AddManyAction<A>
+        | AppendAction<A>
+        | ReplaceAction<A>
+    )[];
 };
 
 export type Generator<A extends Record<string, unknown>> =
@@ -36,7 +42,7 @@ export type GetAnswers<Type> =
 
 async function executeAction<A extends Record<string, unknown>>(
     action: ExtendedAction &
-        (AddAction<A> | AddManyAction<A> | AppendAction<A>),
+        (AddAction<A> | AddManyAction<A> | AppendAction<A> | ReplaceAction<A>),
     answers: A,
 ): Promise<boolean> {
     switch (action.type) {
@@ -48,6 +54,9 @@ async function executeAction<A extends Record<string, unknown>>(
         }
         case ActionTypes.Append: {
             return append(action, answers);
+        }
+        case ActionTypes.Replace: {
+            return replace(action, answers);
         }
         default: {
             throw new Error("Action not found");

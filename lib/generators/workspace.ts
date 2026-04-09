@@ -4,6 +4,14 @@ import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import { checkbox, confirm, input, select } from "../utils/prompts";
 import { stringEmpty } from "../utils/questions/validators";
+import {
+    SCAFFOLDIZR_GREEN_THEME_URL,
+    SCAFFOLDIZR_RED_THEME_URL,
+    SCAFFOLDIZR_SHAPES_THEME_URL,
+    SCAFFOLDIZR_STATUS_THEME_URL,
+    SCAFFOLDIZR_YELLOW_THEME_URL,
+    STRUCTURIZR_DEFAULT_THEME_URL,
+} from "../utils/themes";
 
 const globalUserName =
     await $`git config --global user.name || echo "(no name)"`.text();
@@ -92,11 +100,11 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
                   choices: [
                       {
                           name: "Shapes (Scaffoldizr)",
-                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json",
+                          value: SCAFFOLDIZR_SHAPES_THEME_URL,
                       },
                       {
                           name: "Status (Scaffoldizr)",
-                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json",
+                          value: SCAFFOLDIZR_STATUS_THEME_URL,
                       },
                   ],
               })
@@ -110,15 +118,15 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
                       { name: "Blue (Default)", value: undefined },
                       {
                           name: "Red",
-                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json",
+                          value: SCAFFOLDIZR_RED_THEME_URL,
                       },
                       {
                           name: "Green",
-                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json",
+                          value: SCAFFOLDIZR_GREEN_THEME_URL,
                       },
                       {
                           name: "Yellow",
-                          value: "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json",
+                          value: SCAFFOLDIZR_YELLOW_THEME_URL,
                       },
                   ],
               })
@@ -133,9 +141,11 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
             authorName,
             authorEmail,
             shouldIncludeTheme,
-            additionalThemes: [...additionalThemes, mainColor].filter(
-                Boolean,
-            ) as string[],
+            additionalThemes: [
+                STRUCTURIZR_DEFAULT_THEME_URL,
+                ...additionalThemes,
+                mainColor,
+            ].filter(Boolean) as string[],
         };
     },
     actions: [

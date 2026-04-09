@@ -113,6 +113,7 @@ Let's create a new one by answering the questions below.
             Elements.DeploymentNode,
             Elements.Person,
             Elements.Relationship,
+            Elements.Theme,
         ];
 
         if (workspaceInfo.configuration.scope === "Landscape") {

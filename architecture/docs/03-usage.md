@@ -22,6 +22,7 @@ When you run Scaffoldizr:
 | `🔷 Container` | Creates a deployable/executable unit within a system (web app, database, API, message broker, etc.). Creates container file, view, and relationship files. Supports types: EventBus, MessageBroker, Function, Database, WebApp, MobileApp. | Parent system, container name, description, type, technology, relationships |
 | `🔹 Component` | Creates a component within a container (controller, service, repository, etc.). Requires at least one existing container. Creates/updates component files, includes, views, and relationships. | Parent container, component name, description, technology, relationships |
 | `🔳 View` | Creates Structurizr views for visualizing architecture. Supports Deployment and Landscape view types. Creates view files and environment configurations. See [Supported View Types](#supported-view-types) below. | View type, system name (if needed), view name, description, instance details (for deployment) |
+| `🎨 Theme` | Manage workspace themes (add, remove, list). Updates the `themes` line in `architecture/workspace.dsl`. Available in both Landscape and SoftwareSystem scopes. | `themeAction`, `additionalThemes` |
 
 ## Supported View Types
 
@@ -76,6 +77,7 @@ Once a workspace is initialized, use these subcommands:
 | `view` | View | `--viewType` (landscape/deployment), `--viewName`, `--viewDescription` |
 | `constant` | Constant | `--constantName`, `--constantValue` |
 | `archetype` | Archetype | `--archetypeName`, `--archetypeDescription` |
+| `theme` | Manage Themes | `--themeAction "Add themes" --additionalThemes "<url1>,<url2>"` |
 
 ### Scope and Validation Rules
 
@@ -84,5 +86,6 @@ Once a workspace is initialized, use these subcommands:
   * **SoftwareSystem**: Allows `container`, `component`, `person`, `external-system`, `view`, `relationship`, `constant`, `archetype`.
   * Using an unsupported generator for the current scope will result in a non-zero exit code.
 * **Uniqueness Validation**: Element names must be unique. If a duplicate name is provided in non-interactive mode, the command will fail with exit code 1.
+* **Color Theme Exclusivity**: The `theme` generator enforces that only one color-based theme (Blue, Red, Green, Yellow) can be active at a time. Selecting a new color theme automatically replaces the existing one.
 * **Decisions Folder**: Every scaffolded workspace includes an `architecture/decisions/` folder for Architecture Decision Records (ADRs).
 
