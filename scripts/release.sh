@@ -4,7 +4,7 @@ set -euxo pipefail
 BASE_DIR="$(pwd)"
 RELEASE_DIR="dist/releases"
 BIN_DIR="dist/bin"
-SCFZ_VERSION="$(jq -r '.version' package.json)"
+SCFZ_VERSION="${SCFZ_VERSION:?SCFZ_VERSION must be set}"
 
 # Export vars to use inside the render-install.sh template
 export BASE_DIR RELEASE_DIR SCFZ_VERSION
