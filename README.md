@@ -72,6 +72,7 @@ Once a workspace is initialized, use these subcommands:
 | `view` | View | `--viewType` (landscape/deployment), `--viewName`, `--viewDescription` |
 | `constant` | Constant | `--constantName`, `--constantValue` |
 | `archetype` | Archetype | `--archetypeName`, `--archetypeDescription` |
+| `theme` | Manage Themes | `--themeAction "Add themes" --additionalThemes '["<url>"]'` |
 
 ### Scope and Validation Rules
 
