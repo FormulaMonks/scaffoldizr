@@ -101,11 +101,18 @@ jobs:
         if: ${{ matrix.os == 'windows' }}
       - run: bun install --ignore-scripts
       - name: Write version to package.json
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os != 'windows'
         run: |
           version="${{ needs.output-version.outputs.version }}"
           jq --indent 4 --arg version "$version" '.version = $version' package.json > package.json.tmp
           mv package.json.tmp package.json
+      - name: Write version to package.json (Windows)
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os == 'windows'
+        run: |
+          $version = "${{ needs.output-version.outputs.version }}"
+          $pkg = Get-Content package.json | ConvertFrom-Json
+          $pkg.version = $version
+          $pkg | ConvertTo-Json -Depth 100 | Set-Content package.json
       - name: Create binary and release files
         run: |
           jq -r '.version' package.json
