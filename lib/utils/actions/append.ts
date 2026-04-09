@@ -1,9 +1,10 @@
 import { access, chmod } from "node:fs/promises";
-import { join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
 import { compileSource, compileTemplateFile } from "../handlebars";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
+import { removeGitkeep } from "./utils";
 
 export type AppendAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Append;
@@ -71,7 +72,7 @@ export async function append<A extends Record<string, unknown>>(
 
         await write(targetFilePath, template);
         await chmod(join(rootPath, compiledOpts.path), filePermissions);
-        // await $`chmod ${filePermissions} ${join(rootPath, compiledOpts.path)}`;
+        await removeGitkeep(dirname(targetFilePath), rootPath);
 
         console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 
@@ -108,6 +109,7 @@ export async function append<A extends Record<string, unknown>>(
     }
 
     await write(targetFilePath, newContent);
+    await removeGitkeep(dirname(targetFilePath), rootPath);
 
     console.log(`${chalk.gray("[UPDATED]:")} ${relativePath}`);
 

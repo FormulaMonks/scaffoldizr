@@ -172,5 +172,32 @@ describe("actions", () => {
 
             expect(result).toBeFalse();
         });
+        test("should remove .gitkeep from target directory", async () => {
+            const targetDir = resolve(
+                import.meta.dirname,
+                ".test-generated/append",
+            );
+            const gitkeepPath = resolve(targetDir, ".gitkeep");
+
+            await write(gitkeepPath, "");
+            expect(await file(gitkeepPath).exists()).toBe(true);
+
+            const testFilePath = resolve(targetDir, "append-gitkeep-test.txt");
+            await write(testFilePath, "initial content");
+
+            const result = await append(
+                {
+                    type: ActionTypes.Append,
+                    rootPath: import.meta.dirname,
+                    templates,
+                    path: testFilePath,
+                    templateFile: "templates/test-template.hbs",
+                },
+                { filename: "Gitkeep test" },
+            );
+
+            expect(result).toBeTrue();
+            expect(await file(gitkeepPath).exists()).toBe(false);
+        });
     });
 });

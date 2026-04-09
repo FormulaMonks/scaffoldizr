@@ -1,9 +1,10 @@
 import { chmod } from "node:fs/promises";
-import { join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
 import { compileSource, compileTemplateFile } from "../handlebars";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
+import { removeGitkeep } from "./utils";
 
 export type AddAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Add;
@@ -74,7 +75,7 @@ export async function add<A extends Record<string, unknown>>(
 
     await write(join(rootPath, compiledOpts.path), template);
     await chmod(join(rootPath, compiledOpts.path), filePermissions);
-    // await $`chmod ${filePermissions} ${join(rootPath, compiledOpts.path)}`;
+    await removeGitkeep(dirname(join(rootPath, compiledOpts.path)), rootPath);
 
     console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 

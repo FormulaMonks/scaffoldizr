@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { file } from "bun";
 
 export const skipUnlessViewType =
@@ -20,3 +20,17 @@ export const whenFileExists = async (
 
     return foundFile.size > 0;
 };
+
+export async function removeGitkeep(
+    targetDir: string,
+    rootPath: string,
+): Promise<void> {
+    let currentDir = targetDir;
+    while (currentDir !== rootPath && currentDir.startsWith(rootPath)) {
+        const gitkeepFile = file(join(currentDir, ".gitkeep"));
+        if (await gitkeepFile.exists()) {
+            await gitkeepFile.unlink();
+        }
+        currentDir = dirname(currentDir);
+    }
+}
