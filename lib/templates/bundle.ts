@@ -17,6 +17,7 @@ import systemExternal from "./system/external.hbs";
 import systemPerson from "./system/person.hbs";
 import systemSystem from "./system/system.hbs";
 import testTemplate from "./test-template.hbs";
+import themeTemplate from "./theme.hbs";
 import viewsComponent from "./views/component.hbs";
 import viewsContainer from "./views/container.hbs";
 import viewsDeployment from "./views/deployment.hbs";
@@ -50,6 +51,7 @@ const templatesMap = new Map([
     ["templates/system/external.hbs", systemExternal],
     ["templates/system/person.hbs", systemPerson],
     ["templates/system/system.hbs", systemSystem],
+    ["templates/theme.hbs", themeTemplate],
     ["templates/test-template.hbs", testTemplate],
     ["templates/views/component.hbs", viewsComponent],
     ["templates/views/container.hbs", viewsContainer],

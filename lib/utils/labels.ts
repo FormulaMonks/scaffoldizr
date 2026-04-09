@@ -9,6 +9,7 @@ export enum Labels {
     DeploymentNode = "🟧",
     Relationship = "⇢ ",
     View = "🔳",
+    Theme = "🎨",
 }
 
 export enum Elements {
@@ -23,6 +24,7 @@ export enum Elements {
     Relationship = "Relationship",
     View = "View",
     Workspace = "Workspace",
+    Theme = "Theme",
 }
 
 export const Folders = {
@@ -45,6 +47,7 @@ export const SORTED_GENERATOR_AVAILABLE_ELEMENTS: string[] = [
     Elements.Component,
     Elements.View,
     Elements.Relationship,
+    Elements.Theme,
 ];
 
 export const labelElementByTags = (tags = ""): string => {
