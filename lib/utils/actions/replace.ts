@@ -10,7 +10,6 @@ export type ReplaceAction<A extends Record<string, unknown>> = BaseAction<A> & {
     templateFile: string;
     path: string;
     pattern: RegExp;
-    filePermissions?: string;
 };
 
 export async function replace<A extends Record<string, unknown>>(
@@ -72,16 +71,21 @@ export async function replace<A extends Record<string, unknown>>(
         fileContentsPromise,
     ]);
 
-    const [match] = fileContents.match(compiledOpts.pattern) ?? [];
+    const matchResult = fileContents.match(compiledOpts.pattern);
 
-    if (!match) {
+    if (!matchResult || matchResult.index === undefined) {
         console.log(
             `${chalk.yellow("[WARN]:")} ${relativePath} - No matches for pattern ${compiledOpts.pattern.toString()}`,
         );
         return false;
     }
 
-    const newContent = fileContents.replace(match, template);
+    const match = matchResult[0];
+    const matchIndex = matchResult.index;
+    const newContent =
+        fileContents.slice(0, matchIndex) +
+        template +
+        fileContents.slice(matchIndex + match.length);
 
     await write(targetFilePath, newContent);
 

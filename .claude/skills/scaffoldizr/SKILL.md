@@ -65,7 +65,7 @@ All prompt questions can be answered via CLI flags using `--parameter "value"` o
 | `view` | `--viewType`, `--viewName`, `--viewDescription` |
 | `constant` | `--constantName`, `--constantValue` |
 | `archetype` | `--archetypeName`, `--archetypeDescription` |
-| `theme` | `--themeAction "Add themes" --additionalThemes '["<url>"]'` |
+| `theme` | `--themeAction "Add themes" --additionalThemes "<url1>,<url2>"` |
 
 Each element file documents the specific flags and CLI command for that generator.
 
@@ -155,11 +155,11 @@ Use the `theme` generator to add, remove, or list workspace themes. The `theme` 
 ```bash
 scfz theme \
   --themeAction "Add themes" \
-  --additionalThemes '["https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"]'
+  --additionalThemes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"
 ```
 
 - `--themeAction`: `"Add themes"` | `"Remove themes"` | `"List themes"`
-- `--additionalThemes`: JSON array of theme URLs to add
+- `--additionalThemes`: comma-separated theme URLs to add
 - Color themes (Blue, Red, Green, Yellow) are mutually exclusive — selecting a new color replaces the existing one
 
 ## Use Structurizr CLI commands to interact with the workspace

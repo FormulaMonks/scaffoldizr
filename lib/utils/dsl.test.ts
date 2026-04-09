@@ -1,11 +1,12 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { randomUUID } from "node:crypto";
 import { rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { write } from "bun";
 import { getWorkspaceThemes } from "./dsl";
 
-const testArtifactsRootFolderPath = join("/tmp", "scaffoldizr-dsl-test");
+const testArtifactsRootFolderPath = join(tmpdir(), "scaffoldizr-dsl-test");
 const createdWorkspaceDslFilePaths: string[] = [];
 
 const createWorkspaceDslFileWithContent = async (

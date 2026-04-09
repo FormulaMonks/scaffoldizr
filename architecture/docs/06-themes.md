@@ -19,14 +19,14 @@ Color-based themes (Blue, Red, Green, Yellow) are mutually exclusive. Selecting 
 Use the `theme` subcommand with flags for automation:
 
 - `--themeAction`: one of `"Add themes"`, `"Remove themes"`, or `"List themes"`.
-- `--additionalThemes`: a JSON array of theme URLs to add.
+- `--additionalThemes`: comma-separated theme URLs to add (e.g. `"url1,url2"`).
 
 For example, to add the Shapes theme:
 
 ```bash
 scfz theme \
   --themeAction "Add themes" \
-  --additionalThemes '["https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"]'
+  --additionalThemes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json"
 ```
 
 The Blue color theme, which is not included by default during workspace initialization, can be added using:
@@ -34,7 +34,7 @@ The Blue color theme, which is not included by default during workspace initiali
 ```bash
 scfz theme \
   --themeAction "Add themes" \
-  --additionalThemes '["https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-blue.json"]'
+  --additionalThemes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-blue.json"
 ```
 
 ## Available Themes

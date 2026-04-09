@@ -1,6 +1,10 @@
 import { join } from "node:path";
 import { file, write } from "bun";
-import { ActionTypes, type ReplaceAction } from "../utils/actions";
+import {
+    ActionTypes,
+    type AppendAction,
+    type ReplaceAction,
+} from "../utils/actions";
 import { getWorkspaceThemes } from "../utils/dsl";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
@@ -9,6 +13,7 @@ import { BUILTIN_THEMES, COLOR_THEME_URLS } from "../utils/themes";
 
 type ThemeAnswers = {
     selectedThemes: string[];
+    hasExistingThemesLine: boolean;
 };
 
 const generator: GeneratorDefinition<ThemeAnswers> = {
@@ -38,7 +43,7 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
                 }
             }
 
-            return { selectedThemes: [] };
+            return { selectedThemes: [], hasExistingThemesLine: false };
         }
 
         if (themeAction === "Add themes") {
@@ -98,8 +103,14 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
                 );
             }
 
+            const dslContent = await file(workspaceDslPath).text();
+            const hasExistingThemesLine = /themes(?:\s+"[^"]*")*/.test(
+                dslContent,
+            );
+
             return {
                 selectedThemes: finalSelectedThemes,
+                hasExistingThemesLine,
             };
         }
 
@@ -107,7 +118,7 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
 
         if (currentThemes.length === 0) {
             console.log("No themes configured in workspace.dsl");
-            return { selectedThemes: [] };
+            return { selectedThemes: [], hasExistingThemesLine: false };
         }
 
         const themesToRemove = await checkbox({
@@ -137,10 +148,10 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
             );
             await write(workspaceDslPath, cleaned);
             console.log("All themes removed from workspace.dsl");
-            return { selectedThemes: [] };
+            return { selectedThemes: [], hasExistingThemesLine: false };
         }
 
-        return { selectedThemes };
+        return { selectedThemes, hasExistingThemesLine: true };
     },
     actions: [
         {
@@ -148,8 +159,19 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
             path: "architecture/workspace.dsl",
             pattern: /themes(?:\s+"[^"]*")*/,
             templateFile: "templates/theme.hbs",
-            when: (answers) => answers.selectedThemes.length > 0,
+            when: (answers) =>
+                answers.selectedThemes.length > 0 &&
+                answers.hasExistingThemesLine,
         } as ReplaceAction<ThemeAnswers>,
+        {
+            type: ActionTypes.Append,
+            path: "architecture/workspace.dsl",
+            pattern: /views\s*\{/,
+            templateFile: "templates/theme.hbs",
+            when: (answers) =>
+                answers.selectedThemes.length > 0 &&
+                !answers.hasExistingThemesLine,
+        } as AppendAction<ThemeAnswers>,
     ],
 };
 
