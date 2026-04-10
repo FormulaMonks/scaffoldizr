@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { file } from "bun";
+import { file, write } from "bun";
 import templates from "../../templates/bundle";
 import { ActionTypes } from ".";
 import { add } from "./add";
@@ -90,6 +90,34 @@ describe("actions", () => {
                 resolve(import.meta.dirname, ".test-generated/test-file-3.txt"),
             );
             expect(generatedFile.size).toEqual(0);
+        });
+
+        test("should remove .gitkeep from grandparent directory", async () => {
+            const rootPath = import.meta.dirname;
+            const gitkeepPath = resolve(rootPath, ".test-generated/.gitkeep");
+
+            // Create .gitkeep file in root directory
+            await write(gitkeepPath, "");
+
+            // Verify it exists
+            expect(await file(gitkeepPath).exists()).toBe(true);
+
+            // Add a file in a subdirectory
+            const result = await add(
+                {
+                    type: ActionTypes.Add,
+                    templates,
+                    templateFile: "templates/test-template.hbs",
+                    rootPath,
+                    path: ".test-generated/subdir/test-file-5.txt",
+                },
+                { filename: "testFile5" },
+            );
+
+            expect(result).toBeTrue();
+
+            // Assert .gitkeep in root is removed
+            expect(await file(gitkeepPath).exists()).toBe(false);
         });
     });
 });

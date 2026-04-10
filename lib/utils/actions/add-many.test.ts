@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { $, file } from "bun";
+import { $, file, write } from "bun";
 import templates from "../../templates/bundle";
 import { ActionTypes } from ".";
 import { addMany } from "./add-many";
@@ -82,17 +82,52 @@ describe("actions", () => {
             );
 
             expect(result).toBeTrue();
-            const generatedFile1 = file(
-                resolve(
-                    import.meta.dirname,
-                    ".test-generated/decisions/.gitkeep",
-                ),
+            const gitkeepPath1 = resolve(
+                import.meta.dirname,
+                ".test-generated/decisions/.gitkeep",
             );
-            expect(generatedFile1.size).toBeGreaterThan(0);
-            const generatedFile2 = file(
-                resolve(import.meta.dirname, ".test-generated/docs/.gitkeep"),
+            expect(await file(gitkeepPath1).exists()).toBe(true);
+            const gitkeepPath2 = resolve(
+                import.meta.dirname,
+                ".test-generated/docs/.gitkeep",
             );
-            expect(generatedFile2.size).toBeGreaterThan(0);
+            expect(await file(gitkeepPath2).exists()).toBe(true);
+        });
+
+        test("should remove .gitkeep when files are added to directory", async () => {
+            const testDir = resolve(
+                import.meta.dirname,
+                ".test-generated/scripts-gitkeep-test",
+            );
+            const scriptsDir = resolve(testDir, "scripts");
+            const gitkeepPath = resolve(scriptsDir, ".gitkeep");
+
+            // Create directory and .gitkeep file
+            await write(gitkeepPath, "");
+
+            // Verify it exists
+            expect(await file(gitkeepPath).exists()).toBe(true);
+
+            // Add files to the directory
+            const result = await addMany(
+                {
+                    type: ActionTypes.AddMany,
+                    templates,
+                    templateFiles: "templates/scripts/**/*.sh",
+                    rootPath: import.meta.dirname,
+                    destination: ".test-generated/scripts-gitkeep-test",
+                },
+                {},
+            );
+
+            expect(result).toBeTrue();
+
+            // Assert .gitkeep is removed
+            expect(await file(gitkeepPath).exists()).toBe(false);
+
+            // Assert .sh files were created
+            const generatedFile = file(resolve(scriptsDir, "update.sh"));
+            expect(generatedFile.size).toBeGreaterThan(0);
         });
 
         test("should skip if when() is declared", async () => {
