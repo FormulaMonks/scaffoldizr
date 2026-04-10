@@ -4,7 +4,7 @@ import { file, write } from "bun";
 import chalk from "chalk";
 import { compileSource, compileTemplateFile } from "../handlebars";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
-import { removeGitkeep } from "./utils";
+import { isGitkeep, removeGitkeep } from "./utils";
 
 export type AppendAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Append;
@@ -72,7 +72,9 @@ export async function append<A extends Record<string, unknown>>(
 
         await write(targetFilePath, template);
         await chmod(join(rootPath, compiledOpts.path), filePermissions);
-        await removeGitkeep(dirname(targetFilePath), rootPath);
+        if (!isGitkeep(targetFilePath)) {
+            await removeGitkeep(dirname(targetFilePath), rootPath);
+        }
 
         console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 
@@ -109,7 +111,9 @@ export async function append<A extends Record<string, unknown>>(
     }
 
     await write(targetFilePath, newContent);
-    await removeGitkeep(dirname(targetFilePath), rootPath);
+    if (!isGitkeep(targetFilePath)) {
+        await removeGitkeep(dirname(targetFilePath), rootPath);
+    }
 
     console.log(`${chalk.gray("[UPDATED]:")} ${relativePath}`);
 
