@@ -4,7 +4,7 @@ import { file, write } from "bun";
 import chalk from "chalk";
 import { compileSource, compileTemplateFile } from "../handlebars";
 import type { ActionTypes, BaseAction, ExtendedAction } from ".";
-import { removeGitkeep } from "./utils";
+import { isGitkeep, removeGitkeep } from "./utils";
 
 export type AppendAction<A extends Record<string, unknown>> = BaseAction<A> & {
     type: ActionTypes.Append;
@@ -71,8 +71,8 @@ export async function append<A extends Record<string, unknown>>(
         );
 
         await write(targetFilePath, template);
-        await chmod(join(rootPath, compiledOpts.path), filePermissions);
-        if (basename(targetFilePath) !== ".gitkeep") {
+        await chmod(targetFilePath, filePermissions);
+        if (!isGitkeep(targetFilePath)) {
             await removeGitkeep(dirname(targetFilePath), rootPath);
         }
 
@@ -111,7 +111,7 @@ export async function append<A extends Record<string, unknown>>(
     }
 
     await write(targetFilePath, newContent);
-    if (basename(targetFilePath) !== ".gitkeep") {
+    if (!isGitkeep(targetFilePath)) {
         await removeGitkeep(dirname(targetFilePath), rootPath);
     }
 

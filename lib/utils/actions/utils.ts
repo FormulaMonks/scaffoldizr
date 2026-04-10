@@ -1,4 +1,4 @@
-import { dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 import { file } from "bun";
 
 export const skipUnlessViewType =
@@ -45,4 +45,8 @@ export async function removeGitkeep(
         }
         currentDir = dirname(currentDir);
     }
+}
+
+export function isGitkeep(filePath: string): boolean {
+    return basename(filePath) === ".gitkeep";
 }
