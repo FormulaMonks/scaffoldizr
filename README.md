@@ -30,6 +30,16 @@ where `{docs_folder}` is a folder where dsl files will be generated. The tool cr
 
 Scaffoldizr supports non-interactive execution by routing to specific subcommands and passing parameters as CLI flags. This mode is ideal for AI agents or automation scripts.
 
+### AI Agent Skill Installation
+
+Install the Scaffoldizr skill into your AI agent environment (e.g. OpenCode):
+
+```bash
+npx skills add formulamonks/scaffoldizr
+```
+
+This provides the agent with Scaffoldizr conventions, element creation rules, workspace scope constraints, and CLI usage patterns.
+
 ### Subcommand Routing
 
 When a workspace already exists, you can bypass the main menu by specifying a generator as a subcommand:

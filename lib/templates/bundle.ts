@@ -11,7 +11,9 @@ import environmentsDeployment from "./environments/deployment.hbs";
 import include from "./include.hbs";
 import relationshipsMultiple from "./relationships/multiple.hbs";
 import relationshipsMultipleComponent from "./relationships/multiple-component.hbs";
+import scriptsRunPs1 from "./scripts/run.ps1" with { type: "file" };
 import scriptsRun from "./scripts/run.sh" with { type: "file" };
+import scriptsUpdatePs1 from "./scripts/update.ps1" with { type: "file" };
 import scriptsUpdate from "./scripts/update.sh" with { type: "file" };
 import systemExternal from "./system/external.hbs";
 import systemPerson from "./system/person.hbs";
@@ -47,7 +49,9 @@ const templatesMap = new Map([
         relationshipsMultipleComponent,
     ],
     ["templates/scripts/run.sh", scriptsRun],
+    ["templates/scripts/run.ps1", scriptsRunPs1],
     ["templates/scripts/update.sh", scriptsUpdate],
+    ["templates/scripts/update.ps1", scriptsUpdatePs1],
     ["templates/system/external.hbs", systemExternal],
     ["templates/system/person.hbs", systemPerson],
     ["templates/system/system.hbs", systemSystem],

@@ -61,7 +61,7 @@ export const createFullWorkspace = async (basePath: string): Promise<void> => {
     }
 
     views {
-        themes "https://static.structurizr.com/themes/default/theme.json"
+        themes "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-default.json"
         !const AUTHOR "Author: Test User <test@example.com>"
 
         !include views

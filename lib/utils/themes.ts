@@ -1,5 +1,5 @@
 export const STRUCTURIZR_DEFAULT_THEME_URL =
-    "https://static.structurizr.com/themes/default/theme.json";
+    "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-default.json";
 export const SCAFFOLDIZR_SHAPES_THEME_URL =
     "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json";
 export const SCAFFOLDIZR_STATUS_THEME_URL =

@@ -28,4 +28,4 @@ where `{docs_folder}` is a folder where dsl files will be generated. The tool cr
 - `--help`: Show help information
 - `--version`: Show current tool version
 - `--dest <path>`: Target architecture folder (default: current directory)
-- `-e, --export`: Use structurizr-cli to export the workspace to JSON (default: false)
+- `-e, --export`: Use Structurizr unified CLI (Docker) to export the workspace to JSON (default: false)

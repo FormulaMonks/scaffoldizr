@@ -14,7 +14,7 @@ _⚠️ IMPORTANT:_ Containers can only be created when the [Workspace Scope](..
 
 1. Verify if a Container archetype has been created that fits the user's needs. If so, reference that archetype to create the Container.
 
-2. Verify that the target software system where the container will be created already exists. If not, prompt the user to create that software system first. Refer to [structurizr-cli list elements](../extra/CLI.md#list-elements-within-a-workspace) to check existing elements.
+2. Verify that the target software system where the container will be created already exists. If not, prompt the user to create that software system first. Refer to [Structurizr list elements](../extra/CLI.md#list-elements-within-a-workspace) to check existing elements.
 
 3. Create a new file under `./architecture/containers/{system-name}/{container-name}.dsl` that follows this name format:
 
@@ -41,7 +41,7 @@ _⚠️ IMPORTANT:_ Containers can only be created when the [Workspace Scope](..
 
 5. Create relationships between the container and other elements (people, systems, containers, components, etc.) as needed. Follow instructions on [relationships](./relationship.md) documentation for further details on how to create relationships.
 
-6. Validate the workspace to ensure the container has been created successfully and there are no errors. Refer to [structurizr-cli validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
+6. Validate the workspace to ensure the container has been created successfully and there are no errors. Refer to [Structurizr validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
 
 ## Using Scaffoldizr CLI (preferred for AI agents)
 

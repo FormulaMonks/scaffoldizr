@@ -30,9 +30,6 @@ type CLIArguments = {
     _?: (string | number)[];
 };
 
-const STRUCTURIZR_CLI_PATH =
-    process.env.STRUCTURIZR_CLI_PATH || "structurizr-cli";
-
 async function main(args: CLIArguments = { dest: "." }) {
     console.log(
         chalk.bold(`
@@ -49,7 +46,7 @@ Create a Structurizr DSL scaffolding in seconds!
         const workspacePath = getWorkspacePath(path);
         if (!workspacePath) return;
 
-        return $`${STRUCTURIZR_CLI_PATH} export -w ${workspacePath}/workspace.dsl -f json -o ${workspacePath} || true`;
+        return $`docker run -t --rm -v ${workspacePath}:/usr/local/structurizr structurizr/structurizr export -w /usr/local/structurizr/workspace.dsl -f json -o /usr/local/structurizr || true`;
     };
 
     const { workspaceGenerator, ...otherGenerators } = generators;
@@ -224,7 +221,7 @@ if (["main.ts", "scfz"].includes(basename(entrypoint))) {
             alias: "e",
             type: "boolean",
             default: false,
-            desc: "Use structurizr-cli to export the workspace to JSON",
+            desc: "Use Structurizr unified CLI (Docker) to export the workspace to JSON",
         }).argv;
 
     main(args);
