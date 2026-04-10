@@ -82,7 +82,7 @@ jobs:
       - name: Start Docker (macOS)
         if: ${{ matrix.os == 'macos' }}
         run: |
-          brew install docker colima
+          brew install docker colima qemu
           colima start --cpu 2 --memory 4 --vm-type qemu
           docker info
       - name: Pull Structurizr Docker image
