@@ -86,12 +86,12 @@ describe("actions", () => {
                 import.meta.dirname,
                 ".test-generated/decisions/.gitkeep",
             );
-            expect(await file(gitkeepPath1).exists()).toBe(false);
+            expect(await file(gitkeepPath1).exists()).toBe(true);
             const gitkeepPath2 = resolve(
                 import.meta.dirname,
                 ".test-generated/docs/.gitkeep",
             );
-            expect(await file(gitkeepPath2).exists()).toBe(false);
+            expect(await file(gitkeepPath2).exists()).toBe(true);
         });
 
         test("should remove .gitkeep when files are added to directory", async () => {

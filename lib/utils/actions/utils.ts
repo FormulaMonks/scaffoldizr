@@ -1,4 +1,4 @@
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { file } from "bun";
 
 export const skipUnlessViewType =
@@ -25,11 +25,23 @@ export async function removeGitkeep(
     targetDir: string,
     rootPath: string,
 ): Promise<void> {
-    let currentDir = targetDir;
-    while (currentDir !== rootPath && currentDir.startsWith(rootPath)) {
+    const normalizedRoot = resolve(rootPath);
+    let currentDir = resolve(targetDir);
+    while (
+        currentDir !== normalizedRoot &&
+        currentDir.startsWith(normalizedRoot + sep)
+    ) {
         const gitkeepFile = file(join(currentDir, ".gitkeep"));
-        if (await gitkeepFile.exists()) {
+        try {
             await gitkeepFile.unlink();
+        } catch (error) {
+            if (
+                !(error instanceof Error) ||
+                !("code" in error) ||
+                (error as NodeJS.ErrnoException).code !== "ENOENT"
+            ) {
+                throw error;
+            }
         }
         currentDir = dirname(currentDir);
     }

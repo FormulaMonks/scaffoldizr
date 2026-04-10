@@ -39,5 +39,21 @@ describe("actions", () => {
             expect(await file(gitkeepRoot).exists()).toBe(false);
             expect(await file(gitkeepSubdir).exists()).toBe(false);
         });
+
+        test("should not throw when removing .gitkeep concurrently", async () => {
+            const rootPath = resolve(import.meta.dirname, ".test-generated");
+            const concurrentDir = resolve(rootPath, "concurrent-test");
+            const gitkeepPath = resolve(concurrentDir, ".gitkeep");
+
+            await write(gitkeepPath, "");
+            expect(await file(gitkeepPath).exists()).toBe(true);
+
+            await Promise.all([
+                removeGitkeep(concurrentDir, rootPath),
+                removeGitkeep(concurrentDir, rootPath),
+            ]);
+
+            expect(await file(gitkeepPath).exists()).toBe(false);
+        });
     });
 });

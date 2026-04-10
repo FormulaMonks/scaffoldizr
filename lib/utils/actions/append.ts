@@ -1,5 +1,5 @@
 import { access, chmod } from "node:fs/promises";
-import { dirname, join, relative, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
 import { compileSource, compileTemplateFile } from "../handlebars";
@@ -72,7 +72,9 @@ export async function append<A extends Record<string, unknown>>(
 
         await write(targetFilePath, template);
         await chmod(join(rootPath, compiledOpts.path), filePermissions);
-        await removeGitkeep(dirname(targetFilePath), rootPath);
+        if (basename(targetFilePath) !== ".gitkeep") {
+            await removeGitkeep(dirname(targetFilePath), rootPath);
+        }
 
         console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
 
@@ -109,7 +111,9 @@ export async function append<A extends Record<string, unknown>>(
     }
 
     await write(targetFilePath, newContent);
-    await removeGitkeep(dirname(targetFilePath), rootPath);
+    if (basename(targetFilePath) !== ".gitkeep") {
+        await removeGitkeep(dirname(targetFilePath), rootPath);
+    }
 
     console.log(`${chalk.gray("[UPDATED]:")} ${relativePath}`);
 
