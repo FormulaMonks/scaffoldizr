@@ -20,6 +20,7 @@ import {
     labelElementByName,
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
+import { checkUpdate } from "./utils/update";
 import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
 
 type CLIArguments = {
@@ -39,6 +40,8 @@ Welcome to ${chalk.cyan(capitalCase(pkg.name.replace(/@[a-z-]*\//, "")))}
 Create a Structurizr DSL scaffolding in seconds!
     `),
     );
+
+    const updateMessage = await checkUpdate(pkg.version);
 
     const destPath = resolve(process.cwd(), args.dest);
     const workspacePath = getWorkspacePath(destPath);
@@ -74,6 +77,7 @@ Let's create a new one by answering the questions below.
             await exportWorkspace(
                 relative(process.cwd(), destPath) || process.cwd(),
             );
+            if (updateMessage) console.log(updateMessage);
             process.exit(0);
         } catch (err) {
             if ((err as ExitPromptError).name === "ExitPromptError") {
@@ -154,6 +158,7 @@ Let's create a new one by answering the questions below.
 
             await createGenerator(directGenerator);
             await exportWorkspace(relative(process.cwd(), workspacePath));
+            if (updateMessage) console.log(updateMessage);
             process.exit(0);
         }
 
@@ -187,6 +192,7 @@ Let's create a new one by answering the questions below.
 
         await createGenerator(generator);
         await exportWorkspace(relative(process.cwd(), workspacePath));
+        if (updateMessage) console.log(updateMessage);
         process.exit(0);
     } catch (err) {
         if ((err as ExitPromptError).name === "ExitPromptError") {
