@@ -79,14 +79,8 @@ jobs:
           } catch {
             Write-Error "An error occurred: $_"
           }
-      - name: Start Docker (macOS)
-        if: ${{ matrix.os == 'macos' }}
-        run: |
-          brew install docker colima qemu
-          colima start --cpu 2 --memory 4 --vm-type qemu
-          docker info
       - name: Pull Structurizr Docker image
-        if: ${{ matrix.os != 'windows' }}
+        if: ${{ matrix.os == 'ubuntu' }}
         run: docker pull structurizr/structurizr
       - name: Extract version and add it to env variables
         if: ${{ matrix.os != 'windows' }}
@@ -102,15 +96,21 @@ jobs:
             Write-Error "An error occurred: $_"
           }
       - name: E2E Test (Smoke)
-        if: ${{ inputs.smoke && matrix.os != 'windows' }}
+        if: ${{ inputs.smoke && matrix.os == 'ubuntu' }}
         run: |
           export TMP_FOLDER=${{ runner.temp }}
           bun test:e2e:smoke
       - name: E2E Test (Full)
-        if: ${{ !inputs.smoke && matrix.os != 'windows' }}
+        if: ${{ !inputs.smoke && matrix.os == 'ubuntu' }}
         run: |
           export TMP_FOLDER=${{ runner.temp }}
           bun test:e2e
+      - name: E2E Test (Smoke) (macOS)
+        if: ${{ matrix.os == 'macos' }}
+        run: |
+          export TMP_FOLDER=${{ runner.temp }}
+          export INPUT_TIMEOUT=600
+          bun test:e2e:smoke:windows
       - name: E2E Test (Smoke) (Windows)
         if: ${{ matrix.os == 'windows' }}
         run: |

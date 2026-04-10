@@ -1,4 +1,4 @@
-# 4. Windows CI E2E Tests Scoped to Version-Check Smoke Test Only
+# 4. macOS and Windows CI E2E Tests Scoped to Version-Check Smoke Test Only
 
 Date: 2026-04-10
 
@@ -8,26 +8,28 @@ Accepted
 
 ## Context
 
-- The `structurizr/structurizr` Docker image (introduced in ADR 0003) only provides Linux builds (`linux/amd64`, `linux/arm64`). There is no Windows-compatible Docker image.
+- The `structurizr/structurizr` Docker image (introduced in ADR 0003) only provides Linux builds (`linux/amd64`, `linux/arm64`). There is no Windows or macOS-compatible Docker image.
 - The Scaffoldizr e2e test suite relies on the `structurizr/structurizr` Docker image for most tests (export, run, update scripts).
 - GitHub Actions Windows runners (`windows-latest`) cannot run Linux Docker containers without additional tooling (WSL2 + Docker Desktop license or equivalent), which is not available in standard CI environments.
-- Running the full e2e suite on Windows CI would require either: (a) a native Windows Structurizr binary (which does not exist), or (b) a Windows-compatible Docker image (which does not exist), or (c) mocking Docker entirely (which would reduce test fidelity).
+- GitHub Actions macOS runners (`macos-latest`) do not have Docker pre-installed, and neither VZ (Apple Virtualization.framework) nor QEMU-based VM solutions (e.g. Colima) work reliably on these runners due to missing hypervisor support.
+- Running the full e2e suite on macOS or Windows CI would require either: (a) a native binary for that platform (which does not exist), (b) a platform-compatible Docker image (which does not exist), or (c) mocking Docker entirely (which would reduce test fidelity).
 
 ## Decision
 
-- Windows CI is scoped to a single **smoke test**: a version-check only (`scfz --version`) that validates the binary was built and runs correctly on Windows.
-- A dedicated npm script `test:e2e:smoke:windows` is added to `package.json`. It runs only `e2e/scfz-general.test.ts`, which contains the `@smoke` tagged version-check test and has zero Docker dependency.
-- The `.github/workflows/e2e.yaml` Windows job unconditionally runs `test:e2e:smoke:windows`. There is no full e2e path for Windows.
-- macOS and Linux CI jobs continue to run the full e2e suite (with Docker available via Colima on macOS, and natively on Linux runners).
-- Docker-dependent e2e tests are not tagged `@smoke` and are never run in the Windows job.
+- macOS and Windows CI are both scoped to a single **smoke test**: a version-check only (`scfz --version`) that validates the binary was built and runs correctly on that platform.
+- A dedicated npm script `test:e2e:smoke:windows` is used for both macOS and Windows jobs. It runs only `e2e/scfz-general.test.ts`, which contains the `@smoke` tagged version-check test and has zero Docker dependency.
+- The `.github/workflows/e2e.yaml` macOS and Windows jobs unconditionally run `test:e2e:smoke:windows`. There is no full e2e path for either platform.
+- Linux CI jobs (`ubuntu-latest`) continue to run the full e2e suite with Docker available natively.
+- Docker-dependent e2e tests are not tagged `@smoke` and are never run in macOS or Windows jobs.
 
 ## Consequences
 
-- Positive: Windows CI remains fast and reliable — no Docker dependency, no flaky Docker setup steps.
-- Positive: The Windows binary is still validated in CI for every PR (build succeeds + version output correct).
-- Positive: No licensing or infrastructure cost for Docker on Windows CI runners.
-- Negative: Docker-dependent scenarios (export, run, update scripts) are not tested on Windows in CI. Any Windows-specific Docker behaviour differences would only be caught locally or in production.
-- Negative: If a future Windows-compatible Structurizr Docker image becomes available, this ADR should be revisited to enable full e2e on Windows.
+- Positive: macOS and Windows CI remain fast and reliable — no Docker dependency, no flaky VM/container setup steps.
+- Positive: Both macOS and Windows binaries are still validated in CI for every PR (build succeeds + version output correct).
+- Positive: No licensing or infrastructure cost for Docker on macOS/Windows CI runners.
+- Positive: Full e2e coverage is provided by Linux runners which have native Docker support.
+- Negative: Docker-dependent scenarios (export, run, update scripts) are not tested on macOS or Windows in CI. Any platform-specific behaviour differences would only be caught locally or in production.
+- Negative: If future macOS or Windows-compatible Structurizr Docker images become available, this ADR should be revisited.
 
 ## References
 
