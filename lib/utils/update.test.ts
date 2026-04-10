@@ -1,5 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import * as operatingSystem from "node:os";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { checkUpdate } from "./update";
@@ -11,6 +12,8 @@ let temporaryHomeDirectory = "";
 let originalHomeEnvironmentVariable: string | undefined;
 let originalNoUpdateCheckEnvironmentVariable: string | undefined;
 let originalStdoutIsTTY: boolean | undefined;
+let originalFetch: typeof globalThis.fetch;
+let homedirSpy: ReturnType<typeof spyOn>;
 
 function setStdoutTTY(isTTY: boolean) {
     Object.defineProperty(process.stdout, "isTTY", {
@@ -40,10 +43,18 @@ describe("checkUpdate", () => {
         originalNoUpdateCheckEnvironmentVariable =
             process.env.SCFZ_NO_UPDATE_CHECK;
         originalStdoutIsTTY = process.stdout.isTTY;
+        originalFetch = globalThis.fetch;
+        homedirSpy = spyOn(operatingSystem, "homedir").mockReturnValue(
+            temporaryHomeDirectory,
+        );
 
         process.env.HOME = temporaryHomeDirectory;
         delete process.env.SCFZ_NO_UPDATE_CHECK;
         setStdoutTTY(true);
+        globalThis.fetch = ((..._args: Parameters<typeof globalThis.fetch>) =>
+            Promise.resolve(
+                new Response(null, { status: 500 }),
+            )) as unknown as typeof globalThis.fetch;
     });
 
     afterEach(async () => {
@@ -61,6 +72,8 @@ describe("checkUpdate", () => {
         }
 
         setStdoutTTY(Boolean(originalStdoutIsTTY));
+        globalThis.fetch = originalFetch;
+        homedirSpy.mockRestore();
         await rm(temporaryHomeDirectory, { recursive: true, force: true });
     });
 
@@ -121,8 +134,8 @@ describe("checkUpdate", () => {
             expect(updateMessage).toBeNull();
         });
 
-        it("returns null when HOME is missing", async () => {
-            delete process.env.HOME;
+        it("returns null when SCFZ_NO_UPDATE_CHECK is set to empty string", async () => {
+            process.env.SCFZ_NO_UPDATE_CHECK = "";
 
             const updateMessage = await checkUpdate("0.9.3");
 

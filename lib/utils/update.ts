@@ -1,5 +1,6 @@
-import { promises as filesystem } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
+import { file, write } from "bun";
 import chalk from "chalk";
 
 type UpdateCache = {
@@ -28,6 +29,14 @@ function isNewerVersion(
 ): boolean {
     const latestSegments = versionToSegments(latestVersion);
     const currentSegments = versionToSegments(currentVersion);
+
+    if (
+        latestSegments.some(Number.isNaN) ||
+        currentSegments.some(Number.isNaN)
+    ) {
+        return false;
+    }
+
     const maxSegmentsLength = Math.max(
         latestSegments.length,
         currentSegments.length,
@@ -40,34 +49,51 @@ function isNewerVersion(
     ) {
         const latestSegment = latestSegments[segmentIndex] ?? 0;
         const currentSegment = currentSegments[segmentIndex] ?? 0;
-
-        if (latestSegment > currentSegment) {
-            return true;
-        }
-
-        if (latestSegment < currentSegment) {
-            return false;
-        }
+        if (latestSegment !== currentSegment)
+            return latestSegment > currentSegment;
     }
 
     return false;
+}
+
+function buildBannerLine(content: string, innerWidth: number): string {
+    return (
+        chalk.yellow("│  ") + content.padEnd(innerWidth) + chalk.yellow("  │")
+    );
 }
 
 function buildUpdateNotification(
     currentVersion: string,
     latestVersion: string,
 ): string {
-    const versionLine = `│  Update available: ${currentVersion} → ${latestVersion}        │`;
+    const versionText = `Update available: ${currentVersion} → ${latestVersion}`;
+    const curlLine1 = "curl -s https://formulamonks.github.io/";
+    const curlLine2 = "scaffoldizr/assets/install.sh | sh";
+    const runToUpdateText = "Run to update:";
+
+    const innerWidth = Math.max(
+        versionText.length,
+        curlLine1.length,
+        curlLine2.length,
+        runToUpdateText.length,
+    );
+    const horizontalBorder = "─".repeat(innerWidth + 4);
 
     return [
         "",
-        chalk.yellow("╭──────────────────────────────────────────────────╮"),
-        chalk.bold(versionLine),
-        chalk.yellow("│                                                  │"),
-        chalk.yellow("│  Run to update:                                  │"),
-        `${chalk.yellow("│  ")}${chalk.cyan("curl -s https://formulamonks.github.io/")}${chalk.yellow("         │")}`,
-        `${chalk.yellow("│  ")}${chalk.cyan("scaffoldizr/assets/install.sh | sh")}${chalk.yellow("              │")}`,
-        chalk.yellow("╰──────────────────────────────────────────────────╯"),
+        chalk.yellow(`╭${horizontalBorder}╮`),
+        chalk.yellow("│  ") +
+            chalk.bold(versionText.padEnd(innerWidth)) +
+            chalk.yellow("  │"),
+        buildBannerLine("", innerWidth),
+        buildBannerLine(runToUpdateText, innerWidth),
+        chalk.yellow("│  ") +
+            chalk.cyan(curlLine1.padEnd(innerWidth)) +
+            chalk.yellow("  │"),
+        chalk.yellow("│  ") +
+            chalk.cyan(curlLine2.padEnd(innerWidth)) +
+            chalk.yellow("  │"),
+        chalk.yellow(`╰${horizontalBorder}╯`),
     ].join("\n");
 }
 
@@ -75,7 +101,7 @@ async function readUpdateCache(
     cacheFilePath: string,
 ): Promise<UpdateCache | null> {
     try {
-        const cacheContent = await filesystem.readFile(cacheFilePath, "utf8");
+        const cacheContent = await file(cacheFilePath).text();
         const parsedCache = JSON.parse(cacheContent) as Partial<UpdateCache>;
 
         if (
@@ -99,6 +125,7 @@ async function refreshUpdateCache(cacheFilePath: string): Promise<void> {
         const latestReleaseResponse = await fetch(LATEST_RELEASE_URL, {
             headers: {
                 Accept: "application/vnd.github+json",
+                "User-Agent": "scaffoldizr-cli",
                 "X-GitHub-Api-Version": "2022-11-28",
             },
             signal: AbortSignal.timeout(2000),
@@ -121,11 +148,7 @@ async function refreshUpdateCache(cacheFilePath: string): Promise<void> {
             checkedAt: Date.now(),
         };
 
-        await filesystem.writeFile(
-            cacheFilePath,
-            JSON.stringify(cachePayload),
-            "utf8",
-        );
+        await write(cacheFilePath, JSON.stringify(cachePayload));
     } catch {}
 }
 
@@ -136,15 +159,11 @@ export async function checkUpdate(
         return null;
     }
 
-    if (process.env.SCFZ_NO_UPDATE_CHECK) {
+    if (process.env.SCFZ_NO_UPDATE_CHECK !== undefined) {
         return null;
     }
 
-    if (!process.env.HOME) {
-        return null;
-    }
-
-    const cacheFilePath = join(process.env.HOME, UPDATE_CACHE_FILE);
+    const cacheFilePath = join(homedir(), UPDATE_CACHE_FILE);
     const cachedUpdate = await readUpdateCache(cacheFilePath);
 
     if (cachedUpdate) {

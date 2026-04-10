@@ -41,8 +41,6 @@ Create a Structurizr DSL scaffolding in seconds!
     `),
     );
 
-    const updateMessage = await checkUpdate(pkg.version);
-
     const destPath = resolve(process.cwd(), args.dest);
     const workspacePath = getWorkspacePath(destPath);
 
@@ -77,6 +75,7 @@ Let's create a new one by answering the questions below.
             await exportWorkspace(
                 relative(process.cwd(), destPath) || process.cwd(),
             );
+            const updateMessage = await checkUpdate(pkg.version);
             if (updateMessage) console.log(updateMessage);
             process.exit(0);
         } catch (err) {
@@ -158,6 +157,7 @@ Let's create a new one by answering the questions below.
 
             await createGenerator(directGenerator);
             await exportWorkspace(relative(process.cwd(), workspacePath));
+            const updateMessage = await checkUpdate(pkg.version);
             if (updateMessage) console.log(updateMessage);
             process.exit(0);
         }
@@ -192,6 +192,7 @@ Let's create a new one by answering the questions below.
 
         await createGenerator(generator);
         await exportWorkspace(relative(process.cwd(), workspacePath));
+        const updateMessage = await checkUpdate(pkg.version);
         if (updateMessage) console.log(updateMessage);
         process.exit(0);
     } catch (err) {
