@@ -1,6 +1,6 @@
 {
     "name": "@formula-monks/scaffoldizr",
-    "version": "0.9.3",
+    "version": "0.10.0",
     "description": "Opinionated TypeScript/Bun Scaffolding Tool for creating Structurizr DSL Documentations",
     "module": "src/main.mjs",
     "bin": {

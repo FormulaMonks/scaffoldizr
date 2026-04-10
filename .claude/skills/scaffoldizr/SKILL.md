@@ -4,7 +4,7 @@ description: Creates Structurizr elements and workspace based on Scaffoldizr opi
 license: MIT
 metadata:
   author: Andrés Zorro <andres.zorro@monks.com>
-  version: 0.9.3
+  version: 0.10.0
 ---
 
 # Structurizr Workspace - Created with Scaffoldizr
