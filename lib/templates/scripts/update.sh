@@ -15,9 +15,9 @@ fi
 
 source "${docs_location}/.env-arch"
 
-passphrase_arg=""
+passphrase_args=()
 if [ -n "${STCTZR_PASSPHRASE}" ]; then
-    passphrase_arg="-passphrase \"${STCTZR_PASSPHRASE}\""
+    passphrase_args+=(-passphrase "${STCTZR_PASSPHRASE}")
 fi
 
-eval docker run -t --rm -v "${docs_location}:/usr/local/structurizr" structurizr/structurizr push -url "$STCTZR_URL" -id "$STCTZR_WORKSPACE_ID" -key "$STCTZR_WORKSPACE_KEY" -w /usr/local/structurizr/workspace.json -merge false ${passphrase_arg}
+docker run -t --rm -v "${docs_location}:/usr/local/structurizr" structurizr/structurizr push -url "$STCTZR_URL" -id "$STCTZR_WORKSPACE_ID" -key "$STCTZR_WORKSPACE_KEY" -w /usr/local/structurizr/workspace.json -merge false "${passphrase_args[@]}"

@@ -6,7 +6,10 @@ if (-not (Test-Path "$docsLocation\workspace.json")) {
     exit 1
 }
 
-$containerName = "structurizr-$(Split-Path -Leaf $docsLocation)-$port"
+$docsFolderName = Split-Path -Leaf $docsLocation
+$safeDocsFolderName = ($docsFolderName.ToLowerInvariant() -replace '[^a-z0-9_.-]', '-').Trim('-.')
+if (-not $safeDocsFolderName) { $safeDocsFolderName = "workspace" }
+$containerName = "structurizr-$safeDocsFolderName-$port"
 
 function Stop-Container {
     Write-Host "Stopping container $containerName..."
@@ -15,14 +18,8 @@ function Stop-Container {
 
 Write-Host "Running workspace: $docsLocation on port $port"
 
-$job = Start-Job -ScriptBlock {
-    param($containerName, $port, $docsLocation)
-    docker run -t --rm --name $containerName -p "${port}:8080" -v "${docsLocation}:/usr/local/structurizr" structurizr/structurizr local
-} -ArgumentList $containerName, $port, $docsLocation
-
 try {
-    Wait-Job $job
+    docker run -t --rm --name $containerName -p "${port}:8080" -v "${docsLocation}:/usr/local/structurizr" structurizr/structurizr local
 } finally {
     Stop-Container
-    Remove-Job $job -Force 2>$null
 }

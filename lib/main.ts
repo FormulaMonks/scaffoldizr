@@ -21,7 +21,11 @@ import {
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
 import { checkUpdate } from "./utils/update";
-import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
+import {
+    getWorkspaceDslScope,
+    getWorkspaceJson,
+    getWorkspacePath,
+} from "./utils/workspace";
 
 type CLIArguments = {
     dest: string;
@@ -91,6 +95,10 @@ Let's create a new one by answering the questions below.
         getWorkspacePath(workspacePath),
     );
 
+    const workspaceScope =
+        workspaceInfo?.configuration?.scope ??
+        (await getWorkspaceDslScope(workspacePath));
+
     console.log(
         chalk.gray(`Workspace name: ${chalk.cyan(workspaceInfo?.name)}`),
     );
@@ -103,7 +111,7 @@ Let's create a new one by answering the questions below.
     );
 
     const filteredGenerators = Object.values(otherGenerators).filter((g) => {
-        if (!workspaceInfo) return true;
+        if (!workspaceScope) return true;
 
         const sharedElements: string[] = [
             Elements.Archetype,
@@ -116,7 +124,7 @@ Let's create a new one by answering the questions below.
             Elements.Theme,
         ];
 
-        if (workspaceInfo.configuration.scope === "Landscape") {
+        if (workspaceScope === "Landscape") {
             return [...sharedElements, Elements.System].includes(g.name);
         } else {
             return [

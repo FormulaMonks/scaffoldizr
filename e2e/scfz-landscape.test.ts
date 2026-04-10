@@ -50,6 +50,16 @@ describe("e2e: landscape", () => {
             `${folder}/architecture/workspace.dsl`,
         ).text();
         expect(workspaceContents).toContain("Test Workspace");
+
+        const scriptsContents = await readdir(`${folder}/architecture/scripts`);
+        expect(scriptsContents).toEqual(
+            expect.arrayContaining([
+                "run.sh",
+                "update.sh",
+                "run.ps1",
+                "update.ps1",
+            ]),
+        );
     });
 
     test("@smoke: should add a new system", async () => {

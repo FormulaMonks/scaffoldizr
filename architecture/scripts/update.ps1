@@ -16,6 +16,10 @@ Get-Content "$docsLocation\.env-arch" | ForEach-Object {
     if ($_ -match '^\s*#') { return }
     if ($_ -match '^\s*$') { return }
     $parts = $_ -split '=', 2
+    if ($parts.Length -lt 2) {
+        Write-Error "ERROR: Malformed .env-arch entry: `"$($_)`". Expected KEY=VALUE format."
+        exit 1
+    }
     [System.Environment]::SetEnvironmentVariable($parts[0].Trim(), $parts[1].Trim().Trim('"'), 'Process')
 }
 

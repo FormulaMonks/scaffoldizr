@@ -13,8 +13,6 @@ jobs:
   e2e:
     name: e2e-${{matrix.name}}
     runs-on: ${{matrix.runs-on}}
-    env:
-      STRUCTURIZR_CLI_VERSION: v2025.11.09
     strategy:
       fail-fast: true
       matrix:
@@ -56,11 +54,6 @@ jobs:
           choco install jq --version 1.7.1
           choco install bun --version 1.3.3
         if: ${{ matrix.os == 'windows' }}
-      - uses: actions/setup-java@v5
-        if: ${{ matrix.os == 'windows' }}
-        with:
-          distribution: "temurin" # See 'Supported distributions' for available options
-          java-version: "21"
       - run: bun install --ignore-scripts
       - name: Download version to test
         uses: actions/download-artifact@v7
@@ -86,30 +79,15 @@ jobs:
           } catch {
             Write-Error "An error occurred: $_"
           }
-      - name: Cache Structurizr CLI
-        id: structurizr-cli-cache
-        uses: actions/cache@v5
-        with:
-          path: dist/structurizr-cli-bin
-          key: ${{ matrix.os }}-structurizr-cli-${{ env.STRUCTURIZR_CLI_VERSION }}
-      - name: Download Structurizr CLI
-        if: steps.structurizr-cli-cache.outputs.cache-hit != 'true' && matrix.os != 'windows'
+      - name: Start Docker (macOS)
+        if: ${{ matrix.os == 'macos' }}
         run: |
-          mkdir -p dist/structurizr-cli-bin
-          wget https://github.com/structurizr/cli/releases/download/${{ env.STRUCTURIZR_CLI_VERSION }}/structurizr-cli.zip
-          unzip ./structurizr-cli.zip -d dist/structurizr-cli-bin/
-          ls -la dist/structurizr-cli-bin/
-      - name: Download Structurizr CLI (Windows)
-        if: steps.structurizr-cli-cache.outputs.cache-hit != 'true' && matrix.os == 'windows'
-        run: |
-          try {
-            New-Item -ItemType Directory -Force -Path dist/structurizr-cli-bin
-            Invoke-WebRequest -Uri "https://github.com/structurizr/cli/releases/download/${{ env.STRUCTURIZR_CLI_VERSION }}/structurizr-cli.zip" -OutFile structurizr-cli.zip
-            Expand-Archive -Path structurizr-cli.zip -DestinationPath dist/structurizr-cli-bin/
-            Get-ChildItem -Path dist/structurizr-cli-bin/
-          } catch {
-            Write-Error "An error occurred: $_"
-          }
+          brew install docker colima
+          colima start --cpu 2 --memory 4
+          docker info
+      - name: Pull Structurizr Docker image
+        if: ${{ matrix.os != 'windows' }}
+        run: docker pull structurizr/structurizr
       - name: Extract version and add it to env variables
         if: ${{ matrix.os != 'windows' }}
         run: |
@@ -126,28 +104,22 @@ jobs:
       - name: E2E Test (Smoke)
         if: ${{ inputs.smoke && matrix.os != 'windows' }}
         run: |
-          export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
           export TMP_FOLDER=${{ runner.temp }}
           bun test:e2e:smoke
       - name: E2E Test (Full)
         if: ${{ !inputs.smoke && matrix.os != 'windows' }}
         run: |
-          export STRUCTURIZR_CLI_PATH=./dist/structurizr-cli-bin/structurizr.sh
           export TMP_FOLDER=${{ runner.temp }}
           bun test:e2e
       - name: E2E Test (Smoke) (Windows)
         if: ${{ inputs.smoke && matrix.os == 'windows' }}
         run: |
-          $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
           $env:TMP_FOLDER = "${{ runner.temp }}"
           $env:INPUT_TIMEOUT = "600"
-          java -version
           bun test:e2e:smoke
       - name: E2E Test (Full) (Windows)
         if: ${{ !inputs.smoke && matrix.os == 'windows' }}
         run: |
-          $env:STRUCTURIZR_CLI_PATH = ".\dist\structurizr-cli-bin\structurizr.bat"
           $env:TMP_FOLDER = "${{ runner.temp }}"
           $env:INPUT_TIMEOUT = "600"
-          java -version
           bun test:e2e

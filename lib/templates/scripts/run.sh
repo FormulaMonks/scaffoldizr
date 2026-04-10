@@ -9,7 +9,9 @@ if [ ! -e "${docs_location}/workspace.json" ]; then
     exit 1;
 fi
 
-container_name="structurizr-$(basename "${docs_location}")-${port}"
+docs_basename=$(basename "${docs_location}")
+sanitized_docs_basename=$(printf '%s' "${docs_basename}" | sed 's/[^A-Za-z0-9_.-]/-/g')
+container_name="structurizr-${sanitized_docs_basename}-${port}"
 
 cleanup() {
     echo "Stopping container ${container_name}..."

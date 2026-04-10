@@ -159,6 +159,20 @@ export const getWorkspaceJson = async (
     return undefined;
 };
 
+export const getWorkspaceDslScope = async (
+    workspaceFolder: string | undefined,
+): Promise<"SoftwareSystem" | "Landscape" | undefined> => {
+    if (!workspaceFolder) return undefined;
+    const dslFile = file(join(workspaceFolder, "workspace.dsl"));
+    if (dslFile.size === 0) return undefined;
+    const content = await dslFile.text();
+    const match = content.match(/scope\s+(softwaresystem|landscape)/i);
+    if (!match) return undefined;
+    return match[1].toLowerCase() === "softwaresystem"
+        ? "SoftwareSystem"
+        : "Landscape";
+};
+
 export type WorkspaceElement = {
     name: string;
     parent?: string;
