@@ -20,6 +20,7 @@ import {
     labelElementByName,
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
+import { checkUpdate } from "./utils/update";
 import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
 
 type CLIArguments = {
@@ -74,6 +75,8 @@ Let's create a new one by answering the questions below.
             await exportWorkspace(
                 relative(process.cwd(), destPath) || process.cwd(),
             );
+            const updateMessage = await checkUpdate(pkg.version);
+            if (updateMessage) console.log(updateMessage);
             process.exit(0);
         } catch (err) {
             if ((err as ExitPromptError).name === "ExitPromptError") {
@@ -154,6 +157,8 @@ Let's create a new one by answering the questions below.
 
             await createGenerator(directGenerator);
             await exportWorkspace(relative(process.cwd(), workspacePath));
+            const updateMessage = await checkUpdate(pkg.version);
+            if (updateMessage) console.log(updateMessage);
             process.exit(0);
         }
 
@@ -187,6 +192,8 @@ Let's create a new one by answering the questions below.
 
         await createGenerator(generator);
         await exportWorkspace(relative(process.cwd(), workspacePath));
+        const updateMessage = await checkUpdate(pkg.version);
+        if (updateMessage) console.log(updateMessage);
         process.exit(0);
     } catch (err) {
         if ((err as ExitPromptError).name === "ExitPromptError") {
