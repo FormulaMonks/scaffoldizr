@@ -21,7 +21,11 @@ import {
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
 import { checkUpdate } from "./utils/update";
-import { getWorkspaceJson, getWorkspacePath } from "./utils/workspace";
+import {
+    getWorkspaceDslScope,
+    getWorkspaceJson,
+    getWorkspacePath,
+} from "./utils/workspace";
 
 type CLIArguments = {
     dest: string;
@@ -29,9 +33,6 @@ type CLIArguments = {
     export?: boolean;
     _?: (string | number)[];
 };
-
-const STRUCTURIZR_CLI_PATH =
-    process.env.STRUCTURIZR_CLI_PATH || "structurizr-cli";
 
 async function main(args: CLIArguments = { dest: "." }) {
     console.log(
@@ -49,7 +50,7 @@ Create a Structurizr DSL scaffolding in seconds!
         const workspacePath = getWorkspacePath(path);
         if (!workspacePath) return;
 
-        return $`${STRUCTURIZR_CLI_PATH} export -w ${workspacePath}/workspace.dsl -f json -o ${workspacePath} || true`;
+        return $`docker run -t --rm -v ${workspacePath}:/usr/local/structurizr structurizr/structurizr export -w /usr/local/structurizr/workspace.dsl -f json -o /usr/local/structurizr || true`;
     };
 
     const { workspaceGenerator, ...otherGenerators } = generators;
@@ -94,6 +95,10 @@ Let's create a new one by answering the questions below.
         getWorkspacePath(workspacePath),
     );
 
+    const workspaceScope =
+        workspaceInfo?.configuration?.scope ??
+        (await getWorkspaceDslScope(workspacePath));
+
     console.log(
         chalk.gray(`Workspace name: ${chalk.cyan(workspaceInfo?.name)}`),
     );
@@ -106,7 +111,7 @@ Let's create a new one by answering the questions below.
     );
 
     const filteredGenerators = Object.values(otherGenerators).filter((g) => {
-        if (!workspaceInfo) return true;
+        if (!workspaceScope) return true;
 
         const sharedElements: string[] = [
             Elements.Archetype,
@@ -119,7 +124,7 @@ Let's create a new one by answering the questions below.
             Elements.Theme,
         ];
 
-        if (workspaceInfo.configuration.scope === "Landscape") {
+        if (workspaceScope === "Landscape") {
             return [...sharedElements, Elements.System].includes(g.name);
         } else {
             return [
@@ -224,7 +229,7 @@ if (["main.ts", "scfz"].includes(basename(entrypoint))) {
             alias: "e",
             type: "boolean",
             default: false,
-            desc: "Use structurizr-cli to export the workspace to JSON",
+            desc: "Use Structurizr unified CLI (Docker) to export the workspace to JSON",
         }).argv;
 
     main(args);

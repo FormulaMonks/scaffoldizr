@@ -89,3 +89,72 @@ Once a workspace is initialized, use these subcommands:
 * **Color Theme Exclusivity**: The `theme` generator enforces that only one color-based theme (Blue, Red, Green, Yellow) can be active at a time. Selecting a new color theme automatically replaces the existing one.
 * **Decisions Folder**: Every scaffolded workspace includes an `architecture/decisions/` folder for Architecture Decision Records (ADRs).
 
+## Workspace Tooling
+
+Scaffoldizr generates helper scripts and an environment file to manage your workspace locally and remotely. These are located in the `architecture/scripts/` folder.
+
+> **Note**: All Structurizr operations now use the unified `structurizr/structurizr` Docker image, which replaces the previously separate `structurizr/lite` image and `structurizr-cli` tool. Docker must be installed and running.
+
+Both **Bash** (`.sh`) and **PowerShell** (`.ps1`) variants are generated for every script. Use the one that matches your operating system:
+
+| OS | Script |
+| :- | :----- |
+| macOS / Linux | `run.sh`, `update.sh` |
+| Windows | `run.ps1`, `update.ps1` |
+
+> **Windows users**: Run PowerShell scripts with `.\architecture\scripts\run.ps1` from a PowerShell terminal. If script execution is blocked, run `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` once to allow local scripts.
+
+### run — View Workspace Locally
+
+Starts a local Structurizr server using Docker to visualize your architecture diagrams in the browser.
+
+```bash
+# macOS / Linux
+./architecture/scripts/run.sh [port]
+
+# Windows (PowerShell)
+.\architecture\scripts\run.ps1 [port]
+```
+
+- The optional `[port]` argument sets the local port (default: `8080`).
+- Access the workspace at `http://localhost:8080` after running.
+- The script validates that `workspace.json` exists before starting.
+- Stopping the script (Ctrl+C) automatically stops the Docker container.
+
+**How it works**: Mounts the `architecture/` folder into the Docker container and runs `structurizr/structurizr local`.
+
+### update — Push Workspace to Remote
+
+Pushes the compiled `workspace.json` to a remote Structurizr instance using the unified CLI.
+
+```bash
+# macOS / Linux
+./architecture/scripts/update.sh
+
+# Windows (PowerShell)
+.\architecture\scripts\update.ps1
+```
+
+- Requires a `.env-arch` file in the `architecture/` folder (see below).
+- Validates that `workspace.json` exists before pushing.
+- Performs a non-merging push — the remote workspace is fully replaced.
+
+**How it works**: Reads `architecture/.env-arch` for credentials, then runs `structurizr/structurizr push` inside Docker.
+
+For all available Structurizr CLI commands, see the [Structurizr commands reference](https://docs.structurizr.com/commands).
+
+### .env-arch — Remote Credentials
+
+The `architecture/.env-arch` file holds the authentication credentials required by `update.sh` / `update.ps1`. It is **not committed to version control**.
+
+Create an `.env-arch` file inside the `architecture/` folder with the following variables:
+
+```bash
+STCTZR_URL=https://api.structurizr.com
+STCTZR_WORKSPACE_ID=<your-workspace-id>
+STCTZR_WORKSPACE_KEY=<your-api-key>
+# STCTZR_PASSPHRASE=<your-passphrase>  # Optional: only required if client-side encryption is enabled on the workspace
+```
+
+You can find these values in your Structurizr workspace settings. `STCTZR_PASSPHRASE` is optional and only needed if you have enabled [client-side encryption](https://docs.structurizr.com/cloud/client-side-encryption) on your workspace.
+

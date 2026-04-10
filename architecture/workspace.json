@@ -11,6 +11,20 @@
       "id" : "1",
       "status" : "Accepted",
       "title" : "Record architecture decisions"
+    }, {
+      "content" : "# 2. Support AI Agent and Non-Interactive Mode\n\nDate: 2026-04-08\n\n## Status\n\nAccepted\n\n## Context\n\nScaffoldizr was originally designed as a fully interactive CLI tool, relying on Inquirer.js prompts to guide users through workspace and element creation. This worked well for human operators but made the tool unusable in automated contexts.\n\nAs AI-assisted development workflows became common, agents (such as LLM-based coding assistants) needed to generate and evolve architecture documentation programmatically. These agents cannot interact with TTY-based prompts and require all inputs to be provided upfront as CLI flags.\n\nAdditionally, the rise of standardized agent skill formats (e.g., OpenCode / Claude skills) created an opportunity to package Scaffoldizr's conventions and generator knowledge into a reusable agent skill, enabling AI assistants to invoke the tool correctly without human guidance.\n\n## Decision\n\nWe will extend the CLI to support non-interactive execution by:\n\n1. **Subcommand routing** — when a `workspace.dsl` already exists, the desired generator can be passed as a positional subcommand (e.g., `scfz container`), bypassing the interactive main menu.\n2. **Flag-based answers** — all Inquirer prompt questions can be answered via CLI flags using `--parameter \"value\"` format. When all required flags are present, no prompts are shown.\n3. **AI Agent Skill** — a structured skill file (`.claude/skills/scaffoldizr/SKILL.md`) is shipped with the repository, providing AI agents with conventions, element creation rules, workspace scope constraints, and CLI usage patterns.\n\nThe interactive mode remains fully supported and is unchanged. Non-interactive mode is strictly additive.\n\n## Consequences\n\n**Positive:**\n- AI agents and automation scripts can drive the full Scaffoldizr workflow without human input.\n- The agent skill codifies existing conventions, reducing the risk of agents generating invalid or inconsistent DSL.\n- CI pipelines can scaffold architecture elements as part of automated workflows.\n- The tool surface area for human users is unchanged — interactive mode is unaffected.\n\n**Negative:**\n- CLI flag names are tightly coupled to Inquirer prompt `name` fields. Renaming a prompt question is now a breaking change for any automation that targets that flag.\n- Non-interactive mode does not validate flag completeness upfront — missing required flags fall back to interactive prompts, which will hang in a non-TTY context.\n- The agent skill file must be kept in sync with generator changes manually; there is no automated validation that the skill reflects current CLI behaviour.\n",
+      "date" : "2026-04-08T00:00:00Z",
+      "format" : "Markdown",
+      "id" : "2",
+      "status" : "Accepted",
+      "title" : "Support AI Agent and Non-Interactive Mode"
+    }, {
+      "content" : "# 3. Migrate to Unified Structurizr Docker Image\n\nDate: 2026-04-10\n\n## Status\n\nAccepted\n\n## Context\n\nScaffoldizr relied on two separate Structurizr tools:\n\n1. **`structurizr/lite`** Docker image — used by `run.sh` to serve the workspace locally for authoring and visualization.\n2. **`structurizr-cli`** standalone binary — used by `update.sh` to push the workspace to a remote Structurizr instance, and by the CLI's `--export` flag to compile `workspace.dsl` to `workspace.json`.\n\nIn late 2025, Structurizr announced the consolidation of all its tools — Structurizr Lite, Structurizr CLI, and Structurizr on-premises — into a **single unified tool and Docker image**: `structurizr/structurizr`. The cloud service is scheduled to shut down on 30 September 2026.\n\nThe previously separate tools (`structurizr/lite`, `structurizr-cli`, `structurizr/onpremises`) are now end-of-life and will receive no further updates. All CLI commands (`local`, `push`, `pull`, `export`, `validate`, `list`, `inspect`) are now subcommands of the unified image.\n\nNotably, the new `push` command no longer accepts a `-secret` flag. Authentication uses a single API key via `-key`.\n\n## Decision\n\nWe migrate all Scaffoldizr tooling to exclusively use the unified `structurizr/structurizr` Docker image:\n\n1. **`run.sh`**: Changed from `structurizr/lite` to `docker run ... structurizr/structurizr local`. The `architecture/` folder is mounted as the Structurizr workspace root at `/usr/local/structurizr`.\n2. **`update.sh`**: Changed from `structurizr-cli push` to `docker run ... structurizr/structurizr push`. The `-secret` flag is dropped (no longer supported); only `-url`, `-id`, and `-key` are used. The `architecture/` folder is mounted and `workspace.json` is referenced at `/usr/local/structurizr/workspace.json`.\n3. **`--export` flag** in the CLI: Changed from spawning `structurizr-cli export` to `docker run ... structurizr/structurizr export -w ... -f json -o ...`.\n4. **AI Agent skill** (`.claude/skills/scaffoldizr/`): Updated all `structurizr-cli` references to use Docker equivalents with the correct `-w` flag.\n5. **`.env-arch` template**: Removed `STCTZR_WORKSPACE_SECRET` as it has no corresponding flag in the new image.\n\nThe `structurizr-cli` binary dependency is fully dropped. Docker is now the sole runtime dependency for Structurizr operations.\n\n## Consequences\n\n**Positive:**\n- Users need only Docker installed — no separate `structurizr-cli` binary to download and manage.\n- All Structurizr operations use a single, consistent interface.\n- The project is insulated from the EOL of the standalone tools.\n- The `local` command is a drop-in replacement for Structurizr Lite with the same local authoring workflow.\n- Authentication is simplified to a single API key.\n\n**Negative:**\n- Docker must be running for any Structurizr operation (local viewing, export, push). Previously, `structurizr-cli` could be installed as a standalone binary without Docker.\n- First-time use of each command requires Docker to pull the `structurizr/structurizr` image (~1GB), adding latency.\n- Teams using `STCTZR_WORKSPACE_SECRET` in existing `.env-arch` files can safely remove it — the variable is no longer read.\n\n## References\n\n- [Introducing Structurizr vNext](https://www.patreon.com/posts/146923136) — Patreon post announcing the consolidation of all Structurizr tools into the unified image.\n- [Structurizr end-of-life page](https://docs.structurizr.com/eol) — Official EOL listing for Structurizr Lite, CLI, on-premises, and cloud service.\n- [Structurizr commands reference](https://docs.structurizr.com/commands) — Full list of commands available in the unified `structurizr/structurizr` image.\n- [local command reference](https://docs.structurizr.com/local) — Options and examples for the `local` command used in `run.sh`.\n",
+      "date" : "2026-04-10T00:00:00Z",
+      "format" : "Markdown",
+      "id" : "3",
+      "status" : "Accepted",
+      "title" : "Migrate to Unified Structurizr Docker Image"
     } ],
     "sections" : [ {
       "content" : "\n## Motivation\n\n[Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a feeling of not knowing where to start.\n\nThis is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.sh/) that attempts to create the building blocks of a solid system architecture documentation, that eases up the entry barrier for newcomers as well as allowing architects experienced in Structurizr to follow a convention while setting them up for success.\n",
@@ -19,13 +33,13 @@
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n\n### Options\n\n- `--help`: Show help information\n- `--version`: Show current tool version\n- `--dest <path>`: Target architecture folder (default: current directory)\n- `-e, --export`: Use structurizr-cli to export the workspace to JSON (default: false)\n",
+      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n\n### Options\n\n- `--help`: Show help information\n- `--version`: Show current tool version\n- `--dest <path>`: Target architecture folder (default: current directory)\n- `-e, --export`: Use Structurizr unified CLI (Docker) to export the workspace to JSON (default: false)\n",
       "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
       "title" : ""
     }, {
-      "content" : "\n## CLI Usage\n\nWhen you run Scaffoldizr:\n\n1. The CLI displays a welcome message\n2. It checks if the destination folder contains a `workspace.dsl` file\n3. If no workspace is found, it automatically initiates the workspace creation generator\n4. You'll be prompted with interactive questions to configure your workspace\n5. The tool generates the appropriate scaffolding based on your answers\n\n## Supported Elements\n\n| Element | Description | Prompts |\n| :-----: | :---------- | :------ |\n| `Workspace` | Creates a new workspace with proper scaffolding. Automatically triggered when no `workspace.dsl` file is found. Creates workspace structure including `workspace.dsl`, system files, relationships, and configuration files. | Workspace name, description, scope (Software System/Landscape), system details (if applicable), author info (from git config), theme preference |\n| `🟡 Constant` | Reusable constant that can be referenced across diagrams and relationships. Appends the constant definition to `workspace.dsl`. | Constant name, value |\n| `🔺 Archetype` | [Reusable element templates](https://docs.structurizr.com/dsl/archetypes) (Container, Component, Software System, or Relationship). Creates `architecture/archetypes/{name}_{baseType}.dsl`. | Archetype name, base type, optional technology, optional tags |\n| `👤 Person` | An actor or user interacting with systems. Creates/appends to `systems/_people.dsl` and `relationships/_people.dsl`. | Person name, description, relationships, technology |\n| `🟦 System` | Creates a system. Available for landscape scope only. (See [scope](https://docs.structurizr.com/workspaces/scope)) | System name, description, relationships |\n| `⬜️ External System` | Creates an external system not owned by the development team (e.g., third-party dependencies, external APIs). Appends to `systems/_external.dsl` and `relationships/_external.dsl`. | Parent system, external system name, description, relationships |\n| `🔷 Container` | Creates a deployable/executable unit within a system (web app, database, API, message broker, etc.). Creates container file, view, and relationship files. Supports types: EventBus, MessageBroker, Function, Database, WebApp, MobileApp. | Parent system, container name, description, type, technology, relationships |\n| `🔹 Component` | Creates a component within a container (controller, service, repository, etc.). Requires at least one existing container. Creates/updates component files, includes, views, and relationships. | Parent container, component name, description, technology, relationships |\n| `🔳 View` | Creates Structurizr views for visualizing architecture. Supports Deployment and Landscape view types. Creates view files and environment configurations. See [Supported View Types](#supported-view-types) below. | View type, system name (if needed), view name, description, instance details (for deployment) |\n\n## Supported View Types\n\n| View type | Description |\n| :-------: | :---------- |\n| `landscape` | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources. |\n",
+      "content" : "\n## CLI Usage\n\nWhen you run Scaffoldizr:\n\n1. The CLI displays a welcome message\n2. It checks if the destination folder contains a `workspace.dsl` file\n3. If no workspace is found, it automatically initiates the workspace creation generator\n4. You'll be prompted with interactive questions to configure your workspace\n5. The tool generates the appropriate scaffolding based on your answers\n\n## Supported Elements\n\n| Element | Description | Prompts |\n| :-----: | :---------- | :------ |\n| `Workspace` | Creates a new workspace with proper scaffolding. Automatically triggered when no `workspace.dsl` file is found. Creates workspace structure including `workspace.dsl`, system files, relationships, and configuration files. | Workspace name, description, scope (Software System/Landscape), system details (if applicable), author info (from git config), theme preference |\n| `🟡 Constant` | Reusable constant that can be referenced across diagrams and relationships. Appends the constant definition to `workspace.dsl`. | Constant name, value |\n| `🔺 Archetype` | [Reusable element templates](https://docs.structurizr.com/dsl/archetypes) (Container, Component, Software System, or Relationship). Creates `architecture/archetypes/{name}_{baseType}.dsl`. | Archetype name, base type, optional technology, optional tags |\n| `👤 Person` | An actor or user interacting with systems. Creates/appends to `systems/_people.dsl` and `relationships/_people.dsl`. | Person name, description, relationships, technology |\n| `🟦 System` | Creates a system. Available for landscape scope only. (See [scope](https://docs.structurizr.com/workspaces/scope)) | System name, description, relationships |\n| `⬜️ External System` | Creates an external system not owned by the development team (e.g., third-party dependencies, external APIs). Appends to `systems/_external.dsl` and `relationships/_external.dsl`. | Parent system, external system name, description, relationships |\n| `🔷 Container` | Creates a deployable/executable unit within a system (web app, database, API, message broker, etc.). Creates container file, view, and relationship files. Supports types: EventBus, MessageBroker, Function, Database, WebApp, MobileApp. | Parent system, container name, description, type, technology, relationships |\n| `🔹 Component` | Creates a component within a container (controller, service, repository, etc.). Requires at least one existing container. Creates/updates component files, includes, views, and relationships. | Parent container, component name, description, technology, relationships |\n| `🔳 View` | Creates Structurizr views for visualizing architecture. Supports Deployment and Landscape view types. Creates view files and environment configurations. See [Supported View Types](#supported-view-types) below. | View type, system name (if needed), view name, description, instance details (for deployment) |\n| `🎨 Theme` | Manage workspace themes (add, remove, list). Updates the `themes` line in `architecture/workspace.dsl`. Available in both Landscape and SoftwareSystem scopes. | `themeAction`, `additionalThemes` |\n\n## Supported View Types\n\n| View type | Description |\n| :-------: | :---------- |\n| `landscape` | System Landscape view. Showcases system and external relationships. |\n| `deployment` | Useful for displaying infrastructure and resources. |\n\n## Non-Interactive Usage (AI Agent Mode)\n\nScaffoldizr supports non-interactive execution by routing to specific subcommands and passing parameters as CLI flags. This mode is ideal for AI agents or automation scripts.\n\n### Subcommand Routing\n\nWhen a workspace already exists, you can bypass the main menu by specifying a generator as a subcommand:\n\n```bash\nscfz <generator> [options]\n```\n\n### Passing Arguments\n\nAll prompt questions can be answered via CLI flags using `--parameter \"value\"` or `--parameter=value` format.\n\n#### Workspace Generator (Initial Setup)\n\nUsed when no `workspace.dsl` exists in the destination:\n\n```bash\nscfz --dest \".\" \\\n  --workspaceName \"My Workspace\" \\\n  --workspaceDescription \"A sample workspace\" \\\n  --workspaceScope \"softwaresystem\" \\\n  --systemName \"My System\" \\\n  --systemDescription \"Core system\" \\\n  --authorName \"Jane Doe\" \\\n  --authorEmail \"jane@example.com\" \\\n  --shouldIncludeTheme \"false\"\n```\n\n#### Element Generators\n\nOnce a workspace is initialized, use these subcommands:\n\n| Generator | Description | Common Arguments |\n| :-------: | :---------- | :--------------- |\n| `system` | Software System | `--systemName`, `--systemDescription`, `--archetype` |\n| `container` | Container | `--systemName` (parent), `--elementName`, `--containerDescription`, `--containerType`, `--containerTechnology` |\n| `component` | Component | `--elementName`, `--componentDescription`, `--componentTechnology` |\n| `person` | Person | `--elementName`, `--personDescription` |\n| `external-system` | External System | `--elementName`, `--extSystemDescription` |\n| `view` | View | `--viewType` (landscape/deployment), `--viewName`, `--viewDescription` |\n| `constant` | Constant | `--constantName`, `--constantValue` |\n| `archetype` | Archetype | `--archetypeName`, `--archetypeDescription` |\n| `theme` | Manage Themes | `--themeAction \"Add themes\" --additionalThemes \"<url1>,<url2>\"` |\n\n### Scope and Validation Rules\n\n* **Scope Restriction**: Generators are restricted by the workspace scope defined in `workspace.dsl`.\n  * **Landscape**: Allows `system`, `person`, `external-system`, `view`, `relationship`, `constant`, `archetype`.\n  * **SoftwareSystem**: Allows `container`, `component`, `person`, `external-system`, `view`, `relationship`, `constant`, `archetype`.\n  * Using an unsupported generator for the current scope will result in a non-zero exit code.\n* **Uniqueness Validation**: Element names must be unique. If a duplicate name is provided in non-interactive mode, the command will fail with exit code 1.\n* **Color Theme Exclusivity**: The `theme` generator enforces that only one color-based theme (Blue, Red, Green, Yellow) can be active at a time. Selecting a new color theme automatically replaces the existing one.\n* **Decisions Folder**: Every scaffolded workspace includes an `architecture/decisions/` folder for Architecture Decision Records (ADRs).\n\n## Workspace Tooling\n\nScaffoldizr generates helper scripts and an environment file to manage your workspace locally and remotely. These are located in the `architecture/scripts/` folder.\n\n> **Note**: All Structurizr operations now use the unified `structurizr/structurizr` Docker image, which replaces the previously separate `structurizr/lite` image and `structurizr-cli` tool. Docker must be installed and running.\n\nBoth **Bash** (`.sh`) and **PowerShell** (`.ps1`) variants are generated for every script. Use the one that matches your operating system:\n\n| OS | Script |\n| :- | :----- |\n| macOS / Linux | `run.sh`, `update.sh` |\n| Windows | `run.ps1`, `update.ps1` |\n\n> **Windows users**: Run PowerShell scripts with `.\\architecture\\scripts\\run.ps1` from a PowerShell terminal. If script execution is blocked, run `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` once to allow local scripts.\n\n### run — View Workspace Locally\n\nStarts a local Structurizr server using Docker to visualize your architecture diagrams in the browser.\n\n```bash\n# macOS / Linux\n./architecture/scripts/run.sh [port]\n\n# Windows (PowerShell)\n.\\architecture\\scripts\\run.ps1 [port]\n```\n\n- The optional `[port]` argument sets the local port (default: `8080`).\n- Access the workspace at `http://localhost:8080` after running.\n- The script validates that `workspace.json` exists before starting.\n- Stopping the script (Ctrl+C) automatically stops the Docker container.\n\n**How it works**: Mounts the `architecture/` folder into the Docker container and runs `structurizr/structurizr local`.\n\n### update — Push Workspace to Remote\n\nPushes the compiled `workspace.json` to a remote Structurizr instance using the unified CLI.\n\n```bash\n# macOS / Linux\n./architecture/scripts/update.sh\n\n# Windows (PowerShell)\n.\\architecture\\scripts\\update.ps1\n```\n\n- Requires a `.env-arch` file in the `architecture/` folder (see below).\n- Validates that `workspace.json` exists before pushing.\n- Performs a non-merging push — the remote workspace is fully replaced.\n\n**How it works**: Reads `architecture/.env-arch` for credentials, then runs `structurizr/structurizr push` inside Docker.\n\nFor all available Structurizr CLI commands, see the [Structurizr commands reference](https://docs.structurizr.com/commands).\n\n### .env-arch — Remote Credentials\n\nThe `architecture/.env-arch` file holds the authentication credentials required by `update.sh` / `update.ps1`. It is **not committed to version control**.\n\nCreate an `.env-arch` file inside the `architecture/` folder with the following variables:\n\n```bash\nSTCTZR_URL=https://api.structurizr.com\nSTCTZR_WORKSPACE_ID=<your-workspace-id>\nSTCTZR_WORKSPACE_KEY=<your-api-key>\n# STCTZR_PASSPHRASE=<your-passphrase>  # Optional: only required if client-side encryption is enabled on the workspace\n```\n\nYou can find these values in your Structurizr workspace settings. `STCTZR_PASSPHRASE` is optional and only needed if you have enabled [client-side encryption](https://docs.structurizr.com/cloud/client-side-encryption) on your workspace.\n\n",
       "filename" : "03-usage.md",
       "format" : "Markdown",
       "order" : 3,
@@ -43,16 +57,21 @@
       "order" : 5,
       "title" : ""
     }, {
-      "content" : "## Themes\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).\n\n### How to reference\n\nWithin your `workspace.dsl`, add the following line under `views`:\n\n```dsl\n\nviews {\n    themes \"<url to theme 1>.json\" \"<url to theme 2>.json\"\n}\n\n```\n\n---\n\n### Shapes\n\nAdded tag support to most available shapes within Structurizr.\n\n![Scaffoldizr Shapes](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json\"\n```\n\n### Status\n\nAdded handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.\n\n![Scaffoldizr Status](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json\"\n```\n\n### Color-based\n\nBecause not all diagrams have to be architecture blue!\n\n#### Green\n\n![Scaffoldizr Green](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json\"\n```\n\n#### Yellow\n\n![Scaffoldizr Yellow](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json\"\n```\n\n#### Red\n\n![Scaffoldizr Red](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json\"\n```\n",
+      "content" : "\n\n## Managing Themes with Scaffoldizr\n\nUse the `theme` generator to manage your workspace themes without manually editing the DSL.\n\n### Interactive\n\nRun `scfz theme` to launch the interactive theme manager. It provides three actions:\n\n- **Add themes**: select from built-in themes or enter a custom URL.\n- **Remove themes**: select currently configured themes to remove.\n- **List themes**: see all theme URLs currently used in your workspace.\n\nColor-based themes (Blue, Red, Green, Yellow) are mutually exclusive. Selecting a new color theme automatically replaces any existing one.\n\n### Non-Interactive (AI Agent Mode)\n\nUse the `theme` subcommand with flags for automation:\n\n- `--themeAction`: one of `\"Add themes\"`, `\"Remove themes\"`, or `\"List themes\"`.\n- `--additionalThemes`: comma-separated theme URLs to add (e.g. `\"url1,url2\"`).\n\nFor example, to add the Shapes theme:\n\n```bash\nscfz theme \\\n  --themeAction \"Add themes\" \\\n  --additionalThemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json\"\n```\n\nThe Blue color theme, which is not included by default during workspace initialization, can be added using:\n\n```bash\nscfz theme \\\n  --themeAction \"Add themes\" \\\n  --additionalThemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-blue.json\"\n```\n\n## Available Themes\n\n\nScaffoldizr includes some extra themes extending from the default Structurizr theme. [More information here](https://docs.structurizr.com/ui/diagrams/themes).\n\n### How to reference\n\nWithin your `workspace.dsl`, add the following line under `views`:\n\n```dsl\n\nviews {\n    themes \"<url to theme 1>.json\" \"<url to theme 2>.json\"\n}\n\n```\n\n---\n\n## Shapes\n\nAdded tag support to most available shapes within Structurizr.\n\n![Scaffoldizr Shapes](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json\"\n```\n\n## Status\n\nAdded handy representations for elements when they need to be added/removed from a system or if they are external, inactive, etc.\n\n![Scaffoldizr Status](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json\"\n```\n\n## Color-based\n\nBecause not all diagrams have to be architecture blue!\n\n### Green\n\n![Scaffoldizr Green](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-green.json\"\n```\n\n### Yellow\n\n![Scaffoldizr Yellow](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-yellow.json\"\n```\n\n### Red\n\n![Scaffoldizr Red](https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.png)\n\n```dsl\nthemes \"https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json\"\n```\n",
       "filename" : "06-themes.md",
       "format" : "Markdown",
       "order" : 6,
       "title" : ""
+    }, {
+      "content" : "\nScaffoldizr provides an opinionated framework for AI agents to generate and interact with [Structurizr workspaces](https://docs.structurizr.com/workspaces). By following a consistent folder structure and non-interactive CLI patterns, AI agents can reliably build and maintain C4 model architecture documentation.\n\n## Overview\n\nThe AI Agent integration is designed for scenarios where:\n\n* An AI agent needs to create or update elements within a Structurizr workspace.\n* Architecture diagrams (leveraging the C4 model) need to be generated automatically.\n* An existing Structurizr workspace requires validation or refactoring.\n\n## Installation\n\nThe AI integration is available as a skill for agents that support OpenCode skills or similar tool-based environments.\n\n**Install the Scaffoldizr agent skill** (e.g. for OpenCode):\n\n```bash\nnpx skills add formulamonks/scaffoldizr\n```\n\nAlso ensure the Scaffoldizr CLI is installed in the agent's environment:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThe agent should then have access to the `scfz` command for non-interactive operations.\n\n## Folder Structure\n\nScaffoldizr generates a predictable folder structure within the `architecture/` directory, making it easy for AI agents to locate and modify specific architectural elements:\n\n* `archetypes/`: Reusable relationship patterns and baseline elements.\n* `systems/`: Software system definitions, including people (`_people.dsl`) and external systems (`_external.dsl`).\n* `containers/<system name>/`: Container definitions for a specific software system.\n* `components/<system name>/<container name>/`: Component definitions for a specific container.\n* `relationships/`: Global relationship definitions between elements.\n* `views/`: View definitions for rendering diagrams (context, container, component, etc.).\n* `decisions/`: Architecture Decision Records (ADRs) documenting key design choices.\n* `docs/`: Documentation files referenced within the workspace.\n* `environments/`: Deployment nodes and infrastructure definitions.\n\n## Workspace Scope\n\nAI agents must respect the workspace scope defined in `architecture/workspace.dsl`. The scope determines which elements can be created:\n\n1.  **Landscape Scope**: Allows creating `system`, `person`, `external-system`, `view`, `relationship`, `constant`, and `archetype`.\n2.  **SoftwareSystem Scope**: Allows creating `container`, `component`, `person`, `external-system`, `view`, `relationship`, `constant`, and `archetype`.\n\nAgents should verify the current scope before attempting to scaffold new elements to ensure consistency with the C4 model levels.\n\n## Creating Elements\n\nAI agents interact with the workspace using the `scfz` CLI tool in non-interactive mode. This is achieved by passing arguments as flags to bypass interactive prompts.\n\nFor a detailed list of subcommands and parameters, refer to the [Usage Guide](./03-usage.md).\n\n## Workspace Build Process\n\n* **Source**: The `architecture/workspace.dsl` file is the primary entry point.\n* **Compilation**: The DSL files are compiled into a single `architecture/workspace.json` file.\n* **Visualization**: Use the provided scripts (e.g., `architecture/scripts/run.sh`) to start Structurizr `local` and visualize diagrams at `http://localhost:8080`.\n\nAgents should never modify the `workspace.json` file directly; all changes should be made to the DSL source files.\n",
+      "filename" : "07-ai-agent.md",
+      "format" : "Markdown",
+      "order" : 7,
+      "title" : ""
     } ]
   },
   "id" : 1,
-  "lastModifiedAgent" : "structurizr-ui",
-  "lastModifiedDate" : "2025-12-01T22:37:40Z",
+  "lastModifiedDate" : "2026-04-10T17:04:35Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -93,8 +112,8 @@
       "tags" : "Element,Person"
     } ],
     "properties" : {
-      "structurizr.inspection.model.softwaresystem.decisions" : "ignore",
-      "structurizr.inspection.model.softwaresystem.documentation" : "ignore"
+      "structurizr.inspection.model.softwaresystem.documentation" : "ignore",
+      "structurizr.inspection.model.softwaresystem.decisions" : "ignore"
     },
     "softwareSystems" : [ {
       "description" : "Local instance for Structurizr diagram visualization.",
@@ -248,43 +267,39 @@
   },
   "name" : "Scaffoldizr",
   "properties" : {
+    "structurizr.inspection.error" : "0",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "2",
-    "structurizr.inspection.error" : "0",
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
     "componentViews" : [ {
       "containerId" : "4",
       "description" : "Definition to generate files and folders. Author: Formula.monks <andres.zorro@mediamonks.com>",
-      "dimensions" : {
-        "height" : 1515,
-        "width" : 3632
-      },
       "elements" : [ {
         "id" : "2",
-        "x" : 2982,
-        "y" : 759
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "5",
-        "x" : 1650,
-        "y" : 192
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "6",
-        "x" : 2397,
-        "y" : 192
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "7",
-        "x" : 2023,
-        "y" : 759
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "8",
-        "x" : 892,
-        "y" : 192
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "9",
-        "x" : 200,
-        "y" : 142
+        "x" : 0,
+        "y" : 0
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "Generator",
@@ -305,40 +320,31 @@
       } ]
     } ],
     "configuration" : {
-      "branding" : { },
-      "lastSavedView" : "ScaffoldizrCLI",
-      "metadataSymbols" : "SquareBrackets",
       "styles" : { },
       "terminology" : { },
-      "themes" : [ "https://static.structurizr.com/themes/default/theme.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-red.json" ]
+      "themes" : [ "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-shapes.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-status.json", "https://formulamonks.github.io/scaffoldizr/assets/scaffoldizr-default.json" ]
     },
     "containerViews" : [ {
       "automaticLayout" : {
-        "applied" : true,
-        "edgeSeparation" : 0,
-        "implementation" : "Graphviz",
-        "nodeSeparation" : 300,
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
         "rankDirection" : "LeftRight",
-        "rankSeparation" : 300,
-        "vertices" : false
+        "rankSeparation" : 100,
+        "vertices" : true
       },
       "description" : "Command Line Interface (binary). Author: Formula.monks <andres.zorro@mediamonks.com>",
-      "dimensions" : {
-        "height" : 820,
-        "width" : 2350
-      },
       "elements" : [ {
         "id" : "2",
-        "x" : 1699,
-        "y" : 163
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "4",
-        "x" : 949,
-        "y" : 163
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "9",
-        "x" : 199,
-        "y" : 163
+        "x" : 0,
+        "y" : 0
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "ScaffoldizrCLI",
@@ -353,26 +359,22 @@
     } ],
     "systemContextViews" : [ {
       "description" : "Scaffolding tool. Author: Formula.monks <andres.zorro@mediamonks.com>",
-      "dimensions" : {
-        "height" : 1730,
-        "width" : 2350
-      },
       "elements" : [ {
         "id" : "1",
-        "x" : 939,
-        "y" : 1172
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "2",
-        "x" : 1699,
-        "y" : 617
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "3",
-        "x" : 939,
-        "y" : 142
+        "x" : 0,
+        "y" : 0
       }, {
         "id" : "9",
-        "x" : 199,
-        "y" : 567
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "Scaffoldizr",

@@ -13,6 +13,7 @@
         "test": "bun test",
         "test:ci": "bun test --coverage",
         "test:e2e:smoke": "bun --config=./e2e/e2e.toml test -t '@smoke' --bail --timeout 30000",
+        "test:e2e:smoke:windows": "bun --config=./e2e/e2e.toml test ./e2e/scfz-general.test.ts --bail --timeout 30000",
         "test:e2e": "bun --config=./e2e/e2e.toml test --bail --timeout 30000",
         "prepare": "husky",
         "docs:serve": "cd docs && bundle exec jekyll serve --watch --livereload --config _config.yml,_config.local.yml"

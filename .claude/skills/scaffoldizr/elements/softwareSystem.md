@@ -40,7 +40,7 @@ _⚠️ IMPORTANT:_ Software Systems can only be created when the [Workspace Sco
 
 4. Create relationships between the software system and other elements (people, systems, containers, etc.) as needed. Follow instructions on [relationships](./relationship.md) documentation for further details on how to create relationships.
 
-5. Validate the workspace to ensure the software system has been created successfully and there are no errors. Refer to [structurizr-cli validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
+5. Validate the workspace to ensure the software system has been created successfully and there are no errors. Refer to [Structurizr validate](../extra/CLI.md#validation-and-error-troubleshooting) for further details.
 
 ## Using Scaffoldizr CLI (preferred for AI agents)
 

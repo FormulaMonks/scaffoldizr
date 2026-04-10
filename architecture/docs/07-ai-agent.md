@@ -11,7 +11,15 @@ The AI Agent integration is designed for scenarios where:
 
 ## Installation
 
-The AI integration is available as a skill for agents that support OpenCode skills or similar tool-based environments. To enable it, ensure the Scaffoldizr CLI is installed in the agent's environment:
+The AI integration is available as a skill for agents that support OpenCode skills or similar tool-based environments.
+
+**Install the Scaffoldizr agent skill** (e.g. for OpenCode):
+
+```bash
+npx skills add formulamonks/scaffoldizr
+```
+
+Also ensure the Scaffoldizr CLI is installed in the agent's environment:
 
 ```bash
 curl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh
@@ -52,6 +60,6 @@ For a detailed list of subcommands and parameters, refer to the [Usage Guide](./
 
 * **Source**: The `architecture/workspace.dsl` file is the primary entry point.
 * **Compilation**: The DSL files are compiled into a single `architecture/workspace.json` file.
-* **Visualization**: Use the provided scripts (e.g., `architecture/scripts/run.sh`) to start Structurizr Lite and visualize diagrams at `http://localhost:8080`.
+* **Visualization**: Use the provided scripts (e.g., `architecture/scripts/run.sh`) to start Structurizr `local` and visualize diagrams at `http://localhost:8080`.
 
 Agents should never modify the `workspace.json` file directly; all changes should be made to the DSL source files.

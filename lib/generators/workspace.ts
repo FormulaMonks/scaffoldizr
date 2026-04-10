@@ -217,6 +217,12 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
         {
             type: "addMany",
             destination: "architecture",
+            templateFiles: "templates/scripts/**/*.ps1",
+            skipIfExists: true,
+        } as AddManyAction<WorkspaceAnswers>,
+        {
+            type: "addMany",
+            destination: "architecture",
             templateFiles: "templates/**/.gitkeep",
         } as AddManyAction<WorkspaceAnswers>,
         {
