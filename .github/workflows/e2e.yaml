@@ -83,7 +83,7 @@ jobs:
         if: ${{ matrix.os == 'macos' }}
         run: |
           brew install docker colima
-          colima start --cpu 2 --memory 4
+          colima start --cpu 2 --memory 4 --vm-type qemu
           docker info
       - name: Pull Structurizr Docker image
         if: ${{ matrix.os != 'windows' }}
