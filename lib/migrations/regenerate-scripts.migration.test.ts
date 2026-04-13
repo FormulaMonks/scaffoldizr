@@ -4,7 +4,7 @@ import { mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { file, write } from "bun";
-import { regenerateScriptsMigration } from "./regenerate-scripts";
+import { regenerateScriptsMigration } from "./regenerate-scripts.migration";
 
 const createTempDir = () =>
     join(tmpdir(), `scaffoldizr-regen-scripts-test-${randomUUID()}`);

@@ -1,8 +1,8 @@
-import { addVersionHeaderMigration } from "./add-version-header";
-import { regenerateScriptsMigration } from "./regenerate-scripts";
+import { addVersionHeaderMigration } from "./add-version-header.migration";
+import { regenerateScriptsMigration } from "./regenerate-scripts.migration";
 import type { Migration } from "./types";
 
 export const migrations: Migration[] = [
-    regenerateScriptsMigration,
     addVersionHeaderMigration,
+    regenerateScriptsMigration,
 ];

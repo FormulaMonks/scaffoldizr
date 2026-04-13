@@ -9,6 +9,7 @@ import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
 import * as generators from "./generators";
 import templates from "./templates/bundle";
+import { buildBannerLine, buildBorder } from "./utils/banner";
 import type {
     Generator,
     GeneratorDefinition,
@@ -117,18 +118,14 @@ Let's create a new one by answering the questions below.
         `${workspacePath}/workspace.dsl`,
     );
     if (isNewerVersion(pkg.version, wsVersion)) {
-        console.log(
-            chalk.yellow("╭─────────────────────────────────────────╮"),
-        );
-        console.log(
-            chalk.yellow("│  ⚠  Your workspace is outdated!         │"),
-        );
-        console.log(
-            chalk.yellow("│  Run: scfz migrate                      │"),
-        );
-        console.log(
-            chalk.yellow("╰─────────────────────────────────────────╯"),
-        );
+        const line1 = "⚠  Your workspace is outdated!";
+        const line2 = "Run: scfz migrate";
+        const innerWidth = Math.max(line1.length, line2.length);
+        const border = buildBorder(innerWidth);
+        console.log(chalk.yellow(`╭${border}╮`));
+        console.log(buildBannerLine(line1, innerWidth));
+        console.log(buildBannerLine(line2, innerWidth));
+        console.log(chalk.yellow(`╰${border}╯`));
         console.log("");
     }
 
