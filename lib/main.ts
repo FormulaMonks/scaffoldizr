@@ -112,12 +112,11 @@ Let's create a new one by answering the questions below.
     );
 
     const { getWorkspaceVersion } = await import("./utils/workspace-version");
-    const { getPendingMigrations } = await import("./migrations/index");
+    const { isNewerVersion } = await import("./utils/version");
     const wsVersion = await getWorkspaceVersion(
         `${workspacePath}/workspace.dsl`,
     );
-    const pendingMigrations = getPendingMigrations(wsVersion);
-    if (pendingMigrations.length > 0) {
+    if (isNewerVersion(pkg.version, wsVersion)) {
         console.log(
             chalk.yellow("╭─────────────────────────────────────────╮"),
         );

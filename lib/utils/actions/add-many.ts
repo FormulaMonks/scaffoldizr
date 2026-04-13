@@ -62,7 +62,7 @@ export async function addMany<A extends Record<string, unknown>>(
                         filePermissions,
                         path: join(
                             compiledOpts.destination,
-                            path.replace("templates", ""),
+                            path.replace(/^templates\//, ""),
                         ),
                         skipIfExists: compiledOpts.skipIfExists,
                         dryRun,

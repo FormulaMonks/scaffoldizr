@@ -31,16 +31,22 @@ export async function runMigrations(
     const pendingMigrations = getPendingMigrations(currentVersion);
 
     if (pendingMigrations.length === 0) {
-        console.log(chalk.green("Workspace is already up to date."));
+        if (isNewerVersion(targetVersion, currentVersion)) {
+            console.log(chalk.green("No migrations to apply."));
+            await updateWorkspaceVersion(
+                workspaceDslPath,
+                targetVersion,
+                dryRun,
+            );
+        } else {
+            console.log(chalk.green("Workspace is already up to date."));
+        }
         return;
     }
-
-    let anyApplied = false;
 
     for (const migration of pendingMigrations) {
         const result = await migration.apply(workspacePath, destPath, dryRun);
         if (result.applied) {
-            anyApplied = true;
             console.log(`  ${chalk.green("✔")} ${migration.description}`);
             for (const changedFile of result.filesChanged) {
                 console.log(`    - ${changedFile}`);
@@ -52,11 +58,10 @@ export async function runMigrations(
         }
     }
 
-    if (anyApplied && !dryRun) {
+    if (!dryRun) {
         await updateWorkspaceVersion(workspaceDslPath, targetVersion, false);
-    }
-
-    if (dryRun) {
+    } else {
+        await updateWorkspaceVersion(workspaceDslPath, targetVersion, true);
         console.log(
             chalk.yellow("No files written. Run without --dry-run to apply."),
         );
