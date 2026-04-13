@@ -31,6 +31,7 @@ type CLIArguments = {
     dest: string;
     version?: boolean;
     export?: boolean;
+    dryRun?: boolean;
     _?: (string | number)[];
 };
 
@@ -110,6 +111,28 @@ Let's create a new one by answering the questions below.
         ),
     );
 
+    const { getWorkspaceVersion } = await import("./utils/workspace-version");
+    const { getPendingMigrations } = await import("./migrations/index");
+    const wsVersion = await getWorkspaceVersion(
+        `${workspacePath}/workspace.dsl`,
+    );
+    const pendingMigrations = getPendingMigrations(wsVersion);
+    if (pendingMigrations.length > 0) {
+        console.log(
+            chalk.yellow("╭─────────────────────────────────────────╮"),
+        );
+        console.log(
+            chalk.yellow("│  ⚠  Your workspace is outdated!         │"),
+        );
+        console.log(
+            chalk.yellow("│  Run: scfz migrate                      │"),
+        );
+        console.log(
+            chalk.yellow("╰─────────────────────────────────────────╯"),
+        );
+        console.log("");
+    }
+
     const filteredGenerators = Object.values(otherGenerators).filter((g) => {
         if (!workspaceScope) return true;
 
@@ -138,6 +161,16 @@ Let's create a new one by answering the questions below.
         const subcommand = args._?.[0]?.toString();
 
         if (subcommand) {
+            if (subcommand === "migrate") {
+                const { runMigrations } = await import("./migrations/index");
+                await runMigrations(
+                    workspacePath,
+                    destPath,
+                    Boolean(args.dryRun),
+                );
+                process.exit(0);
+            }
+
             const matchedGenerator = filteredGenerators.find(
                 (g) =>
                     g.name.toLowerCase().replace(/\s+/g, "-") ===
@@ -230,6 +263,12 @@ if (["main.ts", "scfz"].includes(basename(entrypoint))) {
             type: "boolean",
             default: false,
             desc: "Use Structurizr unified CLI (Docker) to export the workspace to JSON",
+        })
+        .option("dry-run", {
+            alias: "d",
+            type: "boolean",
+            default: false,
+            desc: "Preview migration changes without applying",
         }).argv;
 
     main(args);

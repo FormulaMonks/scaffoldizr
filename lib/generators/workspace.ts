@@ -1,4 +1,5 @@
 import { $ } from "bun";
+import pkg from "../../package.json";
 import type { AddAction, AddManyAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
@@ -28,6 +29,7 @@ type WorkspaceAnswers = {
     authorEmail: string;
     shouldIncludeTheme: boolean;
     additionalThemes?: string[];
+    scaffoldizrVersion: string;
 };
 
 const generator: GeneratorDefinition<WorkspaceAnswers> = {
@@ -146,6 +148,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
                 ...additionalThemes,
                 mainColor,
             ].filter(Boolean) as string[],
+            scaffoldizrVersion: pkg.version,
         };
     },
     actions: [

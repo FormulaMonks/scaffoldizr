@@ -1,5 +1,5 @@
 import { chmod } from "node:fs/promises";
-import { basename, dirname, relative, resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
 import { compileSource, compileTemplateFile } from "../handlebars";
@@ -12,6 +12,7 @@ export type AddAction<A extends Record<string, unknown>> = BaseAction<A> & {
     path: string;
     filePermissions?: string;
     skipIfExists?: boolean;
+    dryRun?: boolean;
 };
 
 export async function add<A extends Record<string, unknown>>(
@@ -24,6 +25,7 @@ export async function add<A extends Record<string, unknown>>(
         filePermissions = "644",
         when = () => true,
         skip = () => false,
+        dryRun = false,
         ...opts
     } = options;
     const [doWhen, doSkip] = await Promise.all([
@@ -70,13 +72,17 @@ export async function add<A extends Record<string, unknown>>(
         rootPath,
     );
 
-    await write(targetFilePath, template);
-    await chmod(targetFilePath, filePermissions);
-    if (!isGitkeep(targetFilePath)) {
-        await removeGitkeep(dirname(targetFilePath), rootPath);
+    if (!dryRun) {
+        await write(targetFilePath, template);
+        await chmod(targetFilePath, filePermissions);
+        if (!isGitkeep(targetFilePath)) {
+            await removeGitkeep(dirname(targetFilePath), rootPath);
+        }
     }
 
-    console.log(`${chalk.gray("[ADDED]:")} ${relativePath}`);
+    console.log(
+        `${chalk.gray(dryRun ? "[DRY RUN]:" : "[ADDED]:")} ${relativePath}`,
+    );
 
     return true;
 }
