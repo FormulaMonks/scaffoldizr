@@ -21,6 +21,7 @@ import {
     labelElementByName,
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
+import { scfzVersion } from "./utils/scfz-version";
 import { checkUpdate } from "./utils/update";
 import { isNewerVersion } from "./utils/version";
 import {
@@ -80,7 +81,7 @@ Let's create a new one by answering the questions below.
             await exportWorkspace(
                 relative(process.cwd(), destPath) || process.cwd(),
             );
-            const updateMessage = await checkUpdate(pkg.version);
+            const updateMessage = await checkUpdate(scfzVersion);
             if (updateMessage) console.log(updateMessage);
             process.exit(0);
         } catch (err) {
@@ -117,7 +118,7 @@ Let's create a new one by answering the questions below.
     const wsVersion = await getWorkspaceVersion(
         `${workspacePath}/workspace.dsl`,
     );
-    if (isNewerVersion(pkg.version, wsVersion)) {
+    if (isNewerVersion(scfzVersion, wsVersion)) {
         const line1 = "⚠  Your workspace might be outdated.";
         const line2 = "Migrate it using: scfz migrate";
         const line3 =
@@ -195,7 +196,7 @@ Let's create a new one by answering the questions below.
 
             await createGenerator(directGenerator);
             await exportWorkspace(relative(process.cwd(), workspacePath));
-            const updateMessage = await checkUpdate(pkg.version);
+            const updateMessage = await checkUpdate(scfzVersion);
             if (updateMessage) console.log(updateMessage);
             process.exit(0);
         }
@@ -230,7 +231,7 @@ Let's create a new one by answering the questions below.
 
         await createGenerator(generator);
         await exportWorkspace(relative(process.cwd(), workspacePath));
-        const updateMessage = await checkUpdate(pkg.version);
+        const updateMessage = await checkUpdate(scfzVersion);
         if (updateMessage) console.log(updateMessage);
         process.exit(0);
     } catch (err) {
@@ -248,7 +249,7 @@ export default main;
 
 if (["main.ts", "scfz"].includes(basename(entrypoint))) {
     const args: CLIArguments = await yargs(hideBin(process.argv))
-        .version("version", "Show current tool version", pkg.version)
+        .version("version", "Show current tool version", scfzVersion)
         .usage(
             `${capitalCase(
                 pkg.name,
