@@ -114,6 +114,7 @@ jobs:
           $pkg.version = $version
           $pkg | ConvertTo-Json -Depth 100 | Set-Content package.json
       - name: Create binary and release files
+        shell: bash
         env:
           SCFZ_VERSION: ${{ needs.output-version.outputs.version }}
         run: |
