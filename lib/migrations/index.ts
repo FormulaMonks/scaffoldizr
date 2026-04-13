@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import chalk from "chalk";
-import pkg from "../../package.json";
+import { scfzVersion } from "../utils/scfz-version";
 import { isNewerVersion } from "../utils/version";
 import {
     getWorkspaceVersion,
@@ -22,7 +22,7 @@ export async function runMigrations(
 ): Promise<void> {
     const workspaceDslPath = resolve(workspacePath, "workspace.dsl");
     const currentVersion = await getWorkspaceVersion(workspaceDslPath);
-    const targetVersion = pkg.version;
+    const targetVersion = scfzVersion;
 
     console.log(
         `Migrating workspace from v${currentVersion} to v${targetVersion}${dryRun ? " (DRY RUN)" : ""}\n`,

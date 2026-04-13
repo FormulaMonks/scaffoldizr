@@ -1,10 +1,10 @@
 import { $ } from "bun";
-import pkg from "../../package.json";
 import type { AddAction, AddManyAction } from "../utils/actions";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import { checkbox, confirm, input, select } from "../utils/prompts";
 import { stringEmpty } from "../utils/questions/validators";
+import { scfzVersion } from "../utils/scfz-version";
 import {
     SCAFFOLDIZR_GREEN_THEME_URL,
     SCAFFOLDIZR_RED_THEME_URL,
@@ -148,7 +148,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
                 ...additionalThemes,
                 mainColor,
             ].filter(Boolean) as string[],
-            scaffoldizrVersion: pkg.version,
+            scaffoldizrVersion: scfzVersion,
         };
     },
     actions: [

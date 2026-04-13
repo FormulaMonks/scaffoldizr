@@ -114,10 +114,11 @@ jobs:
           $pkg.version = $version
           $pkg | ConvertTo-Json -Depth 100 | Set-Content package.json
       - name: Create binary and release files
+        env:
+          SCFZ_VERSION: ${{ needs.output-version.outputs.version }}
         run: |
-          jq -r '.version' package.json
           mkdir -p ./dist/${{ matrix.name }}
-          bun build ./lib/main.ts --compile --outfile ./dist/${{ matrix.name }}/scfz
+          bun build ./lib/main.ts --compile --define "SCFZ_VERSION=\"$SCFZ_VERSION\"" --outfile ./dist/${{ matrix.name }}/scfz
           ./dist/${{ matrix.name }}/scfz --version
           cd ./dist
           tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}

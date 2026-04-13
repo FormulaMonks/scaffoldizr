@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import chalk from "chalk";
+import { scfzVersion } from "../utils/scfz-version";
 import {
     getWorkspaceVersion,
     updateWorkspaceVersion,
@@ -31,7 +32,7 @@ export const addVersionHeaderMigration: Migration = {
             return { applied: false, description, filesChanged: [] };
         }
 
-        await updateWorkspaceVersion(workspaceDslPath, "0.10.0", dryRun);
+        await updateWorkspaceVersion(workspaceDslPath, scfzVersion, dryRun);
         return { applied: true, description, filesChanged: ["workspace.dsl"] };
     },
 };
