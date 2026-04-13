@@ -120,11 +120,14 @@ Let's create a new one by answering the questions below.
     if (isNewerVersion(pkg.version, wsVersion)) {
         const line1 = "⚠  Your workspace is outdated!";
         const line2 = "Run: scfz migrate";
-        const innerWidth = Math.max(line1.length, line2.length);
+        const line3 = "https://formulamonks.github.io/scaffoldizr/migrate";
+        const innerWidth = Math.max(line1.length, line2.length, line3.length);
         const border = buildBorder(innerWidth);
         console.log(chalk.yellow(`╭${border}╮`));
         console.log(buildBannerLine(line1, innerWidth));
         console.log(buildBannerLine(line2, innerWidth));
+        console.log(buildBannerLine("", innerWidth));
+        console.log(buildBannerLine(line3, innerWidth));
         console.log(chalk.yellow(`╰${border}╯`));
         console.log("");
     }
