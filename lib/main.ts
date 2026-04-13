@@ -22,11 +22,13 @@ import {
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
 import { checkUpdate } from "./utils/update";
+import { isNewerVersion } from "./utils/version";
 import {
     getWorkspaceDslScope,
     getWorkspaceJson,
     getWorkspacePath,
 } from "./utils/workspace";
+import { getWorkspaceVersion } from "./utils/workspace-version";
 
 type CLIArguments = {
     dest: string;
@@ -112,15 +114,14 @@ Let's create a new one by answering the questions below.
         ),
     );
 
-    const { getWorkspaceVersion } = await import("./utils/workspace-version");
-    const { isNewerVersion } = await import("./utils/version");
     const wsVersion = await getWorkspaceVersion(
         `${workspacePath}/workspace.dsl`,
     );
     if (isNewerVersion(pkg.version, wsVersion)) {
-        const line1 = "⚠  Your workspace is outdated!";
-        const line2 = "Run: scfz migrate";
-        const line3 = "https://formulamonks.github.io/scaffoldizr/migrate";
+        const line1 = "⚠  Your workspace might be outdated.";
+        const line2 = "Migrate it using: scfz migrate";
+        const line3 =
+            "Read more: https://formulamonks.github.io/scaffoldizr/migrate";
         const innerWidth = Math.max(line1.length, line2.length, line3.length);
         const border = buildBorder(innerWidth);
         console.log(chalk.yellow(`╭${border}╮`));
