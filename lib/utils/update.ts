@@ -2,6 +2,8 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { file, write } from "bun";
 import chalk from "chalk";
+import { buildBannerLine, buildBorder } from "./banner";
+import { isNewerVersion, stripVersionPrefix } from "./version";
 
 type UpdateCache = {
     latestVersion: string;
@@ -12,55 +14,6 @@ const UPDATE_CACHE_FILE = ".scaffoldizr-update.json";
 const UPDATE_CHECK_WINDOW = 86_400_000;
 const LATEST_RELEASE_URL =
     "https://api.github.com/repos/FormulaMonks/scaffoldizr/releases/latest";
-
-function stripVersionPrefix(version: string): string {
-    return version.replace(/^v/, "");
-}
-
-function versionToSegments(version: string): number[] {
-    return stripVersionPrefix(version)
-        .split(".")
-        .map((versionSegment) => Number(versionSegment));
-}
-
-function isNewerVersion(
-    latestVersion: string,
-    currentVersion: string,
-): boolean {
-    const latestSegments = versionToSegments(latestVersion);
-    const currentSegments = versionToSegments(currentVersion);
-
-    if (
-        latestSegments.some(Number.isNaN) ||
-        currentSegments.some(Number.isNaN)
-    ) {
-        return false;
-    }
-
-    const maxSegmentsLength = Math.max(
-        latestSegments.length,
-        currentSegments.length,
-    );
-
-    for (
-        let segmentIndex = 0;
-        segmentIndex < maxSegmentsLength;
-        segmentIndex++
-    ) {
-        const latestSegment = latestSegments[segmentIndex] ?? 0;
-        const currentSegment = currentSegments[segmentIndex] ?? 0;
-        if (latestSegment !== currentSegment)
-            return latestSegment > currentSegment;
-    }
-
-    return false;
-}
-
-function buildBannerLine(content: string, innerWidth: number): string {
-    return (
-        chalk.yellow("│  ") + content.padEnd(innerWidth) + chalk.yellow("  │")
-    );
-}
 
 function buildUpdateNotification(
     currentVersion: string,
@@ -77,7 +30,7 @@ function buildUpdateNotification(
         curlLine2.length,
         runToUpdateText.length,
     );
-    const horizontalBorder = "─".repeat(innerWidth + 4);
+    const horizontalBorder = buildBorder(innerWidth);
 
     return [
         "",

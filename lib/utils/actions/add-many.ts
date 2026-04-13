@@ -11,6 +11,7 @@ export type AddManyAction<A extends Record<string, unknown>> = BaseAction<A> & {
     templateFiles: string;
     filePermissions?: string;
     skipIfExists?: boolean;
+    dryRun?: boolean;
 };
 
 export async function addMany<A extends Record<string, unknown>>(
@@ -23,6 +24,7 @@ export async function addMany<A extends Record<string, unknown>>(
         when = () => true,
         skip = () => false,
         filePermissions = "644",
+        dryRun = false,
         ...opts
     } = options;
     const [doWhen, doSkip] = await Promise.all([
@@ -60,9 +62,10 @@ export async function addMany<A extends Record<string, unknown>>(
                         filePermissions,
                         path: join(
                             compiledOpts.destination,
-                            path.replace("templates", ""),
+                            path.replace(/^templates\//, ""),
                         ),
                         skipIfExists: compiledOpts.skipIfExists,
+                        dryRun,
                     },
                     answers,
                 ),

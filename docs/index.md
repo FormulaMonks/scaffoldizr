@@ -14,6 +14,7 @@ permalink: /
 
 - [Getting Started]({{ site.baseurl }}/getting-started)
 - [Usage]({{ site.baseurl }}/usage)
+- [Migrate]({{ site.baseurl }}/migrate)
 - [Workspace]({{ site.baseurl }}/workspace)
 - [AI Agent Integration]({{ site.baseurl }}/ai-agent)
 - [Contribute]({{ site.baseurl }}/contribute)

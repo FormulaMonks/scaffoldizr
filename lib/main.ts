@@ -9,6 +9,7 @@ import { hideBin } from "yargs/helpers";
 import pkg from "../package.json";
 import * as generators from "./generators";
 import templates from "./templates/bundle";
+import { buildBannerLine, buildBorder } from "./utils/banner";
 import type {
     Generator,
     GeneratorDefinition,
@@ -21,16 +22,19 @@ import {
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
 import { checkUpdate } from "./utils/update";
+import { isNewerVersion } from "./utils/version";
 import {
     getWorkspaceDslScope,
     getWorkspaceJson,
     getWorkspacePath,
 } from "./utils/workspace";
+import { getWorkspaceVersion } from "./utils/workspace-version";
 
 type CLIArguments = {
     dest: string;
     version?: boolean;
     export?: boolean;
+    dryRun?: boolean;
     _?: (string | number)[];
 };
 
@@ -110,6 +114,25 @@ Let's create a new one by answering the questions below.
         ),
     );
 
+    const wsVersion = await getWorkspaceVersion(
+        `${workspacePath}/workspace.dsl`,
+    );
+    if (isNewerVersion(pkg.version, wsVersion)) {
+        const line1 = "⚠  Your workspace might be outdated.";
+        const line2 = "Migrate it using: scfz migrate";
+        const line3 =
+            "Read more: https://formulamonks.github.io/scaffoldizr/migrate";
+        const innerWidth = Math.max(line1.length, line2.length, line3.length);
+        const border = buildBorder(innerWidth);
+        console.log(chalk.yellow(`╭${border}╮`));
+        console.log(buildBannerLine(line1, innerWidth));
+        console.log(buildBannerLine(line2, innerWidth));
+        console.log(buildBannerLine("", innerWidth));
+        console.log(buildBannerLine(line3, innerWidth));
+        console.log(chalk.yellow(`╰${border}╯`));
+        console.log("");
+    }
+
     const filteredGenerators = Object.values(otherGenerators).filter((g) => {
         if (!workspaceScope) return true;
 
@@ -138,6 +161,16 @@ Let's create a new one by answering the questions below.
         const subcommand = args._?.[0]?.toString();
 
         if (subcommand) {
+            if (subcommand === "migrate") {
+                const { runMigrations } = await import("./migrations/index");
+                await runMigrations(
+                    workspacePath,
+                    destPath,
+                    Boolean(args.dryRun),
+                );
+                process.exit(0);
+            }
+
             const matchedGenerator = filteredGenerators.find(
                 (g) =>
                     g.name.toLowerCase().replace(/\s+/g, "-") ===
@@ -230,6 +263,12 @@ if (["main.ts", "scfz"].includes(basename(entrypoint))) {
             type: "boolean",
             default: false,
             desc: "Use Structurizr unified CLI (Docker) to export the workspace to JSON",
+        })
+        .option("dry-run", {
+            alias: "d",
+            type: "boolean",
+            default: false,
+            desc: "Preview migration changes without applying",
         }).argv;
 
     main(args);
