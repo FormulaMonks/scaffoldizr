@@ -1,3 +1,10 @@
 import pkg from "../../package.json";
 
-export const scfzVersion: string = process.env.SCFZ_VERSION ?? pkg.version;
+const normalizedScfzVersion = process.env.SCFZ_VERSION?.trim().replace(
+    /^v/,
+    "",
+);
+
+export const scfzVersion: string = normalizedScfzVersion
+    ? normalizedScfzVersion
+    : pkg.version;

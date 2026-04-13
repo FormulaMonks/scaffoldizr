@@ -119,7 +119,7 @@ jobs:
           SCFZ_VERSION: ${{ needs.output-version.outputs.version }}
         run: |
           mkdir -p ./dist/${{ matrix.name }}
-          bun build ./lib/main.ts --compile --define "SCFZ_VERSION=\"$SCFZ_VERSION\"" --outfile ./dist/${{ matrix.name }}/scfz
+          bun build ./lib/main.ts --compile --define "process.env.SCFZ_VERSION=\"$SCFZ_VERSION\"" --outfile ./dist/${{ matrix.name }}/scfz
           ./dist/${{ matrix.name }}/scfz --version
           cd ./dist
           tar -czvf scfz-${{ matrix.name }}.tar.gz ./${{ matrix.name }}
