@@ -14,6 +14,7 @@ import { BUILTIN_THEMES, COLOR_THEME_URLS } from "../utils/themes";
 type ThemeAnswers = {
     selectedThemes: string[];
     hasExistingThemesLine: boolean;
+    needsIndent: boolean;
 };
 
 const generator: GeneratorDefinition<ThemeAnswers> = {
@@ -43,7 +44,11 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
                 }
             }
 
-            return { selectedThemes: [], hasExistingThemesLine: false };
+            return {
+                selectedThemes: [],
+                hasExistingThemesLine: false,
+                needsIndent: true,
+            };
         }
 
         if (themeAction === "Add themes") {
@@ -111,6 +116,7 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
             return {
                 selectedThemes: finalSelectedThemes,
                 hasExistingThemesLine,
+                needsIndent: !hasExistingThemesLine,
             };
         }
 
@@ -118,7 +124,11 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
 
         if (currentThemes.length === 0) {
             console.log("No themes configured in workspace.dsl");
-            return { selectedThemes: [], hasExistingThemesLine: false };
+            return {
+                selectedThemes: [],
+                hasExistingThemesLine: false,
+                needsIndent: true,
+            };
         }
 
         const themesToRemove = await checkbox({
@@ -148,10 +158,18 @@ const generator: GeneratorDefinition<ThemeAnswers> = {
             );
             await write(workspaceDslPath, cleaned);
             console.log("All themes removed from workspace.dsl");
-            return { selectedThemes: [], hasExistingThemesLine: false };
+            return {
+                selectedThemes: [],
+                hasExistingThemesLine: false,
+                needsIndent: false,
+            };
         }
 
-        return { selectedThemes, hasExistingThemesLine: true };
+        return {
+            selectedThemes,
+            hasExistingThemesLine: true,
+            needsIndent: false,
+        };
     },
     actions: [
         {
