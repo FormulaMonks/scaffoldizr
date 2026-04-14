@@ -145,6 +145,6 @@ export async function checkUpdate(
         }
     }
 
-    void refreshUpdateCache(cacheFilePath);
+    await refreshUpdateCache(cacheFilePath);
     return null;
 }
