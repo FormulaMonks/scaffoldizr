@@ -55,7 +55,7 @@ Create a Structurizr DSL scaffolding in seconds!
         const workspacePath = getWorkspacePath(path);
         if (!workspacePath) return;
 
-        return $`docker run -t --rm -v ${workspacePath}:/workspace structurizr/structurizr export -w /workspace/workspace.dsl -f json -o /workspace || true`;
+        return $`docker run -t --rm -v ${workspacePath}:/workspace --user $(id -u):$(id -g) structurizr/structurizr export -w /workspace/workspace.dsl -f json -o /workspace || true`;
     };
 
     const { workspaceGenerator, ...otherGenerators } = generators;
