@@ -22,6 +22,8 @@ describe("e2e: Software System", () => {
         const response = await createWorkspaceFromCLI(folder, "softwaresystem");
 
         expect(stripAnsi(response)).toContain("Welcome to Scaffoldizr");
+        expect(stripAnsi(response)).toContain("Test Workspace");
+        expect(stripAnsi(response)).toContain("Test System");
 
         const architectureFolder = await readdir(folder);
         expect(architectureFolder).toContain("architecture");

@@ -22,6 +22,8 @@ describe("e2e: landscape", () => {
         const response = await createWorkspaceFromCLI(folder, "landscape");
 
         expect(stripAnsi(response)).toContain("Welcome to Scaffoldizr");
+        expect(stripAnsi(response)).toContain("Test Workspace");
+        expect(stripAnsi(response)).toContain("Landscape");
 
         const architectureFolder = await readdir(folder);
         expect(architectureFolder).toContain("architecture");
