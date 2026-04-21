@@ -45,6 +45,7 @@ export const SORTED_GENERATOR_AVAILABLE_ELEMENTS: string[] = [
     Elements.ExternalSystem,
     Elements.Container,
     Elements.Component,
+    Elements.DeploymentNode,
     Elements.View,
     Elements.Relationship,
     Elements.Theme,
