@@ -1,11 +1,9 @@
 import { existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
-import { join, resolve } from "node:path";
-import { file } from "bun";
+import { resolve } from "node:path";
 import { kebabCase } from "change-case";
 import { input, select } from "../prompts";
 import type { StructurizrWorkspace } from "../workspace";
-import { getWorkspaceDslScope, getWorkspacePath } from "../workspace";
+import { getWorkspacePath } from "../workspace";
 
 type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
@@ -21,25 +19,6 @@ type WorkspaceElement = (SoftwareElement | DeploymentNode) & {
     systemName?: string;
     containerName?: string;
 };
-
-async function resolveSystemNameFromDsl(
-    workspaceFolder: string,
-): Promise<string | undefined> {
-    try {
-        const systemsFolder = join(workspaceFolder, "systems");
-        const files = await readdir(systemsFolder);
-        const systemFile = files.find(
-            (f) => !f.startsWith("_") && f.endsWith(".dsl"),
-        );
-        if (!systemFile) return undefined;
-
-        const content = await file(join(systemsFolder, systemFile)).text();
-        const match = content.match(/=\s*\S+\s+"([^"]+)"/);
-        return match?.[1];
-    } catch {
-        return undefined;
-    }
-}
 
 // TODO: Test filtering logic
 export function getAllWorkspaceElements(
@@ -97,7 +76,7 @@ export function getAllWorkspaceElements(
     return systemElements as SoftwareElement[];
 }
 
-export async function resolveSystemQuestion(
+export function resolveSystemQuestion(
     workspace: string | StructurizrWorkspace,
     options: { message: string } = {
         message: "Relates to system:",
@@ -135,24 +114,18 @@ export async function resolveSystemQuestion(
     if (!workspacePath) return voidPromise;
 
     const workspaceFolder = getWorkspacePath(workspacePath);
-    if (!workspaceFolder) return voidPromise;
-
-    const scope = await getWorkspaceDslScope(workspaceFolder);
-
-    if (scope === "SoftwareSystem") {
-        const systemName = await resolveSystemNameFromDsl(workspaceFolder);
-        if (systemName) return systemName;
-    }
 
     return input({
         name: "systemName",
         message: options.message,
         validate: async (inputValue) => {
-            const systemPath = resolve(
-                workspaceFolder,
-                `containers/${kebabCase(inputValue)}`,
-            );
-            if (existsSync(systemPath)) return true;
+            if (workspaceFolder) {
+                const systemPath = resolve(
+                    workspaceFolder,
+                    `containers/${kebabCase(inputValue)}`,
+                );
+                if (existsSync(systemPath)) return true;
+            }
 
             throw new Error(
                 `System "${inputValue}" does not exist in the workspace.`,
