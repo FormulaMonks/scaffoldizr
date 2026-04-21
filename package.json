@@ -34,7 +34,7 @@
         "@biomejs/biome": "^2.4.11",
         "@commitlint/cli": "^20.4.1",
         "@commitlint/config-conventional": "^20.4.1",
-        "@inquirer/testing": "^3.3.4",
+        "@inquirer/testing": "^3.3.5",
         "@inquirer/type": "^4.0.5",
         "@types/bun": "^1.3.12",
         "@types/inquirer": "^9.0.7",
