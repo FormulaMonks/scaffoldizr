@@ -28,9 +28,7 @@ async function resolveSystemNameFromDsl(
     try {
         const systemsFolder = join(workspaceFolder, "systems");
         const files = await readdir(systemsFolder);
-        const systemFile = files.find(
-            (f) => !f.startsWith("_") && f.endsWith(".dsl"),
-        );
+        const systemFile = files.find((f) => f.endsWith(".dsl"));
         if (!systemFile) return undefined;
 
         const content = await file(join(systemsFolder, systemFile)).text();
