@@ -9,11 +9,9 @@ export const keypress = {
     SPACE: "\x20",
 };
 
-export type LoopInput = string | number;
-
 export const loop = (
     process: Subprocess<"pipe", "pipe", "inherit">,
-    inputs: LoopInput[],
+    inputs: string[],
 ) => {
     if (!inputs.length) {
         process.stdin.flush();
@@ -25,13 +23,7 @@ export const loop = (
     }
 
     const [input, ...rest] = inputs;
-    if (typeof input === "number") {
-        // A number is a bare pause (ms) with no stdin write. Insert one after
-        // a select-confirm ENTER so @inquirer/core's readline cleanup finishes
-        // before the next input arrives, preventing it from being swallowed by
-        // the outgoing prompt's event listener.
-        setTimeout(() => loop(process, rest), input);
-    } else {
+    if (typeof input === "string") {
         setTimeout(() => {
             process.stdin.write(input);
             loop(process, rest);

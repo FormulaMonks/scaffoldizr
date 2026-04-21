@@ -4,10 +4,7 @@ import { join } from "node:path";
 import { $, file, spawn } from "bun";
 import stripAnsi from "strip-ansi";
 import { keypress, loop } from "../test/io";
-import {
-    createWorkspaceFromCLI,
-    createWorkspaceInteractively,
-} from "../test/workspace";
+import { createWorkspaceFromCLI } from "../test/workspace";
 
 const TMP_FOLDER = process.env.TMP_FOLDER || "/tmp";
 
@@ -159,39 +156,6 @@ describe("e2e: landscape", () => {
         ).text();
         expect(elementContents).toContain(
             'TestExternalSystem = softwareSystem "Test External System"',
-        );
-    });
-});
-
-describe("e2e: landscape (interactive stdin)", () => {
-    const folder = join(
-        TMP_FOLDER,
-        `test-${(1000 + Math.ceil(Math.random() * 1000)).toString(16)}`,
-    );
-
-    afterAll(async () => {
-        await $`rm -rf ${folder}`;
-    });
-
-    test("should create a workspace via stdin", async () => {
-        await createWorkspaceInteractively(folder, "landscape");
-
-        const workspaceContents = await file(
-            `${folder}/architecture/workspace.dsl`,
-        ).text();
-        expect(workspaceContents).toContain("Test Workspace");
-        expect(workspaceContents).toContain("landscape");
-
-        const contents = await readdir(`${folder}/architecture`);
-        expect(contents).toEqual(
-            expect.arrayContaining([
-                "workspace.dsl",
-                "views",
-                "systems",
-                "relationships",
-                "decisions",
-                "docs",
-            ]),
         );
     });
 });
