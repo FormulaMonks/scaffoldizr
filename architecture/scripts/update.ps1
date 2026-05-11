@@ -1,9 +1,10 @@
 $docsLocation = Split-Path -Parent $PSScriptRoot
 
 Write-Host "Updating workspace: $docsLocation"
+$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.03.06" }
 
-if (-not (Test-Path "$docsLocation\workspace.json")) {
-    Write-Error "ERROR: workspace.json file not found in `"$docsLocation`" folder."
+if (-not (Test-Path "$docsLocation\workspace.dsl")) {
+    Write-Error "ERROR: workspace.dsl file not found in `"$docsLocation`" folder."
     exit 1
 }
 
@@ -28,7 +29,7 @@ if ($env:STCTZR_PASSPHRASE) {
     $passphraseArg = @("-passphrase", $env:STCTZR_PASSPHRASE)
 }
 
-docker run -t --rm -v "${docsLocation}:/usr/local/structurizr" structurizr/structurizr push `
+docker run --rm -v "${docsLocation}:/usr/local/structurizr" "structurizr/structurizr:${version}" push `
     -url $env:STCTZR_URL `
     -id $env:STCTZR_WORKSPACE_ID `
     -key $env:STCTZR_WORKSPACE_KEY `
