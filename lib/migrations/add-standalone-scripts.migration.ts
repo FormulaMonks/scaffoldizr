@@ -4,7 +4,7 @@ import { file, write } from "bun";
 import chalk from "chalk";
 import templates from "../templates/bundle";
 import Handlebars from "../utils/handlebars";
-import { structurizrVersion } from "../utils/structurizr-version";
+import { STRUCTURIZR_LOCKED_VERSION } from "../utils/structurizr-version";
 import type { Migration, MigrationResult } from "./types";
 
 const description =
@@ -80,7 +80,7 @@ export const addStandaloneScriptsMigration: Migration = {
             }
             const rawContent = await file(templatePath).text();
             const content = Handlebars.compile(rawContent)({
-                structurizrVersion,
+                structurizrVersion: STRUCTURIZR_LOCKED_VERSION,
             });
             const absolutePath = resolve(workspacePath, entry.relativePath);
 

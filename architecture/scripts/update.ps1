@@ -33,6 +33,6 @@ docker run --rm -v "${docsLocation}:/usr/local/structurizr" "structurizr/structu
     -url $env:STCTZR_URL `
     -id $env:STCTZR_WORKSPACE_ID `
     -key $env:STCTZR_WORKSPACE_KEY `
-    -w /usr/local/structurizr/workspace.json `
+    -w /usr/local/structurizr/workspace.dsl `
     -merge false `
     @passphraseArg

@@ -22,4 +22,4 @@ if [ -n "${STCTZR_PASSPHRASE}" ]; then
     passphrase_args+=(-passphrase "${STCTZR_PASSPHRASE}")
 fi
 
-docker run --rm -v "${docs_location}:/usr/local/structurizr" "structurizr/structurizr:${version}" push -url "$STCTZR_URL" -id "$STCTZR_WORKSPACE_ID" -key "$STCTZR_WORKSPACE_KEY" -w /usr/local/structurizr/workspace.json -merge false "${passphrase_args[@]}"
+docker run --rm -v "${docs_location}:/usr/local/structurizr" "structurizr/structurizr:${version}" push -url "$STCTZR_URL" -id "$STCTZR_WORKSPACE_ID" -key "$STCTZR_WORKSPACE_KEY" -w /usr/local/structurizr/workspace.dsl -merge false "${passphrase_args[@]}"
