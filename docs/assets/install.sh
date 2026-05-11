@@ -57,7 +57,7 @@ download_file() {
 
 install_tool() {
 	# download the tarball
-	version="0.11.4"
+	version="0.12.0"
     repo="FormulaMonks/scaffoldizr"
 	os="$(get_os)"
 	arch="$(get_arch)"
