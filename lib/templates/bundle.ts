@@ -11,6 +11,10 @@ import environmentsDeployment from "./environments/deployment.hbs";
 import include from "./include.hbs";
 import relationshipsMultiple from "./relationships/multiple.hbs";
 import relationshipsMultipleComponent from "./relationships/multiple-component.hbs";
+import scriptsExportPs1 from "./scripts/export.ps1" with { type: "file" };
+import scriptsExport from "./scripts/export.sh" with { type: "file" };
+import scriptsInspectPs1 from "./scripts/inspect.ps1" with { type: "file" };
+import scriptsInspect from "./scripts/inspect.sh" with { type: "file" };
 import scriptsRunPs1 from "./scripts/run.ps1" with { type: "file" };
 import scriptsRun from "./scripts/run.sh" with { type: "file" };
 import scriptsUpdatePs1 from "./scripts/update.ps1" with { type: "file" };
@@ -52,6 +56,10 @@ const templatesMap = new Map([
     ["templates/scripts/run.ps1", scriptsRunPs1],
     ["templates/scripts/update.sh", scriptsUpdate],
     ["templates/scripts/update.ps1", scriptsUpdatePs1],
+    ["templates/scripts/export.sh", scriptsExport],
+    ["templates/scripts/export.ps1", scriptsExportPs1],
+    ["templates/scripts/inspect.sh", scriptsInspect],
+    ["templates/scripts/inspect.ps1", scriptsInspectPs1],
     ["templates/system/external.hbs", systemExternal],
     ["templates/system/person.hbs", systemPerson],
     ["templates/system/system.hbs", systemSystem],
