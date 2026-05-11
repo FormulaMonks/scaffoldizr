@@ -3,8 +3,8 @@ $docsLocation = Split-Path -Parent $PSScriptRoot
 Write-Host "Updating workspace: $docsLocation"
 $version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "{{structurizrVersion}}" }
 
-if (-not (Test-Path "$docsLocation\workspace.dsl")) {
-    Write-Error "ERROR: workspace.dsl file not found in `"$docsLocation`" folder."
+if (-not (Test-Path "$docsLocation\workspace.json")) {
+    Write-Error "ERROR: workspace.json file not found in `"$docsLocation`" folder."
     exit 1
 }
 
@@ -33,6 +33,6 @@ docker run --rm -v "${docsLocation}:/usr/local/structurizr" "structurizr/structu
     -url $env:STCTZR_URL `
     -id $env:STCTZR_WORKSPACE_ID `
     -key $env:STCTZR_WORKSPACE_KEY `
-    -w /usr/local/structurizr/workspace.dsl `
+    -w /usr/local/structurizr/workspace.json `
     -merge false `
     @passphraseArg
