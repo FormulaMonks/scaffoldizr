@@ -22,6 +22,7 @@ import {
     SORTED_GENERATOR_AVAILABLE_ELEMENTS,
 } from "./utils/labels";
 import { scfzVersion } from "./utils/scfz-version";
+import { structurizrVersion } from "./utils/structurizr-version";
 import { checkUpdate } from "./utils/update";
 import { isNewerVersion } from "./utils/version";
 import {
@@ -55,7 +56,7 @@ Create a Structurizr DSL scaffolding in seconds!
         const workspacePath = getWorkspacePath(path);
         if (!workspacePath) return;
 
-        return $`docker run -t --rm -v ${workspacePath}:/usr/local/structurizr --user $(id -u):$(id -g) structurizr/structurizr export -w /usr/local/structurizr/workspace.dsl -f json -o /usr/local/structurizr || true`;
+        return $`docker run --rm -v ${workspacePath}:/usr/local/structurizr --user $(id -u):$(id -g) structurizr/structurizr:${structurizrVersion} export -w /usr/local/structurizr/workspace.dsl -f json -o /usr/local/structurizr || true`;
     };
 
     const { workspaceGenerator, ...otherGenerators } = generators;
