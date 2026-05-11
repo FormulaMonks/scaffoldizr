@@ -2,10 +2,12 @@
 
 docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
 port=${1:-8080}
+version="${STCTZR_VERSION:-}"
+if [ -z "$version" ]; then version="{{structurizrVersion}}"; fi
 
-# Check if workspace.json file exists
-if [ ! -e "${docs_location}/workspace.json" ]; then
-    echo "ERROR: workspace.json file not found in \"${docs_location}\" folder.";
+# Check if workspace.dsl file exists
+if [ ! -e "${docs_location}/workspace.dsl" ]; then
+    echo "ERROR: workspace.dsl file not found in \"${docs_location}\" folder.";
     exit 1;
 fi
 
@@ -22,5 +24,5 @@ trap cleanup SIGTERM SIGINT
 
 echo "Running workspace: ${docs_location} on port ${port}"
 
-docker run -t --rm --name "${container_name}" -p "${port}":8080 -v "${docs_location}:/usr/local/structurizr" structurizr/structurizr local &
+docker run --rm --name "${container_name}" -p "${port}":8080 -v "${docs_location}:/usr/local/structurizr" "structurizr/structurizr:${version}" local &
 wait $!

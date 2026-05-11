@@ -1,0 +1,9 @@
+#!/bin/bash
+
+docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
+version="${STCTZR_VERSION:-}"
+if [ -z "$version" ]; then version="2026.03.06"; fi
+
+echo "Inspecting workspace: ${docs_location} (structurizr:${version})"
+
+docker run --rm -v "${docs_location}:/usr/local/structurizr" "structurizr/structurizr:${version}" inspect -w /usr/local/structurizr/workspace.dsl

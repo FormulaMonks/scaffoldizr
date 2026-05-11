@@ -5,6 +5,7 @@ import { Elements } from "../utils/labels";
 import { checkbox, confirm, input, select } from "../utils/prompts";
 import { stringEmpty } from "../utils/questions/validators";
 import { scfzVersion } from "../utils/scfz-version";
+import { structurizrVersion } from "../utils/structurizr-version";
 import {
     SCAFFOLDIZR_GREEN_THEME_URL,
     SCAFFOLDIZR_RED_THEME_URL,
@@ -30,6 +31,7 @@ type WorkspaceAnswers = {
     shouldIncludeTheme: boolean;
     additionalThemes?: string[];
     scaffoldizrVersion: string;
+    structurizrVersion: string;
 };
 
 const generator: GeneratorDefinition<WorkspaceAnswers> = {
@@ -149,6 +151,7 @@ const generator: GeneratorDefinition<WorkspaceAnswers> = {
                 mainColor,
             ].filter(Boolean) as string[],
             scaffoldizrVersion: scfzVersion,
+            structurizrVersion,
         };
     },
     actions: [
