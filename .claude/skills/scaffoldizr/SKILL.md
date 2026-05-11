@@ -71,7 +71,7 @@ Each element file documents the specific flags and CLI command for that generato
 
 - All the relevant documentation files are contained within the `./architecture` folder.
 - The main entrypoint is the `./architecture/workspace.dsl` file.
-- The file which Structurizr CLI and Structurizr Lite use to "compile" diagrams is `./architecture/workspace.json`
+- `./architecture/workspace.json` is a **compiled output** generated from `workspace.dsl`. **Never read or modify it directly** — it will be overwritten the next time Structurizr runs. To regenerate it, run `./architecture/scripts/export.sh` (or `export.ps1` on Windows).
 
 ## Folder contents
 
@@ -170,9 +170,12 @@ Refer to [CLI commands](./extra/CLI.md) documentation
 
 ## Build process
 
-- The `./architecture/workspace.dsl` is the source file that compiles to `./architecture/workspace.json`
-- The compiled JSON file contains the complete model including elements, relationships, views, and styling. ⚠️ **DO NOT MODIFY `./architecture/workspace.json` DIRECTLY** ⚠️.
-- Use `./architecture/scripts/run.sh` to start Structurizr Lite and visualize diagrams at `http://localhost:8080`
+- The `./architecture/workspace.dsl` is the **only source of truth**. All architecture changes must be made to `.dsl` files — never to `workspace.json`.
+- `./architecture/workspace.json` is a compiled artefact. Structurizr overwrites it on every run. ⚠️ **DO NOT READ OR MODIFY `./architecture/workspace.json` DIRECTLY** ⚠️. Any manual edits will be silently lost.
+- To regenerate `workspace.json` from the DSL source, run the export script:
+  - **Linux/macOS**: `./architecture/scripts/export.sh`
+  - **Windows**: `./architecture/scripts/export.ps1`
+- Use `./architecture/scripts/run.sh` (or `run.ps1`) to start Structurizr Lite and visualize diagrams at `http://localhost:8080`
 
 ## Error Troubleshooting
 
