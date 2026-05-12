@@ -73,7 +73,9 @@ async function readUpdateCache(
     }
 }
 
-async function refreshUpdateCache(cacheFilePath: string): Promise<void> {
+async function refreshUpdateCache(
+    cacheFilePath: string,
+): Promise<string | null> {
     try {
         const latestReleaseResponse = await fetch(LATEST_RELEASE_URL, {
             headers: {
@@ -85,7 +87,7 @@ async function refreshUpdateCache(cacheFilePath: string): Promise<void> {
         });
 
         if (!latestReleaseResponse.ok) {
-            return;
+            return null;
         }
 
         const releasePayload = (await latestReleaseResponse.json()) as {
@@ -93,16 +95,41 @@ async function refreshUpdateCache(cacheFilePath: string): Promise<void> {
         };
 
         if (typeof releasePayload.tag_name !== "string") {
-            return;
+            return null;
         }
 
+        const version = stripVersionPrefix(releasePayload.tag_name);
         const cachePayload: UpdateCache = {
-            latestVersion: stripVersionPrefix(releasePayload.tag_name),
+            latestVersion: version,
             checkedAt: Date.now(),
         };
 
         await write(cacheFilePath, JSON.stringify(cachePayload));
-    } catch {}
+        return version;
+    } catch {
+        return null;
+    }
+}
+
+export async function fetchLatestVersion(
+    force = false,
+): Promise<string | null> {
+    const cacheFilePath = join(homedir(), UPDATE_CACHE_FILE);
+
+    if (!force) {
+        const cachedUpdate = await readUpdateCache(cacheFilePath);
+        if (cachedUpdate) {
+            const cacheIsFresh =
+                Date.now() - cachedUpdate.checkedAt < UPDATE_CHECK_WINDOW;
+            if (cacheIsFresh) {
+                return stripVersionPrefix(cachedUpdate.latestVersion);
+            }
+        }
+        void refreshUpdateCache(cacheFilePath);
+        return null;
+    }
+
+    return refreshUpdateCache(cacheFilePath);
 }
 
 export async function checkUpdate(
@@ -116,35 +143,21 @@ export async function checkUpdate(
         return null;
     }
 
-    const cacheFilePath = join(homedir(), UPDATE_CACHE_FILE);
-    const cachedUpdate = await readUpdateCache(cacheFilePath);
+    const latestVersion = await fetchLatestVersion(false);
 
-    if (cachedUpdate) {
-        const cacheIsFresh =
-            Date.now() - cachedUpdate.checkedAt < UPDATE_CHECK_WINDOW;
-
-        if (cacheIsFresh) {
-            const normalizedCurrentVersion = stripVersionPrefix(currentVersion);
-            const normalizedLatestVersion = stripVersionPrefix(
-                cachedUpdate.latestVersion,
-            );
-
-            if (
-                isNewerVersion(
-                    normalizedLatestVersion,
-                    normalizedCurrentVersion,
-                )
-            ) {
-                return buildUpdateNotification(
-                    normalizedCurrentVersion,
-                    normalizedLatestVersion,
-                );
-            }
-
-            return null;
-        }
+    if (!latestVersion) {
+        return null;
     }
 
-    await refreshUpdateCache(cacheFilePath);
+    const normalizedCurrentVersion = stripVersionPrefix(currentVersion);
+    const normalizedLatestVersion = stripVersionPrefix(latestVersion);
+
+    if (isNewerVersion(normalizedLatestVersion, normalizedCurrentVersion)) {
+        return buildUpdateNotification(
+            normalizedCurrentVersion,
+            normalizedLatestVersion,
+        );
+    }
+
     return null;
 }
