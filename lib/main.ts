@@ -48,6 +48,12 @@ Create a Structurizr DSL scaffolding in seconds!
     `),
     );
 
+    if (args._?.[0]?.toString() === "update") {
+        const { runUpdate } = await import("./commands/update");
+        await runUpdate(scfzVersion);
+        process.exit(0);
+    }
+
     const destPath = resolve(process.cwd(), args.dest);
     const workspacePath = getWorkspacePath(destPath);
 
