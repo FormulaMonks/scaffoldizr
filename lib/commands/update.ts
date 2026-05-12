@@ -1,6 +1,6 @@
 import { $ } from "bun";
 import chalk from "chalk";
-import { fetchLatestVersion } from "../utils/update";
+import { fetchLatestVersion, INSTALL_SCRIPT_URL } from "../utils/update";
 import { isNewerVersion, stripVersionPrefix } from "../utils/version";
 
 export async function runUpdate(currentVersion: string): Promise<void> {
@@ -23,7 +23,7 @@ export async function runUpdate(currentVersion: string): Promise<void> {
     if (!isNewerVersion(normalizedLatestVersion, normalizedCurrentVersion)) {
         console.log(
             chalk.green(
-                `scfz is already up to date (v${normalizedCurrentVersion}).`,
+                `scfz is already up to date (${normalizedCurrentVersion}).`,
             ),
         );
         return;
@@ -41,10 +41,8 @@ export async function runUpdate(currentVersion: string): Promise<void> {
     }
 
     try {
-        await $`curl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh`;
-        console.log(
-            chalk.green(`scfz updated to v${normalizedLatestVersion}.`),
-        );
+        await $`curl -s ${INSTALL_SCRIPT_URL} | sh`;
+        console.log(chalk.green(`scfz updated to ${normalizedLatestVersion}.`));
     } catch {
         console.error(chalk.red("[ERROR]: Failed to update scfz."));
         process.exit(1);

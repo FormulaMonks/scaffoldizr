@@ -15,12 +15,15 @@ const UPDATE_CHECK_WINDOW = 86_400_000;
 const LATEST_RELEASE_URL =
     "https://api.github.com/repos/FormulaMonks/scaffoldizr/releases/latest";
 
+export const INSTALL_SCRIPT_URL =
+    "https://formulamonks.github.io/scaffoldizr/assets/install.sh";
+
 function buildUpdateNotification(
     currentVersion: string,
     latestVersion: string,
 ): string {
     const versionText = `Update available: ${currentVersion} → ${latestVersion}`;
-    const curlLine1 = "curl -s https://formulamonks.github.io/";
+    const curlLine1 = `curl -s ${INSTALL_SCRIPT_URL}`;
     const curlLine2 = "scaffoldizr/assets/install.sh | sh";
     const runToUpdateText = "Run to update:";
 

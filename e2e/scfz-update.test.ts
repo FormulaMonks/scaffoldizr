@@ -3,6 +3,7 @@ import { spawn } from "bun";
 
 describe("e2e: scfz update", () => {
     test("should report up-to-date when versions match", async () => {
+        expect(process.env.TESTED_VERSION).toBeDefined();
         const currentVersion = process.env.TESTED_VERSION as string;
         const proc = spawn(["dist/scfz", "update"], {
             env: {
