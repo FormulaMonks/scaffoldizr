@@ -122,10 +122,10 @@ export async function fetchLatestVersion(
             const cacheIsFresh =
                 Date.now() - cachedUpdate.checkedAt < UPDATE_CHECK_WINDOW;
             if (cacheIsFresh) {
-                return cachedUpdate.latestVersion;
+                return stripVersionPrefix(cachedUpdate.latestVersion);
             }
         }
-        await refreshUpdateCache(cacheFilePath);
+        void refreshUpdateCache(cacheFilePath);
         return null;
     }
 

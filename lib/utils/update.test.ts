@@ -226,6 +226,14 @@ describe("fetchLatestVersion", () => {
             expect(version).toBe("1.5.0");
         });
 
+        it("normalizes cached version by stripping v prefix", async () => {
+            await writeUpdateCacheFile("v1.5.0");
+
+            const version = await fetchLatestVersion();
+
+            expect(version).toBe("1.5.0");
+        });
+
         it("returns null when cache is stale", async () => {
             await writeUpdateCacheFile(
                 "1.5.0",
