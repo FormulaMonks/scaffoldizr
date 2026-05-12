@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import * as operatingSystem from "node:os";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { checkUpdate } from "./update";
+import { checkUpdate, fetchLatestVersion } from "./update";
 
 const UPDATE_CACHE_FILE = ".scaffoldizr-update.json";
 const UPDATE_CHECK_WINDOW = 86_400_000;
@@ -192,6 +192,114 @@ describe("checkUpdate", () => {
             const updateMessage = await checkUpdate("0.9.3");
 
             expect(updateMessage).toBeNull();
+        });
+    });
+});
+
+describe("fetchLatestVersion", () => {
+    beforeEach(async () => {
+        temporaryHomeDirectory = await mkdtemp(
+            join(tmpdir(), "scaffoldizr-update-test-"),
+        );
+        originalFetch = globalThis.fetch;
+        homedirSpy = spyOn(operatingSystem, "homedir").mockReturnValue(
+            temporaryHomeDirectory,
+        );
+        globalThis.fetch = ((..._args: Parameters<typeof globalThis.fetch>) =>
+            Promise.resolve(
+                new Response(null, { status: 500 }),
+            )) as unknown as typeof globalThis.fetch;
+    });
+
+    afterEach(async () => {
+        globalThis.fetch = originalFetch;
+        homedirSpy.mockRestore();
+        await rm(temporaryHomeDirectory, { recursive: true, force: true });
+    });
+
+    describe("force=false (default)", () => {
+        it("returns cached version when cache is fresh", async () => {
+            await writeUpdateCacheFile("1.5.0");
+
+            const version = await fetchLatestVersion();
+
+            expect(version).toBe("1.5.0");
+        });
+
+        it("returns null when cache is stale", async () => {
+            await writeUpdateCacheFile(
+                "1.5.0",
+                Date.now() - UPDATE_CHECK_WINDOW - 3_600_000,
+            );
+
+            const version = await fetchLatestVersion();
+
+            expect(version).toBeNull();
+        });
+
+        it("returns null when cache is missing", async () => {
+            const version = await fetchLatestVersion();
+
+            expect(version).toBeNull();
+        });
+    });
+
+    describe("force=true", () => {
+        it("returns version from successful GitHub fetch", async () => {
+            globalThis.fetch = ((
+                ..._args: Parameters<typeof globalThis.fetch>
+            ) =>
+                Promise.resolve(
+                    new Response(JSON.stringify({ tag_name: "v2.5.0" }), {
+                        status: 200,
+                    }),
+                )) as unknown as typeof globalThis.fetch;
+
+            const version = await fetchLatestVersion(true);
+
+            expect(version).toBe("2.5.0");
+        });
+
+        it("writes fetched version to cache file", async () => {
+            globalThis.fetch = ((
+                ..._args: Parameters<typeof globalThis.fetch>
+            ) =>
+                Promise.resolve(
+                    new Response(JSON.stringify({ tag_name: "v2.5.0" }), {
+                        status: 200,
+                    }),
+                )) as unknown as typeof globalThis.fetch;
+
+            await fetchLatestVersion(true);
+
+            const cacheContent = await readFile(
+                join(temporaryHomeDirectory, UPDATE_CACHE_FILE),
+                "utf8",
+            );
+            const cache = JSON.parse(cacheContent) as { latestVersion: string };
+            expect(cache.latestVersion).toBe("2.5.0");
+        });
+
+        it("returns null when GitHub fetch fails", async () => {
+            const version = await fetchLatestVersion(true);
+
+            expect(version).toBeNull();
+        });
+
+        it("ignores fresh cache and fetches from GitHub", async () => {
+            await writeUpdateCacheFile("1.0.0");
+            globalThis.fetch = ((
+                ..._args: Parameters<typeof globalThis.fetch>
+            ) =>
+                Promise.resolve(
+                    new Response(JSON.stringify({ tag_name: "v2.5.0" }), {
+                        status: 200,
+                    }),
+                )) as unknown as typeof globalThis.fetch;
+
+            const version = await fetchLatestVersion(true);
+
+            expect(version).toBe("2.5.0");
         });
     });
 });
