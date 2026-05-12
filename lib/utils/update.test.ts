@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import * as operatingSystem from "node:os";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { checkUpdate, fetchLatestVersion } from "./update";
+import { checkUpdate, fetchLatestVersion, INSTALL_SCRIPT_URL } from "./update";
 
 const UPDATE_CACHE_FILE = ".scaffoldizr-update.json";
 const UPDATE_CHECK_WINDOW = 86_400_000;
@@ -192,6 +192,60 @@ describe("checkUpdate", () => {
             const updateMessage = await checkUpdate("0.9.3");
 
             expect(updateMessage).toBeNull();
+        });
+    });
+
+    describe("banner content", () => {
+        const stripAnsi = (text: string) =>
+            text.replace(
+                new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, "g"),
+                "",
+            );
+
+        it("includes the full install script URL in the notification", async () => {
+            await writeUpdateCacheFile("2.0.0");
+
+            const updateMessage = await checkUpdate("1.0.0");
+
+            expect(updateMessage).toContain(`curl -s ${INSTALL_SCRIPT_URL}`);
+        });
+
+        it("renders the curl command and pipe operator on separate lines", async () => {
+            await writeUpdateCacheFile("2.0.0");
+
+            const updateMessage = await checkUpdate("1.0.0");
+
+            expect(updateMessage).toBeString();
+            const plainLines = stripAnsi(updateMessage as string)
+                .split("\n")
+                .map((line) => line.trim())
+                .filter(Boolean);
+
+            const curlLineIndex = plainLines.findIndex((line) =>
+                line.includes(`curl -s ${INSTALL_SCRIPT_URL}`),
+            );
+            const pipeLineIndex = plainLines.findIndex((line) =>
+                line.includes("| sh"),
+            );
+
+            expect(curlLineIndex).toBeGreaterThanOrEqual(0);
+            expect(pipeLineIndex).toBeGreaterThanOrEqual(0);
+            expect(plainLines[curlLineIndex]).not.toContain("| sh");
+            expect(pipeLineIndex).not.toBe(curlLineIndex);
+        });
+
+        it("does not duplicate the install script path in the banner", async () => {
+            await writeUpdateCacheFile("2.0.0");
+
+            const updateMessage = await checkUpdate("1.0.0");
+
+            expect(updateMessage).toBeString();
+            const plainText = stripAnsi(updateMessage as string);
+            const pathMatches = plainText.match(
+                /formulamonks\.github\.io\/scaffoldizr\/assets\/install\.sh/g,
+            );
+
+            expect(pathMatches).toHaveLength(1);
         });
     });
 });
