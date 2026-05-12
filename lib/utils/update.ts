@@ -24,7 +24,7 @@ function buildUpdateNotification(
 ): string {
     const versionText = `Update available: ${currentVersion} → ${latestVersion}`;
     const curlLine1 = `curl -s ${INSTALL_SCRIPT_URL}`;
-    const curlLine2 = "scaffoldizr/assets/install.sh | sh";
+    const curlLine2 = "| sh";
     const runToUpdateText = "Run to update:";
 
     const innerWidth = Math.max(
