@@ -28,5 +28,10 @@ Remove-Item -Force -ErrorAction SilentlyContinue -Path $installPath
 
 Invoke-WebRequest -Uri $downloadUrl -OutFile $installPath
 
+# TODO: Validate checksum
+# $expectedHash = (Invoke-WebRequest -Uri "$downloadUrl.sha256").Content.Trim()
+# $actualHash = (Get-FileHash -Path $installPath -Algorithm SHA256).Hash
+# if ($actualHash -ne $expectedHash) { Write-Err "Checksum validation failed. Aborting." }
+
 Write-Info "Scaffoldizr: installed successfully to $installPath"
 Write-Host "Make sure that ""$installDir"" is in your PATH" -ForegroundColor Yellow
