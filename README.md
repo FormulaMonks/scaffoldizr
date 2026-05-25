@@ -6,10 +6,20 @@ This is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.
 
 ## Installation
 
+### macOS / Linux
+
 Run in your terminal:
 
 ```bash
 curl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh
+```
+
+### Windows
+
+Run in PowerShell:
+
+```powershell
+irm https://formulamonks.github.io/scaffoldizr/assets/install.ps1 | iex
 ```
 
 Then, verify the tool is correctly installed:
