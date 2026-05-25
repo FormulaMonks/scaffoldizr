@@ -43,7 +43,7 @@
         "czg": "^1.13.1",
         "generate-changelog": "^1.8.0",
         "husky": "^9.1.7",
-        "lint-staged": "^17.0.4",
+        "lint-staged": "^17.0.5",
         "strip-ansi": "^7.1.0"
     },
     "overrides": {
