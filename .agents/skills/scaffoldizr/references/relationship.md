@@ -37,4 +37,4 @@ Relationship archetypes can be defined, as long as the archetype exists. Check [
 ## References
 
 - Check [relationship documentation](https://docs.structurizr.com/dsl/language#relationship) for further details.
-- Check [examples of relationships](../examples/relationships) for examples of relationship files.
+- Check [examples of relationships](../assets/relationships) for examples of relationship files.

@@ -39,4 +39,4 @@ scfz person \
 
 ## References
 
-- Check [examples of people](../examples/people) for examples of person files.
+- Check [examples of people](../assets/people) for examples of person files.

@@ -51,4 +51,4 @@ scfz archetype \
 
 ## References
 
-Check [examples of archetypes](../examples/archetypes) for examples of archetype files.
+Check [examples of archetypes](../assets/archetypes) for examples of archetype files.

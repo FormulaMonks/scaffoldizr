@@ -28,7 +28,7 @@ Each workspace can contain one or more views, defined with the views block. Chec
   
     For all options except deployment views, `{view-folder}` is `views`. For deployment views, `{view-folder}` is `environments`.
 
-3. Populate the file with the relevant DSL code to define the view. Find examples of different view types in the [examples of views](../examples/views) folder.
+3. Populate the file with the relevant DSL code to define the view. Find examples of different view types in the [examples of views](../assets/views) folder.
 
     - For views that depend on an specific element (`systemContext`, `container`, `component`), make sure that the element exists in the workspace before creating the view. Also make sure to reference the element correctly in the view definition.
     - By default and for readabiility, include `autolayout lr` to arrange the elements from left to right.
@@ -78,4 +78,4 @@ The `--viewType` flag accepts `landscape` or `deployment`. For other view types 
 ## References
 
 - Check the [documentation](https://docs.structurizr.com/dsl/language#views) for further details.
-- Check [examples of views](../examples/views) for examples of software system files.
+- Check [examples of views](../assets/views) for examples of view files.

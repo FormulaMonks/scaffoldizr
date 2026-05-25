@@ -1,7 +1,9 @@
 ---
 name: scaffoldizr
-description: Creates Structurizr elements and workspace based on Scaffoldizr opinionated convention
+description: Creates Structurizr elements and workspace based on Scaffoldizr opinionated convention. Use when the user mentions Architecture Documentation Updates, Architectural Decision Records, C4 diagrams, or any Structurizr-related topic.
 license: MIT
+compatibility: Requires Structurizr and Scaffoldizr (scfz) CLI Tool. Check `FormulaMonks/scaffoldizr` GitHub repository for installation instructions.
+allowed-tools: Bash(scfz:*)
 metadata:
   author: Andrés Zorro <andres.zorro@monks.com>
   version: 0.13.0
@@ -9,7 +11,7 @@ metadata:
 
 # Structurizr Workspace - Created with Scaffoldizr
 
-This skill enables Copilot to generate and interact with a [Structurizr workspace](https://docs.structurizr.com/workspaces), generated with [Scaffoldizr CLI tool](https://formulamonks.github.io/scaffoldizr/)
+This skill enables agents to generate and interact with a [Structurizr workspace](https://docs.structurizr.com/workspaces), generated with [Scaffoldizr CLI tool](https://formulamonks.github.io/scaffoldizr/)
 
 ## When to use this skill
 
@@ -34,6 +36,22 @@ This skill enables Copilot to generate and interact with a [Structurizr workspac
   ```
 
   Scaffoldizr will create the `./architecture` folder with all the relevant files.
+
+NOTE: if the `scfz` command is not available, Scaffoldizr CLI tool is not installed. Run the appropriate installation script for the current environment:
+
+- **macOS / Linux** — run in terminal:
+
+  ```bash
+  curl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh
+  ```
+
+- **Windows** — run in PowerShell:
+
+  ```powershell
+  irm https://formulamonks.github.io/scaffoldizr/assets/install.ps1 | iex
+  ```
+
+Refer to the [full installation instructions](https://formulamonks.github.io/scaffoldizr/getting-started) for more details.
 
 ## Non-interactive CLI usage (AI Agent Mode)
 
@@ -118,35 +136,35 @@ workspace {
 
 ### Archetype
 
-Refer to [archetype](./elements/archetype.md) documentation
+Refer to [archetype](./references/archetype.md) documentation
 
 ### Constant
 
-Refer to [constant](./elements/constant.md) documentation
+Refer to [constant](./references/constant.md) documentation
 
 ### Software System
 
-Refer to [software system](./elements/softwareSystem.md) documentation
+Refer to [software system](./references/softwareSystem.md) documentation
 
 ### External System
 
-Refer to [external system](./elements/externalSystem.md) documentation
+Refer to [external system](./references/externalSystem.md) documentation
 
 ### Container
 
-Refer to [container](./elements/container.md) documentation
+Refer to [container](./references/container.md) documentation
 
 ### Component
 
-Refer to [component](./elements/component.md) documentation
+Refer to [component](./references/component.md) documentation
 
 ### Relationship
 
-Refer to [relationship](./elements/relationship.md) documentation
+Refer to [relationship](./references/relationship.md) documentation
 
 ### View
 
-Refer to [view](./elements/view.md)
+Refer to [view](./references/view.md)
 
 ### Theme
 
