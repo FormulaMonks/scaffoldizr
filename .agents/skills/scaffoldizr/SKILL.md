@@ -37,6 +37,22 @@ This skill enables agents to generate and interact with a [Structurizr workspace
 
   Scaffoldizr will create the `./architecture` folder with all the relevant files.
 
+NOTE: if the `scfz` command is not available, Scaffoldizr CLI tool is not installed. Run the appropriate installation script for the current environment:
+
+- **macOS / Linux** — run in terminal:
+
+  ```bash
+  curl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh
+  ```
+
+- **Windows** — run in PowerShell:
+
+  ```powershell
+  irm https://formulamonks.github.io/scaffoldizr/assets/install.ps1 | iex
+  ```
+
+Refer to the [full installation instructions](https://formulamonks.github.io/scaffoldizr/getting-started) for more details.
+
 ## Non-interactive CLI usage (AI Agent Mode)
 
 Scaffoldizr supports non-interactive execution by specifying a generator as a subcommand and passing all prompt answers as CLI flags. **This is the preferred approach for AI agents** — it avoids interactive prompts entirely.
