@@ -49,6 +49,8 @@ fi
 
 ls -lah "$RELEASE_DIR/v$SCFZ_VERSION"
 
-# Renders and updates install script to reflect latest version
+# Renders and updates install scripts to reflect latest version
 ./scripts/render-install.sh >"$RELEASE_DIR"/install.sh
 chmod +x "$RELEASE_DIR"/install.sh
+
+./scripts/render-install-ps1.sh >"$RELEASE_DIR"/install.ps1
