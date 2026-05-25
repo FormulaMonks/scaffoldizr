@@ -78,4 +78,4 @@ The `--viewType` flag accepts `landscape` or `deployment`. For other view types 
 ## References
 
 - Check the [documentation](https://docs.structurizr.com/dsl/language#views) for further details.
-- Check [examples of views](../assets/views) for examples of software system files.
+- Check [examples of views](../assets/views) for examples of view files.

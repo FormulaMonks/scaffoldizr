@@ -2,7 +2,7 @@
 name: scaffoldizr
 description: Creates Structurizr elements and workspace based on Scaffoldizr opinionated convention. Use when the user mentions Architecture Documentation Updates, Architectural Decision Records, C4 diagrams, or any Structurizr-related topic.
 license: MIT
-compatibility: Requires Structurizr and Scaffoldizr (scfz) CLI Tool. Check `FormulaMonks/scaffoldizr` Github repository for installation instructions.
+compatibility: Requires Structurizr and Scaffoldizr (scfz) CLI Tool. Check `FormulaMonks/scaffoldizr` GitHub repository for installation instructions.
 allowed-tools: Bash(scfz:*)
 metadata:
   author: Andrés Zorro <andres.zorro@monks.com>
