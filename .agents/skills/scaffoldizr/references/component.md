@@ -59,4 +59,4 @@ scfz component \
 ## References
 
 - Check [component documentation](https://c4model.com/abstractions/component) for further details.
-- Check [examples of components](../examples/components) for examples of component files.
+- Check [examples of components](../assets/components) for examples of component files.

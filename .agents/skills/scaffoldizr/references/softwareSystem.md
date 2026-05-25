@@ -56,4 +56,4 @@ The `--archetype` flag is optional; omit it if no archetype applies.
 ## References
 
 - Check [software system documentation](https://c4model.com/abstractions/software-system) for further details.
-- Check [examples of software systems](../examples/softwareSystems) for examples of software system files.
+- Check [examples of software systems](../assets/softwareSystems) for examples of software system files.

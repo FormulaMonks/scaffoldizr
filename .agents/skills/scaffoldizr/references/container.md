@@ -57,4 +57,4 @@ scfz container \
 ## References
 
 - Check [container documentation](https://c4model.com/abstractions/container) for further details.
-- Check [examples of containers](../examples/containers) for examples of container files.
+- Check [examples of containers](../assets/containers) for examples of container files.
