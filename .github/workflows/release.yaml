@@ -67,7 +67,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           version=$(echo "${{ github.ref }}" | sed -e s%refs/tags/v%%)
-          sed -i "s/^  version: .*/  version: $version/" .claude/skills/scaffoldizr/SKILL.md
+          sed -i "s/^  version: .*/  version: $version/" .agents/skills/scaffoldizr/SKILL.md
       - name: Bump package.json version
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -83,7 +83,7 @@ jobs:
           commit_message: "[skip ci]: Bump version and update install script"
           commit_options: "--no-verify --signoff"
           branch: ${{ contains(github.ref, '-beta') && 'develop' || 'main' }}
-          file_pattern: "docs/** .claude/skills/scaffoldizr/SKILL.md package.json"
+          file_pattern: "docs/** .agents/skills/scaffoldizr/SKILL.md package.json"
           repository: .
           commit_user_name: GitHub Actions Bot # defaults to "github-actions[bot]"
           status_options: "--untracked-files=no"

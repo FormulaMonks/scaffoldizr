@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-SCFZ_VERSION=$SCFZ_VERSION;
+BASE_DIR="${BASE_DIR:-$(pwd)}"
+SCFZ_VERSION="${SCFZ_VERSION:?SCFZ_VERSION must be set}"
 
 envsubst '$SCFZ_VERSION' <"$BASE_DIR/pkg/standalone/install.ps1.envsubst"
