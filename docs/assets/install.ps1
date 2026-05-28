@@ -11,7 +11,7 @@ function Write-Err {
     exit 1
 }
 
-$version = "0.13.0"
+$version = "0.14.0"
 $repo = "FormulaMonks/scaffoldizr"
 $installPath = if ($env:SCFZ_INSTALL_PATH) { $env:SCFZ_INSTALL_PATH } else { "$env:USERPROFILE\.local\bin\scfz.exe" }
 $installDir = Split-Path -Parent $installPath

@@ -6,7 +6,7 @@ compatibility: Requires Structurizr and Scaffoldizr (scfz) CLI Tool. Check `Form
 allowed-tools: Bash(scfz:*)
 metadata:
   author: Andrés Zorro <andres.zorro@monks.com>
-  version: 0.13.0
+  version: 0.14.0
 ---
 
 # Structurizr Workspace - Created with Scaffoldizr
