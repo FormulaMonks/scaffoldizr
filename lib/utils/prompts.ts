@@ -85,6 +85,22 @@ function getCliValue(name: string | undefined): string | undefined {
     return parseArgv()[name];
 }
 
+const INFRASTRUCTURE_ARGS = new Set([
+    "dest",
+    "export",
+    "e",
+    "dryRun",
+    "dry-run",
+    "d",
+    "version",
+]);
+
+function isNonInteractiveMode(): boolean {
+    return Object.keys(parseArgv()).some(
+        (key) => !INFRASTRUCTURE_ARGS.has(key),
+    );
+}
+
 async function runValidation(
     value: string,
     validate: (value: string) => ValidateResult,
@@ -103,13 +119,23 @@ export async function input(
     const { name, ...rest } = config;
 
     const cliValue = getCliValue(name);
-    if (cliValue === undefined)
-        return inquirerInput(rest as Parameters<typeof inquirerInput>[0]);
-
-    if (rest.validate !== undefined) {
-        await runValidation(cliValue, rest.validate);
+    if (cliValue !== undefined) {
+        if (rest.validate !== undefined) {
+            await runValidation(cliValue, rest.validate);
+        }
+        return cliValue;
     }
-    return cliValue;
+
+    if (
+        !rest.required &&
+        rest.validate === undefined &&
+        name !== undefined &&
+        isNonInteractiveMode()
+    ) {
+        return rest.default ?? "";
+    }
+
+    return inquirerInput(rest as Parameters<typeof inquirerInput>[0]);
 }
 
 export async function select<Value>(

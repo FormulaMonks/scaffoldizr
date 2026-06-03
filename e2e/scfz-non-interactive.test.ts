@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { $, file, spawn } from "bun";
@@ -177,6 +177,75 @@ describe("e2e: non-interactive subcommands (softwaresystem)", () => {
         expect(elementContents).toContain(
             'NiContainer = container "NI Container"',
         );
+    });
+});
+
+describe("e2e: non-interactive archetype subcommand", () => {
+    const folder = join(
+        TMP_FOLDER,
+        `test-${(1000 + Math.ceil(Math.random() * 1000)).toString(16)}`,
+    );
+
+    beforeAll(async () => {
+        await createWorkspaceFromCLI(folder, "softwaresystem");
+    });
+
+    afterAll(async () => {
+        await $`rm -rf ${folder}`;
+    });
+
+    test("should add a relationship archetype non-interactively without optional fields", async () => {
+        const proc = spawn([
+            "dist/scfz",
+            "archetype",
+            "--dest",
+            folder,
+            "--archetypeName",
+            "HTTPS",
+            "--archetypeBaseType",
+            "relationship",
+        ]);
+
+        await proc.exited;
+        expect(proc.exitCode).toBe(0);
+
+        const archetypeFileExists = await file(
+            `${folder}/architecture/archetypes/1_https_relationship.dsl`,
+        ).exists();
+        expect(archetypeFileExists).toBe(true);
+
+        const elementContents = await file(
+            `${folder}/architecture/archetypes/1_https_relationship.dsl`,
+        ).text();
+        expect(elementContents).toContain("https = -> {");
+        expect(elementContents).not.toContain("description");
+        expect(elementContents).not.toContain("technology");
+    });
+
+    test("should add a relationship archetype non-interactively with optional description", async () => {
+        const proc = spawn([
+            "dist/scfz",
+            "archetype",
+            "--dest",
+            folder,
+            "--archetypeName",
+            "GRPC",
+            "--archetypeBaseType",
+            "relationship",
+            "--archetypeDescription",
+            "gRPC protocol",
+            "--archetypeTechnology",
+            "gRPC",
+        ]);
+
+        await proc.exited;
+        expect(proc.exitCode).toBe(0);
+
+        const elementContents = await file(
+            `${folder}/architecture/archetypes/2_grpc_relationship.dsl`,
+        ).text();
+        expect(elementContents).toContain('description "gRPC protocol"');
+        expect(elementContents).toContain('technology "gRPC"');
     });
 });
 
