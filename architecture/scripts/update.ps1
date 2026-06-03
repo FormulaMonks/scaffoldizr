@@ -1,7 +1,7 @@
 $docsLocation = Split-Path -Parent $PSScriptRoot
 
 Write-Host "Updating workspace: $docsLocation"
-$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.03.06" }
+$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.05.22" }
 
 if (-not (Test-Path "$docsLocation\workspace.json")) {
     Write-Error "ERROR: workspace.json file not found in `"$docsLocation`" folder."

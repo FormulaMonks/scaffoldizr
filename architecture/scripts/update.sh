@@ -3,7 +3,7 @@
 docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
 echo "Updating workspace: ${docs_location}"
 version="${STCTZR_VERSION:-}"
-if [ -z "$version" ]; then version="2026.03.06"; fi
+if [ -z "$version" ]; then version="2026.05.22"; fi
 
 if [ ! -e "${docs_location}/workspace.json" ]; then
     echo "ERROR: workspace.json file not found in \"${docs_location}\" folder.";
