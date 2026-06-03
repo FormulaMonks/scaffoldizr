@@ -3,7 +3,7 @@
 docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
 port=${1:-8080}
 version="${STCTZR_VERSION:-}"
-if [ -z "$version" ]; then version="2026.03.06"; fi
+if [ -z "$version" ]; then version="2026.05.22"; fi
 
 # Check if workspace.dsl file exists
 if [ ! -e "${docs_location}/workspace.dsl" ]; then
