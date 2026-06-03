@@ -85,6 +85,10 @@ function getCliValue(name: string | undefined): string | undefined {
     return parseArgv()[name];
 }
 
+function isNonInteractiveMode(): boolean {
+    return Object.keys(parseArgv()).length > 0;
+}
+
 async function runValidation(
     value: string,
     validate: (value: string) => ValidateResult,
@@ -103,13 +107,18 @@ export async function input(
     const { name, ...rest } = config;
 
     const cliValue = getCliValue(name);
-    if (cliValue === undefined)
-        return inquirerInput(rest as Parameters<typeof inquirerInput>[0]);
-
-    if (rest.validate !== undefined) {
-        await runValidation(cliValue, rest.validate);
+    if (cliValue !== undefined) {
+        if (rest.validate !== undefined) {
+            await runValidation(cliValue, rest.validate);
+        }
+        return cliValue;
     }
-    return cliValue;
+
+    if (!rest.required && name !== undefined && isNonInteractiveMode()) {
+        return rest.default ?? "";
+    }
+
+    return inquirerInput(rest as Parameters<typeof inquirerInput>[0]);
 }
 
 export async function select<Value>(
