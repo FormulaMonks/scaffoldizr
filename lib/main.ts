@@ -256,7 +256,11 @@ export default main;
 
 if (["main.ts", "scfz"].includes(basename(entrypoint))) {
     const rawArgs = hideBin(process.argv);
-    if (rawArgs.includes("--version") || rawArgs.includes("-V")) {
+    if (
+        rawArgs.includes("--version") ||
+        rawArgs.includes("-V") ||
+        rawArgs.includes("-v")
+    ) {
         console.log(scfzVersion);
         const updateMessage = await checkUpdate(scfzVersion);
         if (updateMessage) console.log(updateMessage);

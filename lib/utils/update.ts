@@ -118,7 +118,7 @@ export async function fetchLatestVersion(
     force = false,
 ): Promise<string | null> {
     const cacheFilePath = join(
-        process.env.SCFZ_UPDATE_CACHE_DIR ?? homedir(),
+        process.env.SCFZ_UPDATE_CACHE_DIR?.trim() || homedir(),
         UPDATE_CACHE_FILE,
     );
 
