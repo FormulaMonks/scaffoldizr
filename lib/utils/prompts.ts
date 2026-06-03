@@ -126,7 +126,12 @@ export async function input(
         return cliValue;
     }
 
-    if (!rest.required && name !== undefined && isNonInteractiveMode()) {
+    if (
+        !rest.required &&
+        rest.validate === undefined &&
+        name !== undefined &&
+        isNonInteractiveMode()
+    ) {
         return rest.default ?? "";
     }
 

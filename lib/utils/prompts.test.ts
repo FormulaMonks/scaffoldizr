@@ -175,6 +175,30 @@ describe("prompts", () => {
             inputSpy.mockRestore();
         });
 
+        test("still prompts for field with validate in non-interactive mode when not provided", async () => {
+            process.argv = ["bun", "scfz", "--archetypeBaseType=relationship"];
+
+            const inquirerPrompts = await import("@inquirer/prompts");
+            const inputSpy = spyOn(inquirerPrompts, "input").mockResolvedValue(
+                "UserTyped",
+            );
+
+            const { resetArgvCache, input } = await import("./prompts");
+            resetArgvCache();
+
+            const result = await input({
+                message: "System name:",
+                name: "systemName",
+                validate: (value: string) =>
+                    value.length > 0 ? true : "Required",
+            });
+
+            expect(result).toBe("UserTyped");
+            expect(inputSpy).toHaveBeenCalled();
+
+            inputSpy.mockRestore();
+        });
+
         test("falls back to interactive when no name provided in config", async () => {
             process.argv = ["bun", "scfz", "--workspaceName=MyWorkspace"];
 
