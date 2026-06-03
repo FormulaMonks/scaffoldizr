@@ -101,6 +101,80 @@ describe("prompts", () => {
             inputSpy.mockRestore();
         });
 
+        test("skips prompt and returns empty string for optional field in non-interactive mode", async () => {
+            process.argv = ["bun", "scfz", "--archetypeName=test"];
+
+            const { resetArgvCache, input } = await import("./prompts");
+            resetArgvCache();
+
+            const result = await input({
+                message: "Description (optional):",
+                name: "archetypeDescription",
+            });
+
+            expect(result).toBe("");
+        });
+
+        test("skips prompt and returns default value for optional field in non-interactive mode", async () => {
+            process.argv = ["bun", "scfz", "--archetypeName=test"];
+
+            const { resetArgvCache, input } = await import("./prompts");
+            resetArgvCache();
+
+            const result = await input({
+                message: "Description (optional):",
+                name: "archetypeDescription",
+                default: "default-value",
+            });
+
+            expect(result).toBe("default-value");
+        });
+
+        test("still prompts for optional field when no CLI args present", async () => {
+            process.argv = ["bun", "scfz"];
+
+            const inquirerPrompts = await import("@inquirer/prompts");
+            const inputSpy = spyOn(inquirerPrompts, "input").mockResolvedValue(
+                "UserTyped",
+            );
+
+            const { resetArgvCache, input } = await import("./prompts");
+            resetArgvCache();
+
+            const result = await input({
+                message: "Description (optional):",
+                name: "archetypeDescription",
+            });
+
+            expect(result).toBe("UserTyped");
+            expect(inputSpy).toHaveBeenCalled();
+
+            inputSpy.mockRestore();
+        });
+
+        test("still prompts for required field even in non-interactive mode when not provided", async () => {
+            process.argv = ["bun", "scfz", "--archetypeBaseType=relationship"];
+
+            const inquirerPrompts = await import("@inquirer/prompts");
+            const inputSpy = spyOn(inquirerPrompts, "input").mockResolvedValue(
+                "UserTyped",
+            );
+
+            const { resetArgvCache, input } = await import("./prompts");
+            resetArgvCache();
+
+            const result = await input({
+                message: "Archetype name:",
+                name: "archetypeName",
+                required: true,
+            });
+
+            expect(result).toBe("UserTyped");
+            expect(inputSpy).toHaveBeenCalled();
+
+            inputSpy.mockRestore();
+        });
+
         test("falls back to interactive when no name provided in config", async () => {
             process.argv = ["bun", "scfz", "--workspaceName=MyWorkspace"];
 
