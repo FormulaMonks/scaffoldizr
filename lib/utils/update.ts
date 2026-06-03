@@ -117,7 +117,10 @@ async function refreshUpdateCache(
 export async function fetchLatestVersion(
     force = false,
 ): Promise<string | null> {
-    const cacheFilePath = join(homedir(), UPDATE_CACHE_FILE);
+    const cacheFilePath = join(
+        process.env.SCFZ_UPDATE_CACHE_DIR?.trim() || homedir(),
+        UPDATE_CACHE_FILE,
+    );
 
     if (!force) {
         const cachedUpdate = await readUpdateCache(cacheFilePath);
@@ -138,7 +141,10 @@ export async function fetchLatestVersion(
 export async function checkUpdate(
     currentVersion: string,
 ): Promise<string | null> {
-    if (!process.stdout.isTTY) {
+    if (
+        !process.stdout.isTTY &&
+        process.env.SCFZ_FORCE_UPDATE_CHECK === undefined
+    ) {
         return null;
     }
 
