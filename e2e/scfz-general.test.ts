@@ -44,7 +44,7 @@ describe("scfz: general", () => {
             const proc = spawn(["dist/scfz", "--version"], {
                 env: {
                     ...process.env,
-                    HOME: temporaryHomeDirectory,
+                    SCFZ_UPDATE_CACHE_DIR: temporaryHomeDirectory,
                     SCFZ_FORCE_UPDATE_CHECK: "1",
                 },
             });
@@ -66,7 +66,7 @@ describe("scfz: general", () => {
             const proc = spawn(["dist/scfz", "--version"], {
                 env: {
                     ...process.env,
-                    HOME: temporaryHomeDirectory,
+                    SCFZ_UPDATE_CACHE_DIR: temporaryHomeDirectory,
                     SCFZ_FORCE_UPDATE_CHECK: "1",
                 },
             });
@@ -83,7 +83,7 @@ describe("scfz: general", () => {
             const proc = spawn(["dist/scfz", "--version"], {
                 env: {
                     ...process.env,
-                    HOME: temporaryHomeDirectory,
+                    SCFZ_UPDATE_CACHE_DIR: temporaryHomeDirectory,
                     SCFZ_FORCE_UPDATE_CHECK: "1",
                     SCFZ_NO_UPDATE_CHECK: "1",
                 },

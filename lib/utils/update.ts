@@ -117,7 +117,10 @@ async function refreshUpdateCache(
 export async function fetchLatestVersion(
     force = false,
 ): Promise<string | null> {
-    const cacheFilePath = join(homedir(), UPDATE_CACHE_FILE);
+    const cacheFilePath = join(
+        process.env.SCFZ_UPDATE_CACHE_DIR ?? homedir(),
+        UPDATE_CACHE_FILE,
+    );
 
     if (!force) {
         const cachedUpdate = await readUpdateCache(cacheFilePath);
