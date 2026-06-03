@@ -138,7 +138,10 @@ export async function fetchLatestVersion(
 export async function checkUpdate(
     currentVersion: string,
 ): Promise<string | null> {
-    if (!process.stdout.isTTY) {
+    if (
+        !process.stdout.isTTY &&
+        process.env.SCFZ_FORCE_UPDATE_CHECK === undefined
+    ) {
         return null;
     }
 

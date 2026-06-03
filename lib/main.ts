@@ -255,7 +255,15 @@ Let's create a new one by answering the questions below.
 export default main;
 
 if (["main.ts", "scfz"].includes(basename(entrypoint))) {
-    const args: CLIArguments = await yargs(hideBin(process.argv))
+    const rawArgs = hideBin(process.argv);
+    if (rawArgs.includes("--version") || rawArgs.includes("-V")) {
+        console.log(scfzVersion);
+        const updateMessage = await checkUpdate(scfzVersion);
+        if (updateMessage) console.log(updateMessage);
+        process.exit(0);
+    }
+
+    const args: CLIArguments = await yargs(rawArgs)
         .version("version", "Show current tool version", scfzVersion)
         .usage(
             `${capitalCase(
