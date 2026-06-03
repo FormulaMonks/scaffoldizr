@@ -85,8 +85,20 @@ function getCliValue(name: string | undefined): string | undefined {
     return parseArgv()[name];
 }
 
+const INFRASTRUCTURE_ARGS = new Set([
+    "dest",
+    "export",
+    "e",
+    "dryRun",
+    "dry-run",
+    "d",
+    "version",
+]);
+
 function isNonInteractiveMode(): boolean {
-    return Object.keys(parseArgv()).length > 0;
+    return Object.keys(parseArgv()).some(
+        (key) => !INFRASTRUCTURE_ARGS.has(key),
+    );
 }
 
 async function runValidation(
