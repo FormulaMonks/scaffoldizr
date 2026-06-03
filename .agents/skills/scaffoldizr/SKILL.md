@@ -82,7 +82,7 @@ All prompt questions can be answered via CLI flags using `--parameter "value"` o
 | `external-system` | `--elementName`, `--extSystemDescription` |
 | `view` | `--viewType`, `--viewName`, `--viewDescription` |
 | `constant` | `--constantName`, `--constantValue` |
-| `archetype` | `--archetypeName`, `--archetypeDescription` |
+| `archetype` | `--archetypeName`, `--archetypeBaseType`, `--archetypeDescription` (optional), `--archetypeTechnology` (optional), `--archetypeTags` (optional) |
 | `theme` | `--themeAction "Add themes" --additionalThemes "<url1>,<url2>"` |
 
 Each element file documents the specific flags and CLI command for that generator.

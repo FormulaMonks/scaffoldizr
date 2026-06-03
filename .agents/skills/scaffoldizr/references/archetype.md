@@ -46,8 +46,18 @@ Refer to the [documentation](https://docs.structurizr.com/dsl/archetypes) for fu
 ```bash
 scfz archetype \
   --archetypeName "<archetype name>" \
-  --archetypeDescription "<description>"
+  --archetypeBaseType "<relationship|system|container|component>"
 ```
+
+Optional flags (omit to leave empty):
+
+| Flag | Description |
+|---|---|
+| `--archetypeDescription` | Description of the archetype |
+| `--archetypeTechnology` | Technology (not available for `system` base type) |
+| `--archetypeTags` | Comma-separated tags |
+
+> **Note**: When running non-interactively (any CLI flags present), optional fields that are not provided are automatically skipped — no interactive prompt will appear.
 
 ## References
 
