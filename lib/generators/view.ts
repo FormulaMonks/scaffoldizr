@@ -67,14 +67,73 @@ async function collectDynamicSteps(): Promise<string[]> {
 
     const dynamicSteps: string[] = [];
 
-    for (let stepIndex = 1; ; stepIndex += 1) {
-        const step = await input({
-            message: `Dynamic step ${stepIndex}:`,
+    const normalizeRelationshipPart = (value: string) => value.trim();
+
+    const assembleRelationship = (
+        sourceElement: string,
+        destinationElement: string,
+        relationshipDescription: string,
+        technologyChannel: string,
+    ) => {
+        const relationshipParts = [
+            `${normalizeRelationshipPart(sourceElement)} -> ${normalizeRelationshipPart(destinationElement)}`,
+            `"${normalizeRelationshipPart(relationshipDescription)}"`,
+        ];
+
+        const normalizedTechnologyChannel =
+            normalizeRelationshipPart(technologyChannel);
+
+        if (normalizedTechnologyChannel.length > 0) {
+            relationshipParts.push(`"${normalizedTechnologyChannel}"`);
+        }
+
+        return relationshipParts.join(" ");
+    };
+
+    for (;;) {
+        const sourceElement = await input({
+            message: "Source element (e.g., User, WebApplication):",
+            validate: stringEmpty,
         });
+
+        const destinationElement = await input({
+            message: "Destination element (e.g., API, Database):",
+            validate: stringEmpty,
+        });
+
+        const relationshipDescription = await input({
+            message: "Relationship description (e.g., Visits, Fetches):",
+            validate: stringEmpty,
+        });
+
+        const technologyChannel = await input({
+            message: "Technology/Channel (optional, e.g., JSON/HTTPS, gRPC):",
+        });
+
+        const step = assembleRelationship(
+            sourceElement,
+            destinationElement,
+            relationshipDescription,
+            technologyChannel,
+        );
 
         if (step.trim().length === 0) break;
 
         dynamicSteps.push(step);
+
+        const addAnotherStep = await input({
+            message:
+                "Add another step? (yes/no or press Enter for yes, type 'done'/'no' to stop)",
+        });
+
+        const normalizedAddAnotherStep = addAnotherStep.trim().toLowerCase();
+        if (
+            normalizedAddAnotherStep === "done" ||
+            normalizedAddAnotherStep === "no" ||
+            normalizedAddAnotherStep === "n"
+        ) {
+            break;
+        }
     }
 
     return dynamicSteps;
