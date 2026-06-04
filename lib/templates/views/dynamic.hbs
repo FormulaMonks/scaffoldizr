@@ -1,0 +1,11 @@
+dynamic {{#if (eq dynamicScopeType "workspace")}}*{{else}}{{pascalCase (removeSpaces dynamicScopeElement)}}{{/if}} "{{pascalCase (removeSpaces viewName)}}" {
+    description "{{{viewDescription}}}. ${AUTHOR}"
+{{#if dynamicSteps}}
+{{#each dynamicSteps}}
+    {{{this}}}
+{{/each}}
+{{else}}
+    // Add sequential steps here
+{{/if}}
+    autoLayout lr
+}
