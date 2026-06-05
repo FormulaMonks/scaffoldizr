@@ -1,4 +1,4 @@
-dynamic {{#if (eq dynamicScopeType "workspace")}}*{{else}}{{pascalCase (removeSpaces dynamicScopeElement)}}{{/if}} "{{pascalCase (removeSpaces viewName)}}" {
+dynamic {{#if (eq dynamicScopeType "workspace")}}*{{else}}{{{dynamicScopeElement}}}{{/if}} "{{pascalCase (removeSpaces viewName)}}" {
     description "{{{viewDescription}}}. ${AUTHOR}"
 {{#if dynamicSteps}}
 {{#each dynamicSteps}}
