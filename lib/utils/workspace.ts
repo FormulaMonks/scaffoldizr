@@ -107,7 +107,22 @@ type Configuration = {
     branding: Item;
     styles: Item;
     terminology: Item;
-    scope?: "Landscape" | "SoftwareSystem";
+    scope?: string;
+};
+
+export type WorkspaceScope = "Landscape" | "SoftwareSystem";
+
+export const normalizeWorkspaceScope = (
+    scope: string | undefined,
+): WorkspaceScope | undefined => {
+    if (!scope) return undefined;
+
+    const normalizedScope = scope.toLowerCase().replace(/\s+/g, "");
+
+    if (normalizedScope === "softwaresystem") return "SoftwareSystem";
+    if (normalizedScope === "landscape") return "Landscape";
+
+    return undefined;
 };
 
 export type StructurizrWorkspace = {
@@ -161,16 +176,14 @@ export const getWorkspaceJson = async (
 
 export const getWorkspaceDslScope = async (
     workspaceFolder: string | undefined,
-): Promise<"SoftwareSystem" | "Landscape" | undefined> => {
+): Promise<WorkspaceScope | undefined> => {
     if (!workspaceFolder) return undefined;
     const dslFile = file(join(workspaceFolder, "workspace.dsl"));
     if (dslFile.size === 0) return undefined;
     const content = await dslFile.text();
     const match = content.match(/scope\s+(softwaresystem|landscape)/i);
     if (!match) return undefined;
-    return match[1].toLowerCase() === "softwaresystem"
-        ? "SoftwareSystem"
-        : "Landscape";
+    return normalizeWorkspaceScope(match[1]);
 };
 
 export type WorkspaceElement = {
