@@ -38,33 +38,78 @@ Each workspace can contain one or more views, defined with the views block. Chec
 Unlike the other diagram types, Dynamic views are created by specifying the relationships that should be added to the view, within the dynamic block, as follows:
 
 ```dsl
-dynamic {identifier} "{view key}" {
-    title "{view title}"
-    description "{view description} ${AUTHOR}"
+dynamic {identifier} "{ViewKeyPascalCase}" {
+    description "{view description}. ${AUTHOR}"
 
-    [order:] {sourceIdentifier} -> {destinationIdentifier} "{relationship description}" "{technology}"
-    [order:] {sourceIdentifier} -> {destinationIdentifier} "{relationship description}" "{technology}"
-    [order:] {sourceIdentifier} -> {destinationIdentifier} "{relationship description}" "{technology}"
+    1: SourceIdentifier -> DestinationIdentifier "description" "technology"
+    2: SourceIdentifier -> DestinationIdentifier "description"
+    autoLayout lr
 }
 ```
 
-Where:
+Where `{identifier}` is:
 
-- `{identifier}`: is either a software system or container identifier. The identifier has to exist.
-- `{view key}`: is a unique key for the view in PascalCase.
-- `{view title}`: is a human friendly title for the view.
-- `{view description}`: is a short description of the view.
-- Each relationship line defines a relationship to be included in the view.
-- `{sourceIdentifier}` and `{destinationIdentifier}`: are the identifiers of the source and destination elements of the relationship. They have to exist.
-- `{relationship description}`: is a short description of the relationship.
-- `{technology}`: is the technology used in the relationship.
-- `[order:]`: is an optional order number to define the sequence of the relationships in the view.
+- `*` when scope is `workspace`
+- The DSL identifier of the software system when scope is `system`
+- The DSL identifier of the container when scope is `container`
+
+The DSL identifier comes from `element.properties["structurizr.dsl.identifier"]`, or falls back to the element name.
+
+#### Scope and available elements
+
+| Scope | Available elements |
+|---|---|
+| `workspace` | All elements in the workspace |
+| `system` | Containers of the selected system; other software systems; people; external systems. Components and the scoped system itself are excluded. |
+| `container` | Components of the selected container; people; external systems |
 
 _⚠️ Important Note_: Dynamic views require that the relationships being referenced already exist in the workspace. Before creating a dynamic view, always check if the relationships exist. If they do not exist, create them first in the `./architecture/relationships` folder.
+
+Step identifiers must use DSL identifiers (from `structurizr.dsl.identifier` property), not element display names. In interactive mode the tool resolves these automatically from workspace.json. In non-interactive mode the caller must provide the correct DSL identifiers.
 
 ### Deployment Views
 
 ## Using Scaffoldizr CLI (preferred for AI agents)
+
+```bash
+scfz view \
+  --viewType "dynamic" \
+  --dynamicScope "<workspace|system|container>" \
+  --systemName "<system name>" \
+  --containerName "<container name>" \
+  --viewName "<view name>" \
+  --viewDescription "<description>" \
+  --step-1 'SourceIdentifier -> DestinationIdentifier "description" "technology"' \
+  --step-2 'SourceIdentifier -> DestinationIdentifier "description"'
+```
+
+Flag rules:
+
+- `--viewType`: The type of view to create. For dynamic views, use `dynamic`. Other supported values: `landscape`, `deployment`.
+- `--dynamicScope`: required for `dynamic` view type. Values: `workspace`, `system`, `container`.
+- `--systemName`: required when scope is `system` or `container`.
+- `--containerName`: required when scope is `container`.
+- `--step-N`: defines one relationship step. `N` is the step number (integer). Repeat the same `N` to produce **parallel steps** (same order number in the DSL output). Steps are sorted by `N` before being written.
+- Step value format: `'SourceDslId -> DestinationDslId "description" "technology"'` — technology is optional.
+- `--step-N` flags are optional. If omitted, interactive prompts collect steps.
+
+**Parallel steps example:**
+
+```bash
+--step-1 'Web -> Db "Query" "SQL"' \
+--step-1 'Web -> Cache "Check cache" "Redis"' \
+--step-2 'Db -> Web "Results"'
+```
+
+Produces:
+
+```dsl
+1: Web -> Db "Query" "SQL"
+1: Web -> Cache "Check cache" "Redis"
+2: Db -> Web "Results"
+```
+
+For other view types:
 
 ```bash
 scfz view \
@@ -73,7 +118,7 @@ scfz view \
   --viewDescription "<description>"
 ```
 
-The `--viewType` flag accepts `landscape` or `deployment`. For other view types (`systemContext`, `container`, `component`, `dynamic`), create the DSL file manually following the instructions above.
+The `--viewType` flag accepts `landscape`, `deployment`, or `dynamic`. For other view types (`systemContext`, `container`, `component`), create the DSL file manually following the instructions in the view reference.
 
 ## References
 

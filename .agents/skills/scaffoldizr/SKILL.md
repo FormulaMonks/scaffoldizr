@@ -80,12 +80,12 @@ All prompt questions can be answered via CLI flags using `--parameter "value"` o
 | `component` | `--elementName`, `--componentDescription`, `--componentTechnology` |
 | `person` | `--elementName`, `--personDescription` |
 | `external-system` | `--elementName`, `--extSystemDescription` |
-| `view` | `--viewType`, `--viewName`, `--viewDescription` |
+| `view` | `--viewType`, `--viewName`, `--viewDescription`, `--dynamicScope`, `--systemName`, `--containerName`, `--step-N` |
 | `constant` | `--constantName`, `--constantValue` |
 | `archetype` | `--archetypeName`, `--archetypeBaseType`, `--archetypeDescription` (optional), `--archetypeTechnology` (optional), `--archetypeTags` (optional) |
 | `theme` | `--themeAction "Add themes" --additionalThemes "<url1>,<url2>"` |
 
-Each element file documents the specific flags and CLI command for that generator.
+The `--viewType` flag accepts `landscape`, `deployment`, or `dynamic`. For other view types (`systemContext`, `container`, `component`), create the DSL file manually following the instructions in the view reference.
 
 - All the relevant documentation files are contained within the `./architecture` folder.
 - The main entrypoint is the `./architecture/workspace.dsl` file.
