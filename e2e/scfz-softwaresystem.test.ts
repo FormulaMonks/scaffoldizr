@@ -248,6 +248,98 @@ describe("e2e: Software System", () => {
         expect(elementContents).toContain('deployment TestSystem "Test View"');
     });
 
+    test("should add a dynamic container-scoped view interactively", async () => {
+        const addContainerProc = spawn([
+            "dist/scfz",
+            "container",
+            "--dest",
+            folder,
+            "--elementName",
+            "Db",
+            "--containerDescription",
+            "Database",
+            "--containerType",
+            "None of the above",
+            "--containerTechnology",
+            "PostgreSQL",
+        ]);
+
+        await addContainerProc.exited;
+        expect(addContainerProc.exitCode).toBe(0);
+
+        const addComponentProc = spawn([
+            "dist/scfz",
+            "component",
+            "--dest",
+            folder,
+            "--container",
+            "Test System/Db",
+            "--elementName",
+            "Cache",
+            "--componentDescription",
+            "Cache component",
+            "--componentTechnology",
+            "Redis",
+        ]);
+
+        await addComponentProc.exited;
+        expect(addComponentProc.exitCode).toBe(0);
+
+        const addSecondComponentProc = spawn([
+            "dist/scfz",
+            "component",
+            "--dest",
+            folder,
+            "--container",
+            "Test System/Db",
+            "--elementName",
+            "Engine",
+            "--componentDescription",
+            "Engine component",
+            "--componentTechnology",
+            "PostgreSQL",
+        ]);
+
+        await addSecondComponentProc.exited;
+        expect(addSecondComponentProc.exitCode).toBe(0);
+
+        const proc = spawn(["dist/scfz", "view", "--dest", folder], {
+            stdin: "pipe",
+        });
+
+        loop(proc, [
+            keypress.ENTER,
+            keypress.DOWN,
+            keypress.ENTER,
+            keypress.DOWN,
+            keypress.ENTER,
+            keypress.ENTER,
+            keypress.DOWN,
+            keypress.ENTER,
+            "test",
+            keypress.ENTER,
+            keypress.ENTER,
+            "no",
+            keypress.ENTER,
+            "Dynamic Container View",
+            keypress.ENTER,
+            "Container scoped test",
+            keypress.ENTER,
+        ]);
+
+        const response = await new Response(proc.stdout).text();
+        console.log(`Scaffoldizr Output:\n${response}`);
+
+        expect(proc.exitCode).toBe(0);
+
+        const viewContents = await file(
+            `${folder}/architecture/views/dynamic-container-view.dsl`,
+        ).text();
+
+        expect(viewContents).toContain('dynamic Db "DynamicContainerView"');
+        expect(viewContents).toContain('Cache -> Engine "test"');
+    });
+
     test("@smoke: should add a new relationship", async () => {
         const proc = spawn(["dist/scfz", "--dest", folder, "--export"], {
             stdin: "pipe",

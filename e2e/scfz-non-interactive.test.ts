@@ -325,3 +325,139 @@ describe("e2e: non-interactive validation failures", () => {
         }
     });
 });
+
+describe("e2e: non-interactive dynamic view", () => {
+    const folder = join(
+        TMP_FOLDER,
+        `test-${(1000 + Math.ceil(Math.random() * 1000)).toString(16)}`,
+    );
+
+    beforeAll(async () => {
+        await createWorkspaceFromCLI(folder, "softwaresystem", {
+            id: 1,
+            name: "Test",
+            description: "",
+            lastModifiedDate: "",
+            properties: {},
+            model: {
+                people: [],
+                softwareSystems: [
+                    {
+                        id: "1",
+                        tags: "Element,Software System",
+                        properties: {},
+                        name: "App",
+                        description: "",
+                        documentation: { sections: [], images: [] },
+                        relationships: [],
+                        location: "Internal",
+                        containers: [
+                            {
+                                id: "2",
+                                tags: "Element,Container",
+                                properties: {},
+                                name: "Web",
+                                description: "",
+                                documentation: { sections: [], images: [] },
+                                relationships: [],
+                                technology: "",
+                            },
+                            {
+                                id: "3",
+                                tags: "Element,Container",
+                                properties: {},
+                                name: "Db",
+                                description: "",
+                                documentation: { sections: [], images: [] },
+                                relationships: [],
+                                technology: "",
+                                components: [
+                                    {
+                                        id: "4",
+                                        tags: "Element,Component",
+                                        properties: {},
+                                        name: "Cache",
+                                        description: "",
+                                        documentation: {
+                                            sections: [],
+                                            images: [],
+                                        },
+                                        relationships: [],
+                                        technology: "",
+                                    },
+                                    {
+                                        id: "5",
+                                        tags: "Element,Component",
+                                        properties: {},
+                                        name: "Engine",
+                                        description: "",
+                                        documentation: {
+                                            sections: [],
+                                            images: [],
+                                        },
+                                        relationships: [],
+                                        technology: "",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                deploymentNodes: [],
+            },
+            configuration: {
+                branding: {},
+                styles: {},
+                terminology: {},
+                scope: "Software System",
+            },
+            documentation: { sections: [], images: [] },
+            views: {
+                systemLandscapeViews: [],
+                systemContextViews: [],
+                configuration: {
+                    branding: {},
+                    styles: {},
+                    terminology: {},
+                },
+            },
+        });
+    });
+
+    afterAll(async () => {
+        await $`rm -rf ${folder}`;
+    });
+
+    test("should allow dynamic container scope via CLI args", async () => {
+        const proc = spawn([
+            "dist/scfz",
+            "view",
+            "--dest",
+            folder,
+            "--viewType",
+            "dynamic",
+            "--dynamicScope",
+            "container",
+            "--systemName",
+            "App",
+            "--containerName",
+            "Db",
+            "--viewName",
+            "DynTest",
+            "--viewDescription",
+            "Test",
+            "--step-1",
+            'Cache -> Engine "test"',
+        ]);
+
+        await proc.exited;
+        expect(proc.exitCode).toBe(0);
+
+        const viewContents = await file(
+            `${folder}/architecture/views/dyn-test.dsl`,
+        ).text();
+
+        expect(viewContents).toContain('dynamic Db "DynTest"');
+        expect(viewContents).toContain('Cache -> Engine "test"');
+    });
+});
