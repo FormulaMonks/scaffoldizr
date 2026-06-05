@@ -1,9 +1,13 @@
 import { describe, expect, test } from "bun:test";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { StructurizrWorkspace } from "../workspace";
 import {
     chainValidators,
     duplicatedSystemName,
     validateDuplicatedElements,
+    validateDuplicatedViewFile,
     validateDuplicatedViews,
 } from "./validators";
 
@@ -147,6 +151,41 @@ describe("validators", () => {
                 'View with name "SomeView" already exists.',
             );
             expect(loadedValidator?.("Not Duplicated")).toEqual(true);
+        });
+    });
+
+    describe("validateDuplicatedViewFile", () => {
+        test("returns true when workspaceFolder is undefined", async () => {
+            const result =
+                await validateDuplicatedViewFile(undefined)("MyView");
+            expect(result).toBe(true);
+        });
+
+        test("returns true when view file does not exist", async () => {
+            const tmpFolder = join(tmpdir(), `scfz-test-${Date.now()}`);
+            await mkdir(join(tmpFolder, "views"), { recursive: true });
+
+            try {
+                const result =
+                    await validateDuplicatedViewFile(tmpFolder)("MyView");
+                expect(result).toBe(true);
+            } finally {
+                await rm(tmpFolder, { recursive: true, force: true });
+            }
+        });
+
+        test("returns error message when view file already exists", async () => {
+            const tmpFolder = join(tmpdir(), `scfz-test-${Date.now()}`);
+            await mkdir(join(tmpFolder, "views"), { recursive: true });
+            await writeFile(join(tmpFolder, "views", "my-view.dsl"), "");
+
+            try {
+                const result =
+                    await validateDuplicatedViewFile(tmpFolder)("MyView");
+                expect(result).toBe('View with name "MyView" already exists.');
+            } finally {
+                await rm(tmpFolder, { recursive: true, force: true });
+            }
         });
     });
 });

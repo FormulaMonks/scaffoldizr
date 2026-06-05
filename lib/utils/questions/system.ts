@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { kebabCase } from "change-case";
 import { input, select } from "../prompts";
 import type { StructurizrWorkspace } from "../workspace";
-import { getWorkspacePath } from "../workspace";
+import { getWorkspacePath, normalizeWorkspaceScope } from "../workspace";
 
 type SoftwareElement = StructurizrWorkspace["model"]["people"][number];
 type SoftwareSystem = StructurizrWorkspace["model"]["softwareSystems"][number];
@@ -86,14 +86,15 @@ export function resolveSystemQuestion(
     const workspaceInfo = typeof workspace !== "string" && workspace;
 
     if (workspaceInfo) {
-        const workspaceScope =
-            workspaceInfo?.configuration.scope?.toLowerCase();
+        const workspaceScope = normalizeWorkspaceScope(
+            workspaceInfo?.configuration.scope,
+        );
 
         const systems = (workspaceInfo.model?.softwareSystems ?? [])
             .filter((system) => !system.tags.split(",").includes("External"))
             .map((system) => ({ name: system.name, value: system.name }));
 
-        if (workspaceScope === "softwaresystem") {
+        if (workspaceScope === "SoftwareSystem") {
             return Promise.resolve(systems[0].value);
         }
 

@@ -25,6 +25,13 @@
       "id" : "3",
       "status" : "Accepted",
       "title" : "Migrate to Unified Structurizr Docker Image"
+    }, {
+      "content" : "# 4. macOS and Windows CI E2E Tests Scoped to Version-Check Smoke Test Only\n\nDate: 2026-04-10\n\n## Status\n\nAccepted\n\n## Context\n\n- The `structurizr/structurizr` Docker image (introduced in ADR 0003) only provides Linux builds (`linux/amd64`, `linux/arm64`). There is no Windows or macOS-compatible Docker image.\n- The Scaffoldizr e2e test suite relies on the `structurizr/structurizr` Docker image for most tests (export, run, update scripts).\n- GitHub Actions Windows runners (`windows-latest`) cannot run Linux Docker containers without additional tooling (WSL2 + Docker Desktop license or equivalent), which is not available in standard CI environments.\n- GitHub Actions macOS runners (`macos-latest`) do not have Docker pre-installed, and neither VZ (Apple Virtualization.framework) nor QEMU-based VM solutions (e.g. Colima) work reliably on these runners due to missing hypervisor support.\n- Running the full e2e suite on macOS or Windows CI would require either: (a) a native binary for that platform (which does not exist), (b) a platform-compatible Docker image (which does not exist), or (c) mocking Docker entirely (which would reduce test fidelity).\n\n## Decision\n\n- macOS and Windows CI are both scoped to a single **smoke test**: a version-check only (`scfz --version`) that validates the binary was built and runs correctly on that platform.\n- A dedicated npm script `test:e2e:smoke:windows` is used for both macOS and Windows jobs. It runs only `e2e/scfz-general.test.ts`, which contains the `@smoke` tagged version-check test and has zero Docker dependency.\n- The `.github/workflows/e2e.yaml` macOS and Windows jobs unconditionally run `test:e2e:smoke:windows`. There is no full e2e path for either platform.\n- Linux CI jobs (`ubuntu-latest`) continue to run the full e2e suite with Docker available natively.\n- Docker-dependent e2e tests are not tagged `@smoke` and are never run in macOS or Windows jobs.\n\n## Consequences\n\n- Positive: macOS and Windows CI remain fast and reliable — no Docker dependency, no flaky VM/container setup steps.\n- Positive: Both macOS and Windows binaries are still validated in CI for every PR (build succeeds + version output correct).\n- Positive: No licensing or infrastructure cost for Docker on macOS/Windows CI runners.\n- Positive: Full e2e coverage is provided by Linux runners which have native Docker support.\n- Negative: Docker-dependent scenarios (export, run, update scripts) are not tested on macOS or Windows in CI. Any platform-specific behaviour differences would only be caught locally or in production.\n- Negative: If future macOS or Windows-compatible Structurizr Docker images become available, this ADR should be revisited.\n\n## References\n\n- ADR 0003: Migrate to Unified Structurizr Docker Image\n- [structurizr/structurizr Docker Hub](https://hub.docker.com/r/structurizr/structurizr) — Linux-only image manifests\n- `.github/workflows/e2e.yaml` — CI workflow with platform-specific e2e steps\n- `package.json` `test:e2e:smoke:windows` script\n",
+      "date" : "2026-04-10T00:00:00Z",
+      "format" : "Markdown",
+      "id" : "4",
+      "status" : "Accepted",
+      "title" : "macOS and Windows CI E2E Tests Scoped to Version-Check Smoke Test Only"
     } ],
     "sections" : [ {
       "content" : "\n## Motivation\n\n[Structurizr Workspaces](https://docs.structurizr.com/workspaces) are a great way to document and share architecture diagrams in the [C4 model](https://c4model.com/). However, the diagram creation is freeform and there are no guidelines to break code into files, leaving architects and developers with a feeling of not knowing where to start.\n\nThis is an opinionated scaffolding tool written in TypeScript/[Bun](https://bun.sh/) that attempts to create the building blocks of a solid system architecture documentation, that eases up the entry barrier for newcomers as well as allowing architects experienced in Structurizr to follow a convention while setting them up for success.\n",
@@ -33,7 +40,7 @@
       "order" : 1,
       "title" : ""
     }, {
-      "content" : "\n## Installation\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n\n### Options\n\n- `--help`: Show help information\n- `--version`: Show current tool version\n- `--dest <path>`: Target architecture folder (default: current directory)\n- `-e, --export`: Use Structurizr unified CLI (Docker) to export the workspace to JSON (default: false)\n",
+      "content" : "\n## Installation\n\n### macOS / Linux\n\nRun in your terminal:\n\n```bash\ncurl -s https://formulamonks.github.io/scaffoldizr/assets/install.sh | sh\n```\n\n### Windows\n\nRun in PowerShell:\n\n```powershell\nirm https://formulamonks.github.io/scaffoldizr/assets/install.ps1 | iex\n```\n\nThen, verify the tool is correctly installed:\n\n```bash\nscfz --version\n```\n\n## Usage\n\nOnce installed, run in your terminal:\n\n```bash\nscfz --dest {docs_folder}\n```\n\nwhere `{docs_folder}` is a folder where dsl files will be generated. The tool creates an `architecture/` folder and starts scaffolding from there. `{docs_folder}` default value is current working directory. So you can just issue `scfz` command.\n\n### Options\n\n- `--help`: Show help information\n- `--version`: Show current tool version\n- `--dest <path>`: Target architecture folder (default: current directory)\n- `-e, --export`: Use Structurizr unified CLI (Docker) to export the workspace to JSON (default: false)\n",
       "filename" : "02-getting-started.md",
       "format" : "Markdown",
       "order" : 2,
@@ -68,10 +75,16 @@
       "format" : "Markdown",
       "order" : 7,
       "title" : ""
+    }, {
+      "content" : "\nScaffoldizr tracks compatibility between your workspace and the CLI tool using a version header. When you upgrade the `scfz` tool, your existing workspace may become \"outdated\" if it was generated with an older version.\n\nScaffoldizr stamps a `# Generated by Scaffoldizr vX.X.X` header in the `workspace.dsl` file to track this compatibility. When the tool version is newer than the workspace version, a warning banner will appear.\n\n## Overview\n\nThe `migrate` command helps you keep your workspace up to date with the latest Scaffoldizr features, script improvements, and compatibility standards.\n\n## Running the migrate command\n\nTo migrate your workspace to the current version of Scaffoldizr, run:\n\n```bash\nscfz migrate\n```\n\nYou can also specify a destination path if your workspace is not in the current directory:\n\n```bash\nscfz migrate --dest <path>\n```\n\n## Dry-run mode\n\nIf you want to see what changes would be applied without actually modifying any files, use the dry-run flag:\n\n```bash\nscfz migrate --dry-run\n```\n\nThis will list all migrations that would be executed and any files that would be modified.\n\n## What migrations do\n\nCurrently, Scaffoldizr includes the following bundled migrations:\n\n1.  **Add version header**: Stamps the `# Generated by Scaffoldizr vX.X.X` header at the top of your `workspace.dsl` file if it is missing or outdated.\n2.  **Regenerate scripts**: Overwrites the workspace shell scripts with the latest bundled templates to ensure compatibility with new tool features. This affects:\n    *   `scripts/run.sh`\n    *   `scripts/run.ps1`\n    *   `scripts/update.sh`\n    *   `scripts/update.ps1`\n\n## When to run\n\nYou should run the `migrate` command:\n*   Immediately after upgrading the `scfz` tool to a new version.\n*   Whenever the \"Your workspace is outdated!\" banner appears when running `scfz`.\n\n## Flags\n\n| Flag | Shorthand | Description | Default |\n| :--- | :--- | :--- | :--- |\n| `--dest` | | Path to the workspace directory | `.` |\n| `--dry-run` | `-d` | Preview changes without writing files | `false` |\n",
+      "filename" : "08-migrate.md",
+      "format" : "Markdown",
+      "order" : 8,
+      "title" : ""
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2026-04-10T17:04:35Z",
+  "lastModifiedDate" : "2026-06-05T01:44:20Z",
   "model" : {
     "people" : [ {
       "description" : "Architect",
@@ -304,7 +317,7 @@
       "externalContainerBoundariesVisible" : false,
       "key" : "Generator",
       "name" : "Component View: Scaffoldizr - scfz",
-      "order" : 3,
+      "order" : 4,
       "relationships" : [ {
         "id" : "17"
       }, {
@@ -349,13 +362,43 @@
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "ScaffoldizrCLI",
       "name" : "Container View: Scaffoldizr",
-      "order" : 2,
+      "order" : 3,
       "relationships" : [ {
         "id" : "14"
       }, {
         "id" : "16"
       } ],
       "softwareSystemId" : "3"
+    } ],
+    "dynamicViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "Untitled view. Author: Formula.monks <andres.zorro@mediamonks.com>",
+      "elementId" : "3",
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalBoundariesVisible" : false,
+      "key" : "IHbljd",
+      "name" : "Dynamic View: Scaffoldizr",
+      "order" : 1,
+      "relationships" : [ {
+        "description" : "Uses",
+        "id" : "11",
+        "order" : "1",
+        "response" : false
+      } ]
     } ],
     "systemContextViews" : [ {
       "description" : "Scaffolding tool. Author: Formula.monks <andres.zorro@mediamonks.com>",
@@ -379,7 +422,7 @@
       "enterpriseBoundaryVisible" : true,
       "key" : "Scaffoldizr",
       "name" : "System Context View: Scaffoldizr",
-      "order" : 1,
+      "order" : 2,
       "relationships" : [ {
         "id" : "10"
       }, {

@@ -1,3 +1,5 @@
+import { join } from "node:path";
+import { file } from "bun";
 import { kebabCase, pascalCase } from "change-case";
 import { removeSpaces } from "../handlebars";
 import type { StructurizrWorkspace } from "../workspace";
@@ -91,6 +93,23 @@ export const validateDuplicatedViews =
         const viewName = pascalCase(removeSpaces(input));
         if (systemViews.includes(viewName)) {
             return `View with name "${viewName}" already exists.`;
+        }
+
+        return true;
+    };
+
+export const validateDuplicatedViewFile =
+    (workspaceFolder: string | undefined): Validator =>
+    async (input: string) => {
+        if (!workspaceFolder) return true;
+
+        const viewFilePath = join(
+            workspaceFolder,
+            "views",
+            `${kebabCase(input)}.dsl`,
+        );
+        if (await file(viewFilePath).exists()) {
+            return `View with name "${input}" already exists.`;
         }
 
         return true;

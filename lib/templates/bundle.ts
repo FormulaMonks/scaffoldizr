@@ -27,6 +27,7 @@ import themeTemplate from "./theme.hbs";
 import viewsComponent from "./views/component.hbs";
 import viewsContainer from "./views/container.hbs";
 import viewsDeployment from "./views/deployment.hbs";
+import viewsDynamic from "./views/dynamic.hbs";
 import viewsLandscape from "./views/landscape.hbs";
 import viewsSystem from "./views/system.hbs";
 import workspace from "./workspace.hbs";
@@ -68,6 +69,7 @@ const templatesMap = new Map([
     ["templates/views/component.hbs", viewsComponent],
     ["templates/views/container.hbs", viewsContainer],
     ["templates/views/deployment.hbs", viewsDeployment],
+    ["templates/views/dynamic.hbs", viewsDynamic],
     ["templates/views/landscape.hbs", viewsLandscape],
     ["templates/views/system.hbs", viewsSystem],
     ["templates/workspace.hbs", workspace],
