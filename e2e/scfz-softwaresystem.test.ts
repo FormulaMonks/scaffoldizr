@@ -343,7 +343,6 @@ describe("e2e: Software System", () => {
             keypress.ENTER,
             keypress.DOWN,
             keypress.ENTER,
-            keypress.DOWN,
             keypress.ENTER,
             "Dynamic Container View",
             keypress.ENTER,
@@ -362,6 +361,8 @@ describe("e2e: Software System", () => {
 
         const response = await new Response(proc.stdout).text();
         console.log(`Scaffoldizr Output:\n${response}`);
+
+        await proc.exited;
 
         expect(proc.exitCode).toBe(0);
 
