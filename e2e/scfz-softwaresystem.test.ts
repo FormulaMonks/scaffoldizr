@@ -254,6 +254,7 @@ describe("e2e: Software System", () => {
             "container",
             "--dest",
             folder,
+            "--export",
             "--elementName",
             "Db",
             "--containerDescription",
@@ -262,34 +263,19 @@ describe("e2e: Software System", () => {
             "None of the above",
             "--containerTechnology",
             "PostgreSQL",
+            "--relationshipNames",
+            "",
         ]);
 
         await addContainerProc.exited;
         expect(addContainerProc.exitCode).toBe(0);
 
-        const addComponentProc = spawn([
+        const addEngineProc = spawn([
             "dist/scfz",
             "component",
             "--dest",
             folder,
-            "--container",
-            "Test System/Db",
-            "--elementName",
-            "Cache",
-            "--componentDescription",
-            "Cache component",
-            "--componentTechnology",
-            "Redis",
-        ]);
-
-        await addComponentProc.exited;
-        expect(addComponentProc.exitCode).toBe(0);
-
-        const addSecondComponentProc = spawn([
-            "dist/scfz",
-            "component",
-            "--dest",
-            folder,
+            "--export",
             "--container",
             "Test System/Db",
             "--elementName",
@@ -298,10 +284,55 @@ describe("e2e: Software System", () => {
             "Engine component",
             "--componentTechnology",
             "PostgreSQL",
+            "--relationshipNames",
+            "",
         ]);
 
-        await addSecondComponentProc.exited;
-        expect(addSecondComponentProc.exitCode).toBe(0);
+        await addEngineProc.exited;
+        expect(addEngineProc.exitCode).toBe(0);
+
+        const addCacheProc = spawn([
+            "dist/scfz",
+            "component",
+            "--dest",
+            folder,
+            "--export",
+            "--container",
+            "Test System/Db",
+            "--elementName",
+            "Cache",
+            "--componentDescription",
+            "Cache component",
+            "--componentTechnology",
+            "Redis",
+            "--relationshipNames",
+            "",
+        ]);
+
+        await addCacheProc.exited;
+        expect(addCacheProc.exitCode).toBe(0);
+
+        const addRelationshipProc = spawn(
+            [
+                "dist/scfz",
+                "relationship",
+                "--dest",
+                folder,
+                "--export",
+                "--element",
+                "Component/Test System/Db/Cache",
+                "--relationshipNames",
+                "Db_Engine",
+            ],
+            {
+                stdin: "pipe",
+            },
+        );
+
+        loop(addRelationshipProc, [keypress.ENTER]);
+
+        await addRelationshipProc.exited;
+        expect(addRelationshipProc.exitCode).toBe(0);
 
         const proc = spawn(["dist/scfz", "view", "--dest", folder], {
             stdin: "pipe",
@@ -313,17 +344,18 @@ describe("e2e: Software System", () => {
             keypress.ENTER,
             keypress.DOWN,
             keypress.ENTER,
+            "Dynamic Container View",
+            keypress.ENTER,
+            "Container scoped test",
             keypress.ENTER,
             keypress.DOWN,
+            keypress.ENTER,
             keypress.ENTER,
             "test",
             keypress.ENTER,
             keypress.ENTER,
-            "no",
             keypress.ENTER,
-            "Dynamic Container View",
-            keypress.ENTER,
-            "Container scoped test",
+            "n",
             keypress.ENTER,
         ]);
 
@@ -337,7 +369,7 @@ describe("e2e: Software System", () => {
         ).text();
 
         expect(viewContents).toContain('dynamic Db "DynamicContainerView"');
-        expect(viewContents).toContain('Cache -> Engine "test"');
+        expect(viewContents).toContain('Db_Cache -> Db_Engine "test"');
     });
 
     test("@smoke: should add a new relationship", async () => {

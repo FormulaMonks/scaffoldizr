@@ -51,7 +51,7 @@ describe("getRelationshipsForElement", () => {
         expect(result).toHaveLength(0);
     });
 
-    test("returns both outgoing and incoming partners as union", () => {
+    test("returns only outgoing relationship targets, excluding incoming-only callers", () => {
         const source: ViewElement = {
             id: "source-1",
             name: "Source",

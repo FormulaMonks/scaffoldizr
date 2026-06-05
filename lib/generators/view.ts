@@ -1,5 +1,5 @@
 import type { AddAction } from "../utils/actions";
-import { skipUnlessViewType, whenViewType } from "../utils/actions/utils";
+import { skipUnlessViewType } from "../utils/actions/utils";
 import type { GeneratorDefinition } from "../utils/generator";
 import { Elements } from "../utils/labels";
 import { confirm, input, Separator, select } from "../utils/prompts";
