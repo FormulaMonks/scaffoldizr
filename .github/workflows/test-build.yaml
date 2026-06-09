@@ -84,6 +84,8 @@ jobs:
             runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
       - name: Mise Tools install
         uses: jdx/mise-action@v4
         if: ${{ matrix.os != 'windows' }}
