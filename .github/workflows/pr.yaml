@@ -24,4 +24,4 @@ jobs:
     if: always()
     uses: ./.github/workflows/e2e.yaml
     with:
-      smoke: ${{ github.base_ref != 'main' }}
+      smoke: true
