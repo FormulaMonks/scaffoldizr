@@ -62,7 +62,15 @@ Create a Structurizr DSL scaffolding in seconds!
         const workspacePath = getWorkspacePath(path);
         if (!workspacePath) return;
 
-        return $`docker run --rm -v ${workspacePath}:/usr/local/structurizr --user $(id -u):$(id -g) structurizr/structurizr:${structurizrVersion} export -w /usr/local/structurizr/workspace.dsl -f json -o /usr/local/structurizr || true`;
+        const warPath = process.env.STCTZR_WAR_PATH;
+
+        try {
+            if (warPath) {
+                await $`java -jar ${warPath} export -w ${resolve(workspacePath, "workspace.dsl")} -f json -o ${workspacePath}`;
+            } else {
+                await $`docker run --rm -v ${workspacePath}:/usr/local/structurizr --user $(id -u):$(id -g) structurizr/structurizr:${structurizrVersion} export -w /usr/local/structurizr/workspace.dsl -f json -o /usr/local/structurizr`;
+            }
+        } catch {}
     };
 
     const { workspaceGenerator, ...otherGenerators } = generators;
@@ -282,7 +290,7 @@ if (["main.ts", "scfz"].includes(basename(entrypoint))) {
             alias: "e",
             type: "boolean",
             default: false,
-            desc: "Use Structurizr unified CLI (Docker) to export the workspace to JSON",
+            desc: "Use Structurizr unified CLI to export the workspace to JSON (Docker or Java WAR via STCTZR_WAR_PATH)",
         })
         .option("dry-run", {
             alias: "d",
