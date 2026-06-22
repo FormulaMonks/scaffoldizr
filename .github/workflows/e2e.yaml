@@ -15,7 +15,7 @@ jobs:
     outputs:
       structurizr_version: ${{ steps.extract.outputs.structurizr_version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
       - name: Extract Structurizr version
@@ -54,7 +54,7 @@ jobs:
             target: x86_64-ms-windows
             runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
       - name: Mise Tools install
