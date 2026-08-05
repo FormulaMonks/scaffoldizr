@@ -1,0 +1,88 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended",
+        ":semanticCommitTypeAll(build)",
+        ":dependencyDashboard"
+    ],
+    "timezone": "Etc/UTC",
+    "labels": ["dependencies"],
+    "prConcurrentLimit": 10,
+    "prHourlyLimit": 0,
+    "rebaseWhen": "behind-base-branch",
+    "semanticCommitScope": "deps",
+    "rangeStrategy": "bump",
+    "minimumReleaseAge": "3 days",
+    "internalChecksFilter": "strict",
+    "automergeType": "pr",
+    "automergeStrategy": "squash",
+    "platformAutomerge": true,
+    "lockFileMaintenance": {
+        "enabled": true,
+        "schedule": ["at any time"],
+        "commitMessageAction": "refresh",
+        "automerge": true
+    },
+    "vulnerabilityAlerts": {
+        "labels": ["dependencies", "security"],
+        "minimumReleaseAge": null
+    },
+    "packageRules": [
+        {
+            "description": "Match the commit scope this repo already uses for dev dependencies",
+            "matchDepTypes": ["devDependencies"],
+            "semanticCommitScope": "deps-dev"
+        },
+        {
+            "description": "Automerge every patch/digest/pin update, in any ecosystem",
+            "matchUpdateTypes": ["patch", "digest", "pin", "pinDigest"],
+            "automerge": true
+        },
+        {
+            "description": "Automerge dev dependency minors, grouped into a single PR",
+            "matchDepTypes": ["devDependencies"],
+            "matchUpdateTypes": ["minor", "patch"],
+            "groupName": "dev dependencies (non-major)",
+            "automerge": true
+        },
+        {
+            "description": "Automerge GitHub Actions minors/patches, grouped into a single PR",
+            "matchManagers": ["github-actions"],
+            "matchUpdateTypes": ["minor", "patch", "digest", "pinDigest"],
+            "groupName": "github actions (non-major)",
+            "automerge": true
+        },
+        {
+            "description": "Docs site gems: patches automerge, grouped separately from minors",
+            "matchManagers": ["bundler"],
+            "matchUpdateTypes": ["patch"],
+            "groupName": "docs gems (patch)",
+            "automerge": true
+        },
+        {
+            "description": "Docs site gems: minors are grouped and reviewed by a human",
+            "matchManagers": ["bundler"],
+            "matchUpdateTypes": ["minor"],
+            "groupName": "docs gems (minor)",
+            "automerge": false
+        },
+        {
+            "description": "Runtime dependency minors always get a human review",
+            "matchDepTypes": ["dependencies", "overrides", "peerDependencies"],
+            "matchUpdateTypes": ["minor"],
+            "automerge": false
+        },
+        {
+            "description": "mise toolchain minors (bun, ruby, java, jq) always get a human review",
+            "matchManagers": ["mise"],
+            "matchUpdateTypes": ["minor"],
+            "automerge": false
+        },
+        {
+            "description": "Never automerge a major, whatever it is",
+            "matchUpdateTypes": ["major"],
+            "automerge": false,
+            "labels": ["dependencies", "major-update"]
+        }
+    ]
+}

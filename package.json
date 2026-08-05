@@ -55,7 +55,7 @@
             "bugfix",
             "hotfix",
             "release",
-            "dependabot"
+            "renovate"
         ],
         "suggestions": {
             "features": "feature",
