@@ -41,6 +41,14 @@ Currently, Scaffoldizr includes the following bundled migrations:
     *   `scripts/run.ps1`
     *   `scripts/update.sh`
     *   `scripts/update.ps1`
+3.  **Add standalone scripts**: Pins the locked Structurizr version in the scripts and adds the standalone `export` and `inspect` scripts, so the workspace can be compiled and inspected without the `scfz` tool. In addition to the four scripts above, this adds:
+    *   `scripts/export.sh`
+    *   `scripts/export.ps1`
+    *   `scripts/inspect.sh`
+    *   `scripts/inspect.ps1`
+4.  **Add workspace max size**: Regenerates all eight scripts so they pin the current locked Structurizr version, and raises the local server's maximum workspace size to `10MB` (overridable with `STCTZR_MAX_WORKSPACE_SIZE`). See the "Script Environment Variables" section of the Usage page for details.
+
+Migrations are cumulative and idempotent: only those newer than your workspace's recorded version are applied, and re-running one leaves your files unchanged. Because the script migrations overwrite the generated scripts from the bundled templates, any manual edits you made to files under `scripts/` will be lost — re-apply them after migrating.
 
 ## When to run
 
