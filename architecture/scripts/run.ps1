@@ -1,6 +1,6 @@
 $docsLocation = Split-Path -Parent $PSScriptRoot
 $port = if ($args[0]) { $args[0] } else { 8080 }
-$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.05.22" }
+$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.06.28" }
 
 if (-not (Test-Path "$docsLocation\workspace.dsl")) {
     Write-Error "ERROR: workspace.dsl file not found in `"$docsLocation`" folder."
