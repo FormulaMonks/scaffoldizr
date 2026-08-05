@@ -1,6 +1,7 @@
 $docsLocation = Split-Path -Parent $PSScriptRoot
 $port = if ($args[0]) { $args[0] } else { 8080 }
 $version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "{{structurizrVersion}}" }
+$maxWorkspaceSize = if ($env:STCTZR_MAX_WORKSPACE_SIZE) { $env:STCTZR_MAX_WORKSPACE_SIZE } else { "10MB" }
 
 if (-not (Test-Path "$docsLocation\workspace.dsl")) {
     Write-Error "ERROR: workspace.dsl file not found in `"$docsLocation`" folder."
@@ -20,7 +21,7 @@ function Stop-Container {
 Write-Host "Running workspace: $docsLocation on port $port"
 
 try {
-    docker run --rm --name $containerName -p "${port}:8080" -v "${docsLocation}:/usr/local/structurizr" "structurizr/structurizr:${version}" local
+    docker run --rm --name $containerName -p "${port}:8080" -v "${docsLocation}:/usr/local/structurizr" -e "STRUCTURIZR_WORKSPACE_MAXSIZE=$maxWorkspaceSize" "structurizr/structurizr:${version}" local
 } finally {
     Stop-Container
 }

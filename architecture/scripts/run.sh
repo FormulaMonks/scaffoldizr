@@ -4,6 +4,7 @@ docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
 port=${1:-8080}
 version="${STCTZR_VERSION:-}"
 if [ -z "$version" ]; then version="2026.06.28"; fi
+max_workspace_size="${STCTZR_MAX_WORKSPACE_SIZE:-10MB}"
 
 # Check if workspace.dsl file exists
 if [ ! -e "${docs_location}/workspace.dsl" ]; then
@@ -24,5 +25,5 @@ trap cleanup SIGTERM SIGINT
 
 echo "Running workspace: ${docs_location} on port ${port}"
 
-docker run --rm --name "${container_name}" -p "${port}":8080 -v "${docs_location}:/usr/local/structurizr" "structurizr/structurizr:${version}" local &
+docker run --rm --name "${container_name}" -p "${port}":8080 -v "${docs_location}:/usr/local/structurizr" -e "STRUCTURIZR_WORKSPACE_MAXSIZE=${max_workspace_size}" "structurizr/structurizr:${version}" local &
 wait $!
