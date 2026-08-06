@@ -143,6 +143,29 @@ Pushes the compiled `workspace.json` to a remote Structurizr instance using the 
 
 For all available Structurizr CLI commands, see the [Structurizr commands reference](https://docs.structurizr.com/commands).
 
+### Script Environment Variables
+
+The generated scripts read the following optional environment variables. Unlike `.env-arch`, these are not read from a file — export them in your shell (or set them inline) when you need to override a default.
+
+| Variable | Used by | Default | Description |
+| :------- | :------ | :------ | :---------- |
+| `STCTZR_VERSION` | all scripts | The version locked by your `scfz` release | Structurizr Docker image tag to run. |
+| `STCTZR_MAX_WORKSPACE_SIZE` | `run` only | `10MB` | Maximum workspace size the local server will accept. |
+
+```bash
+# Run a different Structurizr image tag
+STCTZR_VERSION=2026.06.28 ./architecture/scripts/run.sh
+
+# Allow a larger workspace
+STCTZR_MAX_WORKSPACE_SIZE=25MB ./architecture/scripts/run.sh
+```
+
+**About the workspace size limit**: Structurizr refuses to load a workspace larger than `structurizr.workspace.maxsize`, which defaults to `1MB` upstream. Because a moderately sized C4 model can exceed that, the generated `run` scripts raise the limit to `10MB` for you. If you see a "workspace too large" error, raise it further with `STCTZR_MAX_WORKSPACE_SIZE`. The value accepts bytes, `KB`, or `MB` — `1048576`, `1024KB`, and `1MB` are equivalent.
+
+This setting applies only to `run.sh` / `run.ps1`. It is enforced by the Structurizr local server, so the `update`, `export`, and `inspect` scripts do not read it — when pushing to a remote instance, the limit that matters is the one configured on that server.
+
+> **Note**: Very large workspaces degrade rendering performance in the browser. Structurizr recommends keeping `workspace.json` under 1–2MB and splitting large landscapes across [multiple workspaces](https://docs.structurizr.com/workspaces) instead of raising the limit indefinitely.
+
 ### .env-arch — Remote Credentials
 
 The `architecture/.env-arch` file holds the authentication credentials required by `update.sh` / `update.ps1`. It is **not committed to version control**.

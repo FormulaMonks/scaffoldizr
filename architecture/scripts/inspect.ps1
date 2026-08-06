@@ -1,5 +1,5 @@
 $docsLocation = Split-Path -Parent $PSScriptRoot
-$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.05.22" }
+$version = if ($env:STCTZR_VERSION) { $env:STCTZR_VERSION } else { "2026.06.28" }
 
 Write-Host "Inspecting workspace: $docsLocation (structurizr:${version})"
 

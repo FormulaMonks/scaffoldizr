@@ -2,7 +2,7 @@
 
 docs_location=$(cd "$(dirname "${0}")" && cd .. && pwd)
 version="${STCTZR_VERSION:-}"
-if [ -z "$version" ]; then version="2026.05.22"; fi
+if [ -z "$version" ]; then version="2026.06.28"; fi
 
 echo "Inspecting workspace: ${docs_location} (structurizr:${version})"
 
