@@ -4,7 +4,7 @@ import { mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { file, write } from "bun";
-import { structurizrVersion } from "../utils/structurizr-version";
+import { STRUCTURIZR_LOCKED_VERSION } from "../utils/structurizr-version";
 import { addWorkspaceMaxSizeMigration } from "./add-workspace-maxsize.migration";
 
 const createTempDir = () =>
@@ -78,7 +78,7 @@ describe("addWorkspaceMaxSizeMigration.apply", () => {
             const content = await file(resolve(testDir, relativePath)).text();
             expect(content).not.toBe(dummyContent);
             expect(content).not.toContain("{{structurizrVersion}}");
-            expect(content).toContain(structurizrVersion);
+            expect(content).toContain(STRUCTURIZR_LOCKED_VERSION);
         }
     });
 
